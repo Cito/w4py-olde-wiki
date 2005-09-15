@@ -1,0 +1,50 @@
+How to install this thing:
+
+Get the entire Subversion repository::
+
+    svn co svn://w4py.org
+
+Get Webware CVS::
+
+    cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/webware login
+ 
+    cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/webware co Webware
+
+I'll assume these were put in ``~/w4py.org`` and ``~/Webware``
+
+Set up a new working directory::
+
+    ~/Webware/bin/MakeAppWorkDir.py -c Wiki -d ~/w4py.org/Wiki/Context \
+        -l ~/w4py.org/Wiki ~/WikiWorkDir
+
+You may want to edit ``wiki.ini``, particularly in ``[wiki]`` the
+``basepath`` setting, which is where all your Wikis will be stored.
+This should be writable by the AppServer.  Also, for any domains there
+should be a section, like ``[localhost]`` -- if you have multiple
+domains that should serve the same wiki, use::
+
+    [localhost]
+    alias = canonical.domain.name
+
+Also, you'll need to install htmlarea, from: 
+http://prdownloads.sourceforge.net/itools-htmlarea/HTMLArea-3.0-beta.zip?download
+
+Or check here for the latest version: 
+http://prdownloads.sourceforge.net/itools-htmlarea/
+
+Or maybe check out CVS:
+http://sourceforge.net/cvs/?group_id=69750
+
+Once you've downloaded and unzipped, move it into
+``w4py.org/Wiki/Context/htmlarea``.  Also, rename the file
+``index.html`` to ``htmlarea_index.html`` (``index.html`` will serve
+as an unfortunate catch-all if you don't do this).
+
+Also install utidy from: http://utidylib.sourceforge.net/ , which in
+turn requires libtidy and the Python ctypes library.  These are
+available on Debian as ``libtidy0`` and ``python-ctypes`` (for other
+OSes you are on your own).
+
+Then you should be all set!
+
+  -- Ian Bicking 26 Apr 2004
