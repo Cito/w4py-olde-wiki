@@ -1,4 +1,4 @@
-from wsgikit.config.lazyloader import LazyLoader
+from config.lazyloader import LazyLoader
 
 __all__ = ['WikiConfig']
 
@@ -6,7 +6,7 @@ class NoDefault:
     pass
 
 class WikiConfig(LazyLoader):
-    
+
     def __init__(self, *args, **kw):
         self._merged_page_classes = {}
         LazyLoader.__init__(self, *args, **kw)
@@ -48,4 +48,4 @@ class WikiConfig(LazyLoader):
         else:
             self._merged_page_classes[page_class] = None
             return self
-                    
+
