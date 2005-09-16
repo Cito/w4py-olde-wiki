@@ -23,15 +23,15 @@ i, em {
 }
 
 a.target {
-  color: blue 
+  color: blue
 }
 
 a.toc-backref {
   text-decoration: none ;
-  color: black 
+  color: black
 }
 
-a.reference { 
+a.reference {
   text-decoration: none;
   border-bottom: 2px solid #0000ff;
 }
@@ -40,16 +40,16 @@ a.reference:hover {
   background-color: #cceeff;
 }
 
-span.nowiki { 
+span.nowiki {
   background-color: #ffff99;
 }
 
-a.wiki { 
+a.wiki {
   text-decoration: none;
   border-bottom: 2px solid #ff6600;
 }
 
-a.version { 
+a.version {
   display: block;
 }
 
@@ -272,11 +272,11 @@ tt {
 ul.auto-toc {
   list-style-type: none }
 
-tr.even { 
+tr.even {
   background-color: #dddddd;
 }
 
-tr.header { 
+tr.header {
   background-color: #000066;
   color: #ffffff;
 }
@@ -343,48 +343,48 @@ tr.header {
 /* For some reason I can't get it to work without both the class
    and ID */
 
-a.viewing#viewing { 
+a.viewing#viewing {
   background-color: #ffffff;
   color: #000066;
   border: 1px solid #000066;
 }
 
-div#bottom_nav { 
+div#bottom_nav {
   border-top: 1px solid black;
   background-color: #000066;
   color: #ffffff;
   padding: 0px 5px 1px 5px;
 }
 
-span.navgroup { 
+span.navgroup {
   border: 1px solid white;
   font-weight: bold;
 }
 
-a#recentchanges_xml { 
+a#recentchanges_xml {
   padding-left: 0.25em;
   padding-right: 0.5em;
 }
 
-a#recentchanges { 
+a#recentchanges {
   padding-right: 0.25em;
 }
 
-.navgroup a { 
+.navgroup a {
   color: #ffffff;
   text-decoration: none;
   padding-left: 1em;
   padding-right: 1em;
 }
 
-select.navgroup { 
+select.navgroup {
   color: #ffffff;
   background-color: #000066;
   border: thin solid #ffffff;
   font-weight: bold;
 }
 
-.navgroup a:hover { 
+.navgroup a:hover {
   background-color: #cecbc6;
   color: #000066;
 }
@@ -402,17 +402,17 @@ html>body #page_navclear {
 
 /* Search results */
 
-dd.summary { 
+dd.summary {
   font-size: small;
 }
 
-form#searchbar { 
+form#searchbar {
   border: 1px solid black;
   background-color: #ddddff;
   padding: 0.5em;
 }
 
-#searchbar tt { 
+#searchbar tt {
   color: #000099;
   font-weight: bold;
 }
@@ -431,28 +431,28 @@ form#searchbar {
 
 /* NotifyComponent */
 
-.notifyMessage { 
+.notifyMessage {
   border: thin black solid;
   width: 70%;
   background-color: #006600;
   color: #ffffff;
 }
 
-.notifyMessage a { 
+.notifyMessage a {
   color: #bbffbb;
 }
 
-.notifyMessage a:visited { 
+.notifyMessage a:visited {
   color: #ddddff;
 }
 
 /* Login/forms */
 
-.loginForm input { 
+.loginForm input {
   border: thin solid #000066;
 }
 
-.formError { 
+.formError {
   background-color: #660000;
   color: #ffffff;
 }
@@ -467,7 +467,7 @@ a.button {
   border: #000066 outset medium;
 }
 
-a.button:hover { 
+a.button:hover {
   background-color: #cecbc6;
   color: #000000;
   border: #cecbc6 outset medium;
@@ -480,21 +480,21 @@ a.menu {
   font-weight: bold;
 }
 
-a.menu:hover { 
+a.menu:hover {
   background-color: #cccccc;
 }
 
 /* Related entries */
 
-.related { 
+.related {
   /* border-top: 2px solid black; */
 }
 
-.relatedEntry { 
+.relatedEntry {
   border-bottom: 1px solid #999999;
 }
 
-.relatedDate { 
+.relatedDate {
   text-align: right;
   font-size: small;
 }
@@ -513,16 +513,22 @@ div.menu a.menuItem {
 }
 
 div.menuBar {
-  background-color: #d0d0d0;
+  background-color: #d0d0da;
   border: 2px solid;
-  border-color: #f0f0f0 #909090 #909090 #f0f0f0;
+  border-color: #f0f0fc #909097 #909097 #f0f0fc;
   padding: 4px 2px 4px 2px;
   text-align: left;
 }
 
+div.menuBar span.menuTitle {
+  color: #000099;
+  margin: 1px;
+  padding: 2px 6px 2px 6px;
+}
+
 div.menuBar a.menuButton {
   background-color: transparent;
-  border: 1px solid #d0d0d0;
+  border: 1px solid #d0d0da;
   color: #000000;
   cursor: default;
   left: 0px;
@@ -536,23 +542,23 @@ div.menuBar a.menuButton {
 
 div.menuBar a.menuButton:hover {
   background-color: transparent;
-  border-color: #f0f0f0 #909090 #909090 #f0f0f0;
+  border-color: #f0f0fc #909097 #909097 #f0f0fc;
   color: #000000;
 }
 
 div.menuBar a.menuButtonActive,
 div.menuBar a.menuButtonActive:hover {
-  background-color: #a0a0a0;
-  border-color: #909090 #f0f0f0 #f0f0f0 #909090;
+  background-color: #a0a0c8;
+  border-color: #909097 #f0f0fc #f0f0fc #909097;
   color: #ffffff;
   left: 1px;
   top: 1px;
 }
 
 div.menu {
-  background-color: #d0d0d0;
+  background-color: #d0d0da;
   border: 2px solid;
-  border-color: #f0f0f0 #909090 #909090 #f0f0f0;
+  border-color: #f0f0fc #909097 #909097 #f0f0fc;
   left: 0px;
   padding: 0px 1px 1px 0px;
   position: absolute;
@@ -571,7 +577,7 @@ div.menu a.menuItem {
 }
 
 div.menu a.menuItem:hover, div.menu a.menuItemHighlight {
-  background-color: #000080;
+  background-color: #000090;
   color: #ffffff;
 }
 
@@ -582,28 +588,28 @@ div.menu a.menuItem span.menuItemArrow {
 }
 
 div.menu div.menuItemSep {
-  border-top: 1px solid #909090;
-  border-bottom: 1px solid #f0f0f0;
+  border-top: 1px solid #909097;
+  border-bottom: 1px solid #f0f0fc;
   margin: 4px 2px;
 }
 
-input.menuSearch { 
+input.menuSearch {
   font-family: "MS Sans Serif", Arial, sans-serif;
   font-size: 7pt;
   padding: 0px;
-  border: 1px #909090 #f0f0f0 #f0f0f0 #909090;
+  border: 1px #909097 #f0f0fc #f0f0fc #909097;
 }
 
 div.menu span.disabled {
   color: #666666;
 }
 
-div.source-code { 
+div.source-code {
   background-color: #000000;
   border: inset #999999 3px;
   overflow: auto;
 }
 
-div.source-code a.source-link { 
+div.source-code a.source-link {
   float: right;
 }

@@ -196,7 +196,8 @@ class SitePage(CPage):
         self.writeFooter()
 
     def writeHeader(self):
-        menu = [(menubar.Literal, '<span style="color: #000099">Wiki:</span>')]
+        menu = [(menubar.Literal, '<span class="menuTitle">%s:</span>'
+            % (self.wiki.config.getbool('blog') and 'Blog' or 'Wiki'))]
         for name in self.menus():
             menu.extend(getattr(self, 'menu' + name)())
         menuDiv, parts = menubar.menubarHTML(menu)
