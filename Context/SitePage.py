@@ -110,7 +110,8 @@ class SitePage(CPage):
             self._cachedPermissions[cacheKey] = None
             return
         user_roles = self.user().roles()
-        if self.user() and self.user().userID() == self.authorUser().userID():
+        if self.user() and self.authorUser() and \
+            self.user().userID() == self.authorUser().userID():
             user_roles.append('author')
         for has_role in user_roles:
             if has_role in role:
