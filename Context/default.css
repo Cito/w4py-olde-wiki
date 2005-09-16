@@ -453,8 +453,9 @@ form#searchbar {
 }
 
 .formError {
-  background-color: #660000;
+  background-color: #993333;
   color: #ffffff;
+  padding: 1pt 4pt;
 }
 
 a.button {
