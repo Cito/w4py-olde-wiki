@@ -110,9 +110,10 @@ class SitePage(CPage):
             self._cachedPermissions[cacheKey] = None
             return
         user_roles = self.user().roles()
-        if self.user() and self.authorUser() and \
-            self.user().userID() == self.authorUser().userID():
-            user_roles.append('author')
+        if userID:
+            authorID = self.authorUser() and self.authorUser().userID()
+            if userID == authorID:
+                user_roles.append('author')
         for has_role in user_roles:
             if has_role in role:
                 self._cachedPermissions[cacheKey] = None
@@ -197,14 +198,11 @@ class SitePage(CPage):
         self.writeFooter()
 
     def writeHeader(self):
-        menu = [(menubar.Literal, '<span class="menuTitle">%s:</span>'
-            % (self.wiki.config.getbool('blog') and 'Blog' or 'Wiki'))]
-        for name in self.menus():
-            menu.extend(getattr(self, 'menu' + name)())
-        menuDiv, parts = menubar.menubarHTML(menu)
+        menu = [getattr(self, 'menu' + name)() for name in self.menus()]
+        bar, parts = menubar.menubarHTML(menu)
         self.write(parts)
         self.write('<form action="search" method="GET">')
-        self.write(menuDiv)
+        self.write(bar)
         self.write('</form>')
         #self.write('<br clear="all">\n')
         self.writeGoogleAds()
@@ -231,7 +229,19 @@ class SitePage(CPage):
         </script></td></tr></table>''' % self._adsenseID)
 
     def menus(self):
-        return ['Goto', 'Help', 'Search']
+        return ['User', 'Title', 'Goto', 'Help', 'Search']
+
+    def menuUser(self):
+        name = self.user() and self.user().username()
+        if name:
+            name = '<span class="menuUser">%s</span>' % name
+        else:
+            name = ''
+        return (menubar.Literal, name)
+
+    def menuTitle(self):
+        return (menubar.Literal, '<span class="menuTitle">%s:</span>'
+            % (self.wiki.config.getbool('blog') and 'Blog' or 'Wiki'))
 
     def menuGoto(self):
         menu = [
@@ -245,7 +255,8 @@ class SitePage(CPage):
             menu.append(
                 ('Create ' + (self.wiki.config.getbool('blog') and 'Post' or 'Page'),
                  "javascript:window.location='%s/' + "
-                 "escape(window.prompt('Enter the name for the new page').replace(/ /g, '-')) + "
+                 "escape(window.prompt('Enter the name "
+                 "for the new page').replace(/ /g, '-')) + "
                  "'?_action_=edit'"
                  % self.request().adapterName()))
         if self.user() and 'admin' in self.user().roles():
@@ -257,19 +268,23 @@ class SitePage(CPage):
             menu.append(('Login',
                          'login?returnTo=%s'
                          % self.request().environ()['REQUEST_URI'].split('?')[0]))
-        return [('Goto', menu)]
+        return ('Goto', menu)
 
     def menuHelp(self):
-        return [('Help', [
+        return ('Help', [
             ('About this wiki', 'thiswiki.html'),
             ('Help with markup', 'quickresthelp.html'),
             (menubar.Separator, ''),
             ('Related terms', 'relatedterms.html'),
-            ])]
+            ])
 
     def menuSearch(self):
-        return [(menubar.Literal,
-                 '&nbsp; &nbsp; <input type="text" class="menuSearch" name="search" value="click to search..." onFocus="if (this.value == \'click to search...\') {this.value = \'\'; this.style.color = \'#000000\';}" style="color: #666666">')]
+        return (menubar.Literal,
+                 '&nbsp; &nbsp; <input type="text" class="menuSearch" '
+                 'name="search" value="click to search..." '
+                 'onFocus="if (this.value == \'click to search...\') '
+                 '{this.value = \'\'; this.style.color = \'#000000\';}" '
+                 'style="color: #666666">')
 
     def sendRedirectAndEnd(self, url):
         """

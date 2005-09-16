@@ -162,7 +162,7 @@ class Main(SitePage):
             p.link +
             '?_action_=edit&attaching=%s'
             % self.urlEncode(self.page.name))
-        
+
     def preview(self):
         self.saveCookieAuthorInfoFromRequest()
         self.setView('writePreview')
@@ -312,7 +312,7 @@ class Main(SitePage):
                     'log': 'lastChangeLog',
                     'title': 'title',
                     'class': 'pageClass'}
-        
+
         if method in ('LOCK', 'UNLOCK'):
             # We don't support these now
             return
@@ -343,7 +343,7 @@ class Main(SitePage):
                 name = name.strip().lower()
                 value = value.strip()
                 metadata[name] = value
-                
+
             for name, value in metadata.items():
                 assert metavars.has_key(name), "Bad name %r (must be one of %s)" % (name, ', '.join(metavars.keys()))
                 setattr(self.page, metavars[name], value)
@@ -498,21 +498,21 @@ class Main(SitePage):
         self.write('</blockquote>\n')
 
     def menus(self):
-        menu = ['Page']
+        menu = SitePage.menus(self)
+        menu.insert(2, 'Page')
         if not self.page.readOnly:
-            menu.append('Edit')
-        menu.extend(SitePage.menus(self))
+           menu.insert(3, 'Edit')
         return menu
 
     def menuPage(self):
         menu_title = self.page.title
         if len(menu_title) > 15:
             menu_title = menu_title[:14] + '&#8230;'
-        menu = [('<b>%s</b>' % menu_title, [
+        menu = ('<b>%s</b>' % menu_title, [
             ('View', self.link(unversioned=True)),
             ('Source', self.page.sourceLink),
             ('Backlinks', self.link(action='backlinks', unversioned=True)),
-            ('History', self.link(action='history', unversioned=True))])]
+            ('History', self.link(action='history', unversioned=True))])
         return menu
 
     def menuEdit(self):
@@ -532,11 +532,8 @@ class Main(SitePage):
             menu.append(
                 ('Attach file', self.link(action='attach')))
         if not menu:
-            return []
-            #menu.append(
-            #    (menubar.Literal,
-            #     '<span class="disabled">No editing options</span>'))
-        return [('Edit', menu)]
+            return (menubar.Literal, '')
+        return ('Edit', menu)
 
     ## @@: CONTINUE
 
@@ -566,7 +563,7 @@ class Main(SitePage):
                           % self.htmlEncode(req.field('commenting')))
         else:
             commenting = ''
-            
+
         if req.field('attaching', ''):
             attaching = ('<input type="hidden" name="attaching" value="%s">'
                          % self.htmlEncode(req.field('attaching')))
@@ -629,7 +626,7 @@ class Main(SitePage):
         %(changeLink)s
         %(mimeHelpLink)s
         <br>
-        
+
         %(editField)s
         <br>
 
@@ -761,7 +758,7 @@ class Main(SitePage):
         <textarea name="text" id="text" rows=20 cols=50
          style="width: 100%%">%(text)s</textarea>
         <input type="hidden" name="inputType" value="restTextarea"><br>
-        <span style="font-size: small">%(insertLink)s | %(markupHelpLink)s <i>(note: 
+        <span style="font-size: small">%(insertLink)s | %(markupHelpLink)s <i>(note:
         no HTML tags allowed)</i></span><br>
         <script type="text/javascript">
         function insertAtCursor(field, text) {
@@ -881,7 +878,7 @@ class Main(SitePage):
         Comments:<br>
         <textarea name="comments" style="width: 100%%" rows=3 cols=60 wrap="SOFT">%s</textarea>
         ''' % (src, self.htmlEncode(page.comments))
-        
+
     def writePreview(self):
         req = self.request()
         text = req.field('text', '')
@@ -978,7 +975,7 @@ class Main(SitePage):
         <span class="delete">Deleted from %s (present in %s)</span></p>
         ''' % (start, end, end, start))
         self.write(diff)
-    
+
     def writeChangeMimeType(self):
         req = self.request()
         self.write('''<p>

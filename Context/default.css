@@ -517,14 +517,23 @@ div.menuBar {
   background-color: #d0d0da;
   border: 2px solid;
   border-color: #f0f0fc #909097 #909097 #f0f0fc;
-  padding: 4px 2px 4px 2px;
+  padding: 4px 2px;
   text-align: left;
+}
+
+div.menuBar span.menuUser {
+  background-color: #f0f0fc;
+  color: #990000;
+  margin: 1px;
+  padding: 2px 6px;
+  text-align: right;
+  float: right;
 }
 
 div.menuBar span.menuTitle {
   color: #000099;
   margin: 1px;
-  padding: 2px 6px 2px 6px;
+  padding: 2px 6px;
 }
 
 div.menuBar a.menuButton {
@@ -534,7 +543,7 @@ div.menuBar a.menuButton {
   cursor: default;
   left: 0px;
   margin: 1px;
-  padding: 2px 6px 2px 6px;
+  padding: 2px 6px;
   position: relative;
   text-decoration: none;
   top: 0px;
@@ -561,7 +570,7 @@ div.menu {
   border: 2px solid;
   border-color: #f0f0fc #909097 #909097 #f0f0fc;
   left: 0px;
-  padding: 0px 1px 1px 0px;
+  padding: 0px 1px;
   position: absolute;
   top: 0px;
   visibility: hidden;
