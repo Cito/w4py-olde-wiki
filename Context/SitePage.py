@@ -73,6 +73,9 @@ class SitePage(CPage):
         elif isinstance(action, list):
             action = tuple(action)
 
+        if pageClass is None:
+            pageClass = self.pageClass()
+
         userID = self.user() and self.user().userID()
         cacheKey = (userID, action, pageClass)
         try:
@@ -241,7 +244,7 @@ class SitePage(CPage):
 
     def menuTitle(self):
         return (menubar.Literal, '<span class="menuTitle">%s:</span>'
-            % (self.wiki.config.getbool('blog') and 'Blog' or 'Wiki'))
+            % (self.wiki.config.getbool('blog', False) and 'Blog' or 'Wiki'))
 
     def menuGoto(self):
         menu = [
@@ -251,23 +254,22 @@ class SitePage(CPage):
             ('Wanted Pages', 'wanted'),
             ]
         if self.checkPermission(action='edit',
-                                pageClass='posting'):
-            menu.append(
-                ('Create ' + (self.wiki.config.getbool('blog') and 'Post' or 'Page'),
-                 "javascript:window.location='%s/' + "
-                 "escape(window.prompt('Enter the name "
-                 "for the new page').replace(/ /g, '-')) + "
-                 "'?_action_=edit'"
-                 % self.request().adapterName()))
+                pageClass='posting'):
+            menu.append(('Create %s' % (self.wiki.config.getbool('blog',
+                'False') and 'Post' or 'Page'),
+                "javascript:window.location='%s/' + "
+                "escape(window.prompt('Enter the name "
+                "for the new page').replace(/ /g, '-')) + "
+                "'?_action_=edit'"
+                % self.request().adapterName()))
         if self.user() and 'admin' in self.user().roles():
-            menu.append(('Admin', 'admin'))
+            menu.append(('Administration', 'admin'))
         menu.append((menubar.Separator, ''))
         if self.user():
             menu.append(('Logout', '?_actionLogout=yes'))
         else:
-            menu.append(('Login',
-                         'login?returnTo=%s'
-                         % self.request().environ()['REQUEST_URI'].split('?')[0]))
+            menu.append(('Login', 'login?returnTo=%s'
+                % self.request().environ()['REQUEST_URI'].split('?')[0]))
         return ('Goto', menu)
 
     def menuHelp(self):

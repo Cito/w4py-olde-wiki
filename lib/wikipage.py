@@ -474,13 +474,13 @@ class WikiPage(object):
 
     def _renderHTML(self):
         out = StringIO()
-        #related = self.relatedPages
-        related = []
-        # Suppress "this page has not yet been created":
-        if self.exists() or not related:
-            out.write(self._convertText(self.text, self.mimeType))
+        text = self._convertText(self.text, self.mimeType)
+        if isinstance(text, unicode):
+            text = text.encode('UTF-8')
+        out.write(text)
+        # related = self.relatedPages
+        related = [] # @@ no related pages for the time being...
         if related:
-            out.write(self._convertText(self.text, self.mimeType))
             out.write('<div class="related">\n')
             for page in related:
                 out.write('<div class="relatedEntry">\n')

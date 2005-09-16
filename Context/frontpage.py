@@ -28,7 +28,7 @@ class frontpage(SitePage):
     def getContent(self):
         result = []
         write = result.append
-        if self.wiki.config.getbool('blog'):
+        if self.wiki.config.getbool('blog', False):
             recent = [p for p in self.wiki.recentCreated()
                       if p.pageClass == 'posting'][:10]
             for page in recent:

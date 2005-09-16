@@ -524,7 +524,7 @@ div.menuBar {
 div.menuBar span.menuUser {
   background-color: #f0f0fc;
   color: #990000;
-  margin: 1px;
+  margin: 0px 2px;
   padding: 2px 6px;
   text-align: right;
   float: right;

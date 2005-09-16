@@ -69,29 +69,29 @@ class admin(SitePage):
         self.sendRedirectAndEnd('admin')
 
     def writeContent(self):
-        self.write('Commands:<br>\n')
+        self.write('<h3>Commands:</h3>\n')
         self.write('<form action="admin" method="POST">\n')
         for desc, name in [('Rebuild index', 'rebuildIndex'),
                            ('Rebuild/rerender all HTML', 'rebuildHTML'),
                            ('Rebuild static site', 'rebuildStatic'),
                            ('Recreate thumbnails', 'recreateThumbnails'),
                            ]:
-            self.write('<input type="submit" name="_action_%s" value="%s"><br>\n'
+            self.write('<p><input type="submit" name="_action_%s" value="%s"></p>\n'
                        % (name, desc))
         self.write('</form>')
         self.write('''
-        <script type="text/javascript">
-        function upload_submit() {
-          el = document.getElementById(\'upload_button\');
-          el.value = \'Uploading...\';
-          el.disabled = true;
-        }
-        </script>
-        <form action="admin" method="POST" enctype="multipart/form-data"
-        onSubmit="upload_submit()">
-        <input type="hidden" name="_action_" value="import_atom">
-        ATOM (or maybe RSS) feed to import:<br>
-        <input type="file" name="atom_upload"><br>
-        <input type="submit" id="upload_button" value="Upload">
-        </form>
+            <script type="text/javascript">
+            function upload_submit() {
+              el = document.getElementById(\'upload_button\');
+              el.value = \'Uploading...\';
+              el.disabled = true;
+            }
+            </script>
+            <form action="admin" method="POST" enctype="multipart/form-data"
+            onSubmit="upload_submit()">
+            <input type="hidden" name="_action_" value="import_atom">
+            <h4>ATOM (or maybe RSS) feed to import:</h4>
+            <p><input type="file" name="atom_upload">
+            <input type="submit" id="upload_button" value="Upload"></p>
+            </form>
         ''')
