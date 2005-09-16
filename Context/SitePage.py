@@ -85,7 +85,7 @@ class SitePage(CPage):
                 return
         except KeyError:
             pass
-        
+
         if pageClass is not None and pageClass != self.pageClass():
             config = self.wiki.config.merge_page_class(pageClass)
         else:
@@ -241,7 +241,7 @@ class SitePage(CPage):
         if self.checkPermission(action='edit',
                                 pageClass='posting'):
             menu.append(
-                ('Create Post',
+                ('Create ' + (self.wiki.config.getbool('blog') and 'Post' or 'Page'),
                  "javascript:window.location='%s/' + "
                  "escape(window.prompt('Enter the name for the new page').replace(/ /g, '-')) + "
                  "'?_action_=edit'"
@@ -252,8 +252,8 @@ class SitePage(CPage):
         if self.user():
             menu.append(('Logout', '?_actionLogout=yes'))
         else:
-            menu.append(('Login', 
-                         'login?returnTo=%s' 
+            menu.append(('Login',
+                         'login?returnTo=%s'
                          % self.request().environ()['REQUEST_URI'].split('?')[0]))
         return [('Goto', menu)]
 
@@ -268,7 +268,7 @@ class SitePage(CPage):
     def menuSearch(self):
         return [(menubar.Literal,
                  '&nbsp; &nbsp; <input type="text" class="menuSearch" name="search" value="click to search..." onFocus="if (this.value == \'click to search...\') {this.value = \'\'; this.style.color = \'#000000\';}" style="color: #666666">')]
-        
+
     def sendRedirectAndEnd(self, url):
         """
         This alternate version of sendRedirectAndEnd checks if we are
@@ -309,7 +309,7 @@ class SitePage(CPage):
             text = '<img src="%s" alt="help" title="%s" width=15 height=15 border=0>' % ('question_icon.gif', text)
         link = self.wiki.page(dest).link
         return self.popupLink(link, text)
-    
+
 
     def pageLink(self, name, action=None, args=None):
         args = args or {}
@@ -328,7 +328,7 @@ class SitePage(CPage):
         return url
 
     def secureHidden(self, name, value, timeout=None):
-        return ('<input type="hidden" name="%s" value="%s">' % 
+        return ('<input type="hidden" name="%s" value="%s">' %
                 (name,
                  self.htmlEncode(self._secureSigner.secureValue(value, timeout=timeout))))
 

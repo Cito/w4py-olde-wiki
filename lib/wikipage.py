@@ -73,7 +73,7 @@ class WikiPage(object):
         if not self.exists() and urlName is not None:
             self.urlName = urlName
             self.title = guessTitle(urlName)
-    
+
     def __repr__(self):
         text = '<WikiPage:%s ' % self.name
         if self.version:
@@ -127,7 +127,7 @@ class WikiPage(object):
     lastChangeLog = metaprop('lastChangeLog', '')
     lastChangeUser = metaprop('lastChangeUser', '')
     creationDate = metaprop(
-        'creationDate',
+        'creationDate', datetime.fromtimestamp(0),
         converter=lambda v: datetime.fromtimestamp(int(v)),
         unconverter=lambda v: str(int(v)))
     hasParseErrors = metabool('hasParseErrors', delete_if_default=True)
@@ -212,7 +212,7 @@ class WikiPage(object):
                 % atomID)
         self.metadata['atomid'] = value
         self.metadata.saveKeyNow('atomid')
-    
+
     def connections__set(self, connections):
         text = []
         for page, type in connections:
@@ -358,7 +358,8 @@ class WikiPage(object):
         return self._subWikiLinks(self._convertText(text, mimeType))
 
     def _subWikiLinks(self, text):
-        return self._wikiLinkRE.sub(self._subWikiLinksSubber, ' %s ' % text)
+        return self._wikiLinkRE.sub(self._subWikiLinksSubber, ' %s '
+            % text.decode('utf-8')).encode('utf-8')
 
     def _subWikiLinksSubber(self, match):
         name = match.group(2).split('.')[0]
@@ -370,7 +371,7 @@ class WikiPage(object):
                     + match.group(5))
         else:
             return '<span class="nowiki">%s%s%s%s?%s</span>' \
-                   % (match.group(4), 
+                   % (match.group(4),
                       match.group(1),
                       self.wiki.linkTo(match.group(2)),
                       match.group(3),
@@ -389,7 +390,7 @@ class WikiPage(object):
         else:
             # Don't include any link at all...
             return match.group(4)
-    
+
     def text__get(self):
         """
         The text of the page.  ReStructuredText is used, though the
@@ -547,7 +548,7 @@ class WikiPage(object):
     _checkErrorsRE = re.compile('class="system-message"')
     def _checkErrors(self, html):
         return self._checkErrorsRE.search(html)
-    
+
     def save(self):
         action = 'edit'
         if self._text is None and not self.exists():
@@ -682,7 +683,7 @@ class WikiPage(object):
             start = len(html)-length
             postfix = ''
         return (prefix + html[start:end] + postfix)
-        
+
 
     ############################################################
     ## Misc
