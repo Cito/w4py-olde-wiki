@@ -444,8 +444,9 @@ class Wiki(object):
         Returns the rssobject.RSS object.
         """
         rss = rssobject.RSS(self.syndicateRecentChangesFilename)
+        conf = self.config.get('rss', {})
         for attribute in rssobject.rssAttributes:
-            value = self.config.get('rss.%s' % attribute)
+            value = conf.get(attribute)
             if value:
                 setattr(rss, attribute, value)
         rss.link = 'http://%s%s' % (self.canonicalDomain, self.basehref)
@@ -459,11 +460,10 @@ class Wiki(object):
             return cmp(
                 rssobject.parseDate(item1.pubDate),
                 rssobject.parseDate(item2.pubDate))
-        rss = rssobject.RSS(self.syndicateNewPagesFilename,
-                            sortOrder=sorter)
+        rss = rssobject.RSS(self.syndicateNewPagesFilename, sortOrder=sorter)
         conf = self.config.get('rss', {})
         for attribute in rssobject.rssAttributes:
-            value = self.config.get(attribute)
+            value = conf.get(attribute)
             if value:
                 setattr(rss, attribute, value)
         rss.link = 'http://%s%s' % (self.canonicalDomain, self.basehref)

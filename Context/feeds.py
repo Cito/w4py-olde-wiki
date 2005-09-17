@@ -15,26 +15,17 @@ class feeds(SitePage):
             SitePage.writeHTML(self)
 
     def writeContent(self):
-        self.write('''
-        <p>
-        There are two feeds available:
-
-        <p>
-        <a href="%s">Recent Changes</a>: a feed of all changes
-        to the site.
-        </p>
-
-        <p>
-        <a href="%s">New posts</a>: a feed of all new posts
-        to the site.
-        </p>
-        '''
-                   % (self.wiki.linkTo('feeds/recent_changes.xml'),
-                      self.wiki.linkTo('feeds/new_pages.xml')))
+        self.write('<h4>There are two RSS feeds available:</h4>')
+        self.write('<p><a href="%s">Recent Changes</a>:'
+            ' a feed of all changes to the site.</p>\n'
+            '<p><a href="%s">New posts</a>: '
+            ' a feed of all new posts to the site.</p>'
+               % (self.wiki.linkTo('feeds/recent_changes.xml'),
+                  self.wiki.linkTo('feeds/new_pages.xml')))
 
     def writeFeed(self, name):
         self.response().setHeader('Content-type',
-                                  'application/rss+xml; charset=UTF-8')
+            'application/rss+xml; charset=UTF-8')
         if name == 'recent_changes.xml':
             f = open(self.wiki.syndicateRecentChangesFilename)
             self.write(f.read())
@@ -46,4 +37,4 @@ class feeds(SitePage):
         else:
             self.response().setHeader('Status', '404 Not Found')
             self.write('Not Found')
-        
+
