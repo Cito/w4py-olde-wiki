@@ -1,13 +1,13 @@
 """
 #############################################################################
-# PySourceColor.py 
-#############################################################################   
+# PySourceColor.py
+#############################################################################
 # A python source to colorized html converter.
 # Hacked by M.E.Farmer Jr. 2004
 # Python license
 #############################################################################
 # Now supports two types of output markup:
-# - HTML markup does not create w3c valid html, but it works on every 
+# - HTML markup does not create w3c valid html, but it works on every
 #   browser i've tried so far.(I.E.,Mozilla/Firefox,Opera,wxHTML).
 # - CSS markup is w3c valid html 4.01 strict,
 #   but will not render correctly everywhere!
@@ -15,7 +15,7 @@
 #############################################################################
 # Features:
 # -Can seperate and colorize:
-#    12 types of strings 
+#    12 types of strings
 #    2 comment types
 #    numbers
 #    operators
@@ -39,17 +39,17 @@
 #    css/html
 # -Any combination of four text styles:
 #    none (default)
-#    bold 
+#    bold
 #    italic
 #    underline
 #############################################################################
 # Example usage:
 #############################################################################
-# # import 
+# # import
 # import PySourceColor as psc
 # psc.convert('c:/Python22/PySourceColor.py', colors=psc.idle, show=1)
 #----------------------------------------------------------------------------
-# # from module import * 
+# # from module import *
 # from PySourceColor import *
 # convert('c:/Python22/Lib', colors=lite, markup="css")
 #----------------------------------------------------------------------------
@@ -87,14 +87,14 @@
 #     convert(sys.argv[1], './html.html',colors=new, markup='html', show=1)
 #############################################################################
 """
-__all__ = ['ERRORTOKEN','DECORATOR_NAME', 'DECORATOR', 'ARGS',           
+__all__ = ['ERRORTOKEN','DECORATOR_NAME', 'DECORATOR', 'ARGS',
            'NAME', 'NUMBER', 'OPERATOR', 'COMMENT',
-           'DOUBLECOMMENT', 'CLASS_NAME', 'DEF_NAME', 'KEYWORD',              
-           'SINGLEQUOTE','SINGLEQUOTE_R','SINGLEQUOTE_U','DOUBLEQUOTE',         
-           'DOUBLEQUOTE_R', 'DOUBLEQUOTE_U', 'TRIPLESINGLEQUOTE',    
+           'DOUBLECOMMENT', 'CLASS_NAME', 'DEF_NAME', 'KEYWORD',
+           'SINGLEQUOTE','SINGLEQUOTE_R','SINGLEQUOTE_U','DOUBLEQUOTE',
+           'DOUBLEQUOTE_R', 'DOUBLEQUOTE_U', 'TRIPLESINGLEQUOTE',
            'TRIPLESINGLEQUOTE_R', 'TRIPLESINGLEQUOTE_U', 'TRIPLEDOUBLEQUOTE',
            'TRIPLEDOUBLEQUOTE_R', 'TRIPLEDOUBLEQUOTE_U', 'PAGEBACKGROUND',
-           'null', 'mono', 'lite', 'dark','dark2', 'pythonwin','idle',  
+           'null', 'mono', 'lite', 'dark','dark2', 'pythonwin','idle',
            'viewcvs', 'Usage', 'cli', 'str2stdout', 'path2stdout', 'Parser',
            'str2file', 'str2html', 'path2file', 'path2html', 'convert',
            'walkdir', 'defaultColors', 'showpage']
@@ -103,7 +103,7 @@ __version__ = "1.9.9"
 __date__ = '27 November 2004'
 __author__ = "M.E.Farmer Jr."
 __credits__ = '''This was originally based on a python recipe
-submitted by Jürgen Hermann to ASPN.
+submitted by Juergen Hermann to ASPN.
 M.E.Farmer 2004
 Python license
 '''
@@ -130,7 +130,7 @@ ARGS = token.NT_OFFSET + 1
 DOUBLECOMMENT = token.NT_OFFSET + 2
 CLASS_NAME = token.NT_OFFSET + 3
 DEF_NAME = token.NT_OFFSET + 4
-KEYWORD = token.NT_OFFSET + 5 
+KEYWORD = token.NT_OFFSET + 5
 SINGLEQUOTE = token.NT_OFFSET + 6
 SINGLEQUOTE_R = token.NT_OFFSET + 7
 SINGLEQUOTE_U = token.NT_OFFSET + 8
@@ -239,7 +239,7 @@ mono = {
         TRIPLEDOUBLEQUOTE_U:    ('i','#000000',''),
         PAGEBACKGROUND:         '#FFFFFF'
         }
-    
+
 dark = {
         ERRORTOKEN:             ('','#FF8080',''),
         DECORATOR_NAME:         ('b','#FFBBAA',''),
@@ -350,7 +350,7 @@ idle = {
         TRIPLEDOUBLEQUOTE_U:    ('','#00AA00',''),
         PAGEBACKGROUND:         '#FFFFFF'
         }
-    
+
 pythonwin = {
         ERRORTOKEN:             ('','#FF8080',''),
         DECORATOR_NAME:         ('b','#303030',''),
@@ -442,7 +442,7 @@ def Usage():
         To output html to stdout use one of the following (-,stdout)
         Stdout can be used without stdin if you give a file as input.
     -c, --color
-        Optional-> null, mono, dark, dark2, lite, idle, pythonwin, viewcvs 
+        Optional-> null, mono, dark, dark2, lite, idle, pythonwin, viewcvs
             default: dark
     -s, --show
         Optional-> Show webpage after creation.
@@ -454,15 +454,15 @@ def Usage():
  Option usage:
   # Test and show pages
      python PySourceColor.py -t
-  # Test and only show profile results    
-     python PySAourceColor.py -t -p 
+  # Test and only show profile results
+     python PySAourceColor.py -t -p
   # Colorize all .py,.pyw files in cwdir you can also use: (.,cwd)
      python PySourceColor.py -i .
   # Using long options w/ =
      python PySourceColor.py --in=c:/myDir/my.py --color=lite --show
   # Using short options w/out =
      python PySourceColor.py -i c:/myDir/  -c idle -m css
-  # Using any mix 
+  # Using any mix
      python PySourceColor.py --in . -o=c:/myDir --show
 -----------------------------------------------------------------------------
  Stdio usage:
@@ -484,7 +484,7 @@ _____________________________________________________________________________
 def cli():
     """Handle command line args and redirections"""
     try:
-        # try to get command line args 
+        # try to get command line args
         opts, args = getopt.getopt(sys.argv[1:],
               "hsqtpi:o:c:m:",["help", "show", "quiet", "profile", "test",
               "input=", "output=", "color=", "markup="])
@@ -588,7 +588,7 @@ def _test(show=0, quiet=0):
         path2file(fi, '/tmp/dark2_css.html', dark2, show=show,
                   markup='css', quiet=quiet)
         path2file(fi, '/tmp/idle.html', idle, show=show, quiet=quiet)
-        path2file(fi, '/tmp/idle_css.html', idle, show=show, 
+        path2file(fi, '/tmp/idle_css.html', idle, show=show,
                   markup='css', quiet=quiet)
         path2file(fi, '/tmp/viewcvs.html', viewcvs, show=show, quiet=quiet)
         path2file(fi, '/tmp/viewcvs_css.html', viewcvs, show=show,
@@ -625,7 +625,7 @@ Just for giggles
    u'gdfgfdgfgfdgfgfgfdg'
    import os
    os.path.split(r'/tmp/null')
-   e = u'ügdg'+r"""ytryt="""
+   e = u'ugdg'+r"""ytryt="""
    g = """dfgfdgfdgdfgdfgdfgfdg"""+"ghgfhgfhghghh"
    # who said that
    d = 'fgfdgfdgfdgfdgfdgfgfgfgfdgfdgfgfdgfdgfdgfddffdgfdgfdg\
@@ -763,7 +763,7 @@ def walkdir(dir):
     GLOB_PATTERN = os.path.join(dir, "*.[p][y]*")
     pathlist = glob.glob(GLOB_PATTERN)
     # Now filter out all but py and pyw
-    filterlist = [x for x in pathlist 
+    filterlist = [x for x in pathlist
                         if x.endswith('.py')
                         or x.endswith('.pyw')]
     if filterlist != []:
@@ -846,7 +846,7 @@ class Parser:
             self._doSnippetStart()
 
         # Parse the source and write out the results.
-        ## Tokenize calls the __call__ 
+        ## Tokenize calls the __call__
         ## function for each token till done.
         try:
             tokenize.tokenize(text.readline, self)
@@ -861,7 +861,7 @@ class Parser:
         if self.addEnds:
             self._doPageEnd()
         else:
-            self._doSnippetEnd()   
+            self._doSnippetEnd()
 
     def __call__(self, toktype, toktext, (srow,scol), (erow,ecol), line):
         """Token handler. Order is important do not rearrange."""
@@ -910,13 +910,13 @@ class Parser:
                 self.classFlag = self.argFlag = 1
             elif toktext == 'def':
                 self.defFlag = self.argFlag = 1
-                
+
         # Maps the color if the last token set flags
         # class, def, decorator name
         elif self.classFlag or self.defFlag or self.decoratorFlag:
             if self.classFlag:
                 toktype = CLASS_NAME
-                self.classFlag = 0 
+                self.classFlag = 0
             elif self.defFlag:
                 toktype = DEF_NAME
                 self.defFlag = 0
@@ -940,16 +940,16 @@ class Parser:
             # DOUBLE QUOTE's
             elif (text[:1] == '"'):
                 toktype = DOUBLEQUOTE
-            elif (text[:2] == 'r"' or 
-                   text[:3] == 'ru"'): 
+            elif (text[:2] == 'r"' or
+                   text[:3] == 'ru"'):
                 toktype = DOUBLEQUOTE_R
             elif (text[:2] == 'u"' or
-                   text[:3] == 'ur"'): 
+                   text[:3] == 'ur"'):
                 toktype = DOUBLEQUOTE_U
             # TRIPLE SINGLE QUOTE's
             elif (text[:3] == "'''"):
                 toktype = TRIPLESINGLEQUOTE
-            elif (text[:4] == "r'''" or 
+            elif (text[:4] == "r'''" or
                    text[:5] == "ru'''"):
                 toktype = TRIPLESINGLEQUOTE_R
             elif (text[:4] == "u'''" or
@@ -970,7 +970,7 @@ class Parser:
             if toktext[:2] == "##":
                 toktype = DOUBLECOMMENT
 
-        # Seperate errors from decorators 
+        # Seperate errors from decorators
         elif toktype == token.ERRORTOKEN:
             # trap decorators...<py2.4
             if toktext == '@':
@@ -980,7 +980,7 @@ class Parser:
                 self.decoratorFlag = self.argFlag = 1
 
         # Seperate args from names
-        elif (self.argFlag == 2 and 
+        elif (self.argFlag == 2 and
               toktype == token.NAME and
               toktext != 'None'):
             toktype = ARGS
@@ -1001,7 +1001,7 @@ class Parser:
 
     ######################################################## markup selectors
 
-    def _doPageStart(self): 
+    def _doPageStart(self):
         getattr(self, '_do%sStart'%(self.markup))()
 
     def _doPageHeader(self):
@@ -1023,7 +1023,7 @@ class Parser:
         # get text foreground color, if not set to black
         color = self.colors.get(key, self.colors[NAME])[1]
         if color[:1] != '#':
-            color = '#000000' 
+            color = '#000000'
         return color
 
     def _getBackColor(self, key):
@@ -1048,7 +1048,7 @@ class Parser:
 
     ################################################### HTML markup functions
 
-    def _doHTMLStart(self): 
+    def _doHTMLStart(self):
         # Start of html page
         self.out.write('<!DOCTYPE html PUBLIC \
 "-//W3C//DTD HTML 4.01//EN">\n')
@@ -1179,7 +1179,7 @@ content="text/html;charset=iso-8859-1">\n')
 
     def _doCSSHeader(self):
         # Optional
-        self.out.write('<h3><span class="name">#%s %s</span></h3>\n'% 
+        self.out.write('<h3><span class="name">#%s %s</span></h3>\n'%
                         (self.title, time.ctime()))
 
     def _doCSSFooter(self):
