@@ -257,7 +257,7 @@ class SitePage(CPage):
 
     def menuGoto(self):
         menu = [
-            ('Home', './'),
+            ('Home', '/'),
             ('Recent Changes', 'recentchanges'),
             ('Orphaned Pages', 'orphans'),
             ('Wanted Pages', 'wanted'),
