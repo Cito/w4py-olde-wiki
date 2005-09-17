@@ -177,7 +177,7 @@ class SitePage(CPage):
                     all.append((name, v))
         return '&'.join([
             '%s=%s' % (q(name), q(value))
-            for name, value in args])
+            for name, value in all])
 
     ########################################
     ## Page layout
