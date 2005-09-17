@@ -287,7 +287,7 @@ class Main(SitePage):
             self.otherPage = self.wiki.page(self.page.name, version=otherVersion)
             self.setView('writeDiff')
             self.titlePrefix = ('Diff %s to %s of:' %
-                (self.page.version or 'Current', otherVersion or 'Current'))
+                (firstVersion or 'Current', otherVersion or 'Current'))
             self.writeHTML()
 
     def externalEdit(self):
@@ -1085,5 +1085,3 @@ class Main(SitePage):
         if url.startswith(baseLink):
             url = url[len(baseLink):]
         return 'href="%s"' % url
-
-
