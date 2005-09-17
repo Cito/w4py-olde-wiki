@@ -52,7 +52,7 @@ class login(SitePage):
             errors['username'] = 'That username is taken'
         if not name:
             errors['name'] = 'Your name is required'
-        if not email:
+        if not email or not '@' in email:
             errors['email'] = 'Your email address is required'
         if not password:
             errors['password'] = 'Please enter a password'
@@ -86,7 +86,7 @@ class login(SitePage):
 
     def writeSuccess(self):
         self.write('User created!')
-        
+
     def writeCreateForm(self, returnTo=''):
         values = {}
         values['action'] = self.servletLink('login')
@@ -107,7 +107,7 @@ class login(SitePage):
         <input type="hidden" name="save" value="yes">
         <input type="hidden" name="returnTo" value="%(returnTo)s">
         <table class="loginForm">
-        
+
         <tr>
         <td>Username:</td>
         <td>%(error_username)s
@@ -151,4 +151,4 @@ class login(SitePage):
         </table>
         '''
                    % values)
-    
+

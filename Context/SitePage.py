@@ -18,7 +18,7 @@ from TaskKit.Task import Task
 from TaskKit.Scheduler import Scheduler
 import time
 from lib import menubar
-from lib.common import pprint, dprint
+from lib.common import pprint, dprint, dedent
 from WebKit.HTTPExceptions import *
 
 __all__ = ['SitePage', 'pprint', 'dprint']
@@ -33,8 +33,7 @@ class SitePage(CPage):
         domain = self.request().environ().get('HTTP_HOST', 'SERVER_NAME')
         if ':' in domain:
             domain = domain.split(':')[0]
-        self.wiki = self.TheGlobalWiki.site(
-            domain=domain)
+        self.wiki = self.TheGlobalWiki.site(domain=domain)
         self.wiki.basehref = self.request().adapterName() + '/'
         #self.wiki.config.rssFilename = os.path.join(thisDir, 'rss.xml')
         self.suppressFooter = False
@@ -44,7 +43,7 @@ class SitePage(CPage):
         self.config = self.wiki.config.merge_page_class(self.pageClass())
         if self._adsenseID is None:
             SitePage._adsenseID = self.config.get('googleadsenseid', '')
-        self.assertPermission()
+        self.assertPermission('view', self.pageClass())
         self.setup()
 
     def setupEarly(self):
@@ -67,27 +66,25 @@ class SitePage(CPage):
 
     _cachedPermissions = {}
 
-    def assertPermission(self, action='view', pageClass=None):
+    def assertPermission(self, action='view', pageClass=None, page=None):
         if isinstance(action, (str, unicode)):
             action = (action,)
         elif isinstance(action, list):
             action = tuple(action)
 
-        if pageClass is None:
-            pageClass = self.pageClass()
-
         userID = self.user() and self.user().userID()
-        cacheKey = (userID, action, pageClass)
-        try:
-            result = self._cachedPermissions[cacheKey]
-            if result == 'auth':
-                raise HTTPAuthenticationRequired
-            elif result:
-                raise HTTPForbidden(result)
-            else:
-                return
-        except KeyError:
-            pass
+        if not page:
+            cacheKey = (userID, action, pageClass)
+            try:
+                result = self._cachedPermissions[cacheKey]
+                if result == 'auth':
+                    raise HTTPAuthenticationRequired
+                elif result:
+                    raise HTTPForbidden(result)
+                else:
+                    return
+            except KeyError:
+                pass
 
         if pageClass is not None and pageClass != self.pageClass():
             config = self.wiki.config.merge_page_class(pageClass)
@@ -99,31 +96,42 @@ class SitePage(CPage):
             if config_section:
                 break
         if not config_section:
-            self._cachedPermissions[cacheKey] = None
-            return
+            msg = ("You must configure the roles to %s this page"
+                   % actual_action)
+            if not page:
+                self._cachedPermissions[cacheKey] = msg
+            raise HTTPForbidden(msg)
         role = config_section.get('requiredrole', 'none').strip().lower()
         role = filter(None, role.split())
         if not role or role == ['none']:
-            self._cachedPermissions[cacheKey] = None
+            if not page:
+                self._cachedPermissions[cacheKey] = None
             return
         if not self.user():
-            self._cachedPermissions[cacheKey] = 'auth'
+            if not page:
+                self._cachedPermissions[cacheKey] = 'auth'
             raise HTTPAuthenticationRequired
         if 'user' in role:
-            self._cachedPermissions[cacheKey] = None
+            if not page:
+                self._cachedPermissions[cacheKey] = None
             return
         user_roles = self.user().roles()
         if userID:
-            authorID = self.authorUser() and self.authorUser().userID()
+            if page:
+                authorID = page.authorUser and page.authorUser.userID()
+            else:
+                authorID = self.authorUser() and self.authorUser().userID()
             if userID == authorID:
                 user_roles.append('author')
         for has_role in user_roles:
             if has_role in role:
-                self._cachedPermissions[cacheKey] = None
+                if not page:
+                    self._cachedPermissions[cacheKey] = None
                 return
         msg = ("You must have the role <b>%s</b> to %s this page"
                % (' or '.join(role), actual_action))
-        self._cachedPermissions[cacheKey] = msg
+        if not page:
+            self._cachedPermissions[cacheKey] = msg
         raise HTTPForbidden(msg)
 
     ########################################
@@ -134,7 +142,7 @@ class SitePage(CPage):
         return False
 
     def pageClass(self):
-        return 'page'
+        return 'posting'
 
     def authorUser(self):
         return None
@@ -215,21 +223,22 @@ class SitePage(CPage):
     def writeGoogleAds(self):
         if not self._adsenseID:
             return
-        self.write('''<script type="text/javascript"><!--
-        google_ad_client = "%s";
-        google_ad_width = 120;
-        google_ad_height = 600;
-        google_ad_format = "120x600_as";
-        google_ad_channel ="";
-        google_color_border = "336699";
-        google_color_bg = "FFFFFF";
-        google_color_link = "0000FF";
-        google_color_url = "008000";
-        google_color_text = "000000";
-        //--></script><table align="right" cellspacing=0 border=0 cellpadding=0><tr><td>
-        <script type="text/javascript"
-          src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-        </script></td></tr></table>''' % self._adsenseID)
+        self.write(dedent('''\
+            <script type="text/javascript"><!--
+            google_ad_client = "%s";
+            google_ad_width = 120;
+            google_ad_height = 600;
+            google_ad_format = "120x600_as";
+            google_ad_channel ="";
+            google_color_border = "336699";
+            google_color_bg = "FFFFFF";
+            google_color_link = "0000FF";
+            google_color_url = "008000";
+            google_color_text = "000000";
+            //--></script><table align="right" cellspacing=0 border=0 cellpadding=0><tr><td>
+            <script type="text/javascript"
+              src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+            </script></td></tr></table>''' % self._adsenseID))
 
     def menus(self):
         return ['User', 'Title', 'Goto', 'Help', 'Search']
@@ -321,14 +330,19 @@ class SitePage(CPage):
         return format_date(date, nonbreaking=nonbreaking)
 
     def popupLink(self, link, text):
-        return '<a href="%s" onClick="window.open(\'%s\',\'width=400,height=500,location=yes,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no\'); return false">%s</a>' % (link, link, text)
+        return ('<a href="%s" onClick="'
+            "window.open('%s','"
+            'width="400",height="500",location=yes,menubar=no,'
+            'resizable=yes,scrollbars=yes,status=no,toolbar=no'
+            "'); return false"
+            '">%s</a>' % (link, link, text))
 
     def helpLink(self, dest, text, useImage=True):
         if useImage:
-            text = '<img src="%s" alt="help" title="%s" width=15 height=15 border=0>' % ('question_icon.gif', text)
+            text = ('<img src="question_icon.gif" alt="help" title="%s"'
+                ' width="15" height="15" border="0">' % text)
         link = self.wiki.page(dest).link
         return self.popupLink(link, text)
-
 
     def pageLink(self, name, action=None, args=None):
         args = args or {}
@@ -348,8 +362,8 @@ class SitePage(CPage):
 
     def secureHidden(self, name, value, timeout=None):
         return ('<input type="hidden" name="%s" value="%s">' %
-                (name,
-                 self.htmlEncode(self._secureSigner.secureValue(value, timeout=timeout))))
+            (name,
+             self.htmlEncode(self._secureSigner.secureValue(value, timeout=timeout))))
 
     def getSecureHidden(self, name):
         return self._secureSigner.parseSecure(self.request().field(name))

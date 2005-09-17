@@ -54,7 +54,7 @@ class WikiPage(object):
     __metaclass__ = propertymeta.MakeProperties
 
     def __init__(self, wiki, dir, pageName,
-                 urlName=None, version=None):
+        urlName=None, version=None):
         """
         Each page has a name, which is a unique identifier, for example
         ``"FrontPage"``, which identifies the page in the URL and
@@ -113,7 +113,7 @@ class WikiPage(object):
             return datetime.fromtimestamp(int(timestamp))
 
     def urlName__get(self):
-        urlName = self.metadata.get('urlname', '')
+        urlName = self.metadata.get('urlname', '').lower()
         if urlName:
             return urlName
         elif canonicalName(self.title) == self.name:
@@ -132,26 +132,23 @@ class WikiPage(object):
         unconverter=lambda v: str(int(v)))
     hasParseErrors = metabool('hasParseErrors', delete_if_default=True)
     mimeType = metaprop('mimetype', default='text/x-restructured-text',
-                        converter=lambda v: v.lower())
+        converter=lambda v: v.lower())
     width = metaprop('width', default=None, converter=int)
     height = metaprop('height', default=None, converter=int)
     comments = metaprop('comments', '')
     originalFilename = metaprop('originalfilename')
     hidden = metabool('hidden')
     distributionOriginal = metabool('distributionoriginal',
-                                    default=False,
-                                    delete_if_default=True)
+        default=False, delete_if_default=True)
     relatedSummaries = metabool('relatedSummaries')
     relatedShowDates = metabool('relatedShowDates', default=True)
     relatedDateLimit = metaprop(
         'relateddatelimit',
         converter=lambda v: v and timedelta(seconds=int(v)),
         unconverter=lambda v: v and v.seconds)
-    relatedEntryLimit = metaprop('relatedentrylimit', 0,
-                                 converter=int)
+    relatedEntryLimit = metaprop('relatedentrylimit', 0, converter=int)
     relatedSortField = metaprop('relatedsortfield', 'creationDate')
-    authorUserID = metaprop('authoruserid', default=None,
-                            converter=int)
+    authorUserID = metaprop('authoruserid', default=None, converter=int)
     # These are mostly for imported pages:
     authorName = metaprop('author', None)
     authorURL = metaprop('authorurl', None)
@@ -161,7 +158,10 @@ class WikiPage(object):
         id = self.authorUserID
         if not id:
             return None
-        return user.manager.userForUserID(self.authorUserID)
+        try:
+            return user.manager.userForUserID(id)
+        except:
+            return None
 
     def authorUser__set(self, author):
         if author:
@@ -170,7 +170,7 @@ class WikiPage(object):
             self.authorUserID = None
 
     def pageClass__get(self):
-        return self.metadata.get('pageclass', 'page')
+        return self.metadata.get('pageclass', 'posting')
 
     def pageClass__set(self, value):
         self.metadata['pageclass'] = value
@@ -597,11 +597,62 @@ class WikiPage(object):
         version = 1
         while os.path.exists('%s.%i.txt' % (self.archiveBasePath, version)):
             version += 1
-        for ext in ['.txt', '.meta', '.html', '.thumb.jpg',
-                    '.summary.html']:
+        exts =  ['.txt', '.meta', '.html', '.thumb.jpg', '.summary.html']
+        for ext in exts:
             if os.path.exists(self.basePath + ext):
                 shutil.copyfile(self.basePath + ext,
-                                '%s.%i%s' % (self.archiveBasePath, version, ext))
+                    '%s.%i%s' % (self.archiveBasePath, version, ext))
+
+    def delete(self, versions=None):
+        """
+        Delete (archived) versions of this page.
+        """
+        dir = os.path.dirname(self.archiveBasePath)
+        maxVersion = 1
+        while os.path.exists('%s.%i.txt' % (self.archiveBasePath, maxVersion)):
+            maxVersion += 1
+        if not versions:
+            versions = [maxVersion-1]
+        users = {}
+        exts =  ['.txt', '.meta', '.html', '.thumb.jpg', '.summary.html']
+        oldVersion = newVersion = 1
+        while oldVersion < maxVersion:
+            if oldVersion in versions:
+                username = self.__class__(self.wiki, self.dir, self.name,
+                    version=oldVersion).lastChangeUser
+                if username not in users:
+                    users[username] = True
+                for ext in exts:
+                    try:
+                        os.remove('%s.%i%s' % (self.archiveBasePath, oldVersion, ext))
+                    except:
+                        pass
+                newVersion -= 1
+            else:
+                if newVersion != oldVersion:
+                    for ext in exts:
+                        try:
+                            os.rename('%s.%i%s' % (self.archiveBasePath, oldVersion, ext),
+                                '%s.%i%s' % (self.archiveBasePath, newVersion, ext))
+                        except:
+                            pass
+            newVersion += 1
+            oldVersion += 1
+        if newVersion == 1:
+            for ext in exts:
+                try:
+                    os.remove(os.path.join(self.dir, self.name + ext))
+                except:
+                    pass
+        elif maxVersion-1 in versions:
+            for ext in exts:
+                try:
+                    shutil.copyfile('%s.%i%s' % (self.archiveBasePath, newVersion-1, ext),
+                        os.path.join(self.dir, self.name + ext))
+                except:
+                    pass
+        return users.keys()
+
 
     ############################################################
     ## Linking and relations
@@ -683,7 +734,6 @@ class WikiPage(object):
             start = len(html)-length
             postfix = ''
         return (prefix + html[start:end] + postfix)
-
 
     ############################################################
     ## Misc

@@ -12,7 +12,7 @@ pprint = pprint_module.pprint
 import os
 
 __all__ = ['canonicalName', 'htmlEncode', 'guessURLName', 'dprint',
-           'pprint', 'guessTitle']
+           'pprint', 'guessTitle', 'dedent']
 
 _canonicalNameRE = re.compile(r'[^a-z0-9]')
 def canonicalName(name):
@@ -34,7 +34,6 @@ def guessTitle(name):
 def htmlEncode(val, cgiEscape=cgi.escape):
     return cgiEscape(val, 1)
 
-
 def dprint(*args, **kw):
     caller_frame = inspect.stack()[1]
     caller_name = caller_frame[3]
@@ -53,3 +52,23 @@ def dprint(*args, **kw):
     items.sort()
     for name, value in items:
         print name, pprint_module.pformat(value)
+
+try:
+    from textwrap import dedent
+except ImportError: # Fallback for Python < 2.3
+    def dedent(t):
+        lines = text.expandtabs().split('\n')
+        margin = None
+        for line in lines:
+            content = line.lstrip()
+            if not content:
+                continue
+            indent = len(line) - len(content)
+            if margin is None:
+                margin = indent
+            else:
+                margin = min(margin, indent)
+        if margin is not None and margin > 0:
+            for i in range(len(lines)):
+                lines[i] = lines[i][margin:]
+        return '\n'.join(lines)

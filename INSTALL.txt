@@ -1,50 +1,85 @@
 How to install this thing:
 
-Get the entire Subversion repository::
+Export (or checkout) the following parts of the Subversion repository::
 
-    svn co svn://w4py.org
+    mkdir ~/w4py; cd ~/w4py
+    svn export http://svn.w4py.org/Webware/trunk Webware
+    svn export http://svn.w4py.org/Component/trunk/Component Webware/Component
+    svn export http://svn.w4py.org/LoginKit/trunk/LoginKit Webware/LoginKit
+    svn export http://svn.w4py.org/Wiki/trunk Wiki
 
-Get Webware CVS::
+Run the Webware installer::
 
-    cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/webware login
- 
-    cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/webware co Webware
+    cd ~/w4py/Webware
+    ./install.py
 
-I'll assume these were put in ``~/w4py.org`` and ``~/Webware``
+Set up a new WebKit working directory::
 
-Set up a new working directory::
+    ~/w4py/Webware/bin/MakeAppWorkDir.py \
+        -c Wiki -d ~/w4py/Wiki/Context \
+        -l ~/w4py/Wiki ~/WikiWorkDir
 
-    ~/Webware/bin/MakeAppWorkDir.py -c Wiki -d ~/w4py.org/Wiki/Context \
-        -l ~/w4py.org/Wiki ~/WikiWorkDir
+Copy the standard ``wiki.ini`` file to the working directory::
 
-You may want to edit ``wiki.ini``, particularly in ``[wiki]`` the
-``basepath`` setting, which is where all your Wikis will be stored.
-This should be writable by the AppServer.  Also, for any domains there
-should be a section, like ``[localhost]`` -- if you have multiple
-domains that should serve the same wiki, use::
+    cp ~/w4py/Wiki/wiki.ini ~/WikiWorkDir/Configs
 
-    [localhost]
-    alias = canonical.domain.name
+Customize ``~/WikiWorkDir/Configs/wiki.ini`` to fit your needs.
+The ``basepath`` setting in the global section is where all your Wikis
+will be stored. This should be writable by the AppServer.
+Also, for any domains there should be a section, like ``[vhost(localhost)]``
+-- if you have multiple domains that should serve the same wiki, use::
 
-Also, you'll need to install htmlarea, from: 
-http://prdownloads.sourceforge.net/itools-htmlarea/HTMLArea-3.0-beta.zip?download
+    [vhost(localhost)]
+    canonical = canonical.domain.name
 
-Or check here for the latest version: 
+You must also customize the configuration files used by Webware.
+Particularly, in ``~/WikiWorkDir/Configs/Application.config``, set::
+
+    ExtraPathInfo = True
+
+Also, set ``ErrorEmailServer`` and ``ErrorEmailHeaders``.
+remove all Webware contexts which you don't want to use.
+You shoudl also customize the app server using the configuration file
+``~/WikiWorkDir/Configs/AppServer.config``.
+
+There are several 3rd party tools you need to install:
+
+First, you'll need to install htmlarea. You can download it here:
+http://prdownloads.sourceforge.net/itools-htmlarea/HTMLArea-3.0-rc1.zip?download
+
+Or check here for the latest version:
 http://prdownloads.sourceforge.net/itools-htmlarea/
-
-Or maybe check out CVS:
-http://sourceforge.net/cvs/?group_id=69750
+http://www.dynarch.com/projects/htmlarea/
 
 Once you've downloaded and unzipped, move it into
-``w4py.org/Wiki/Context/htmlarea``.  Also, rename the file
-``index.html`` to ``htmlarea_index.html`` (``index.html`` will serve
-as an unfortunate catch-all if you don't do this).
+``w4py.org/Wiki/Context/htmlarea``.  Rename the file ``index.html``
+to ``htmlarea_index.html`` (``index.html`` will serve as an unfortunate
+catch-all if you don't do this).
 
-Also install utidy from: http://utidylib.sourceforge.net/ , which in
-turn requires libtidy and the Python ctypes library.  These are
-available on Debian as ``libtidy0`` and ``python-ctypes`` (for other
-OSes you are on your own).
+Second, you need to install utidy (http://utidylib.berlios.de),
+which in turn requires tidy (http://tidy.sourceforge.net)
+and the Python ctypes library (http://starship.python.net/crew/theller/ctypes/).
+
+Third, you need the docutils package (http://docutils.sourceforge.net)
+for creating HTML from reStructuredText. You can download it here:
+http://prdownloads.sourceforge.net/docutils/docutils-0.3.9.tar.gz?download
 
 Then you should be all set!
 
-  -- Ian Bicking 26 Apr 2004
+How to run this thing:
+
+Start the app server::
+
+    cd ~/WikiWorkDir
+    ./AppServer
+
+With the default settings in ``~/WikiWorkDir/Configs/AppServer.config``
+You should now be able to access the Wiki at
+http://localhost:8080
+
+If you want to use Apache or another web server see also:
+http://www.webwareforpython.org/Webware/WebKit/Docs/InstallGuide.html
+http://wiki.webwareforpython.org/webserverintegration.html
+
+  -- Ian Bicking, 26 Apr 2004
+  -- Updated by Christoph Zwerschke, 16 Sep 2005

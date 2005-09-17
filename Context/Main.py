@@ -12,6 +12,7 @@ import os
 import mimetypes
 import datetime
 from lib.format_date import format_date_relative
+from lib.common import dedent
 
 def test(val, a, b=''):
     if val:
@@ -40,7 +41,12 @@ class Main(SitePage):
         version = self.getVersion()
         self.page = self.wiki.page(name, version=version)
         if name != self.page.urlName:
-            link = self.page.link + '?' + self.encodeArgs()
+            link = self.page.link
+            if '?' in link:
+                link += '&'
+            else:
+                link += '?'
+            link += self.encodeArgs()
             self.sendRedirectAndEnd(link)
         self.titlePrefix = ''
         if ext == '.thumb.jpg':
@@ -94,10 +100,13 @@ class Main(SitePage):
         version = self.request().field('version', None) or None
         if isinstance(version, (list, tuple)):
             version = version[0]
-        if not version:
-            return None
-        else:
-            return int(version)
+        try:
+            version = int(version)
+            if version < 1:
+                raise ValueError
+        except:
+            version = None
+        return version
 
     def cleanInput(self, inputType, text):
         if text.startswith('base64,'):
@@ -268,12 +277,18 @@ class Main(SitePage):
         self.writeHTML()
 
     def diff(self):
-        self.assertPermission(['diff', 'history', 'view'])
-        otherVersion = self.request().field('otherVersion', None) or None
-        self.otherPage = self.wiki.page(self.page.name, version=otherVersion)
-        self.setView('writeDiff')
-        self.titlePrefix = 'Diff %s to %s of:' % (self.page.version or 'Current', otherVersion or 'Current')
-        self.writeHTML()
+        if self.request().field('delete', None):
+            self.history()
+        else:
+            self.assertPermission(['diff', 'history', 'view'])
+            firstVersion = self.request().field('firstVersion', None) or None
+            self.firstPage = self.wiki.page(self.page.name, version=firstVersion)
+            otherVersion = self.request().field('otherVersion', None) or None
+            self.otherPage = self.wiki.page(self.page.name, version=otherVersion)
+            self.setView('writeDiff')
+            self.titlePrefix = ('Diff %s to %s of:' %
+                (self.page.version or 'Current', otherVersion or 'Current'))
+            self.writeHTML()
 
     def externalEdit(self):
         self.assertEdit()
@@ -553,7 +568,8 @@ class Main(SitePage):
             changeLink = ''
         else:
             changeLink = '<a href="%s" class="button">change...</a>' % \
-                         self.pageLink(self.page.name + ".html", action='changeMimeType', args={'commenting': req.field('commenting', None)})
+                self.pageLink(self.page.name + ".html", action='changeMimeType',
+                args={'commenting': req.field('commenting', None)})
         if self.canPreview(self.page, mimeType):
             previewButton = '<input type="submit" name="_action_preview" value="Preview">'
         else:
@@ -580,76 +596,78 @@ class Main(SitePage):
                 hiddenChecked = ' checked'
             else:
                 hiddenChecked = ''
-            hidden = '''<label for="hide_check">&nbsp; Hide:
-            <input type="checkbox" name="hidden" id="hide_check"%s>
-            %s
-            </label>''' % (
-                hiddenChecked,
-                self.helpLink('hiddenpages', 'Help on hidden pages'))
+            hidden = ('<label for="hide_check">&nbsp; Hide: '
+                '<input type="checkbox" name="hidden" id="hide_check"%s>'
+                '%s</label>' % (hiddenChecked,
+                self.helpLink('hiddenpages', 'Help on hidden pages')))
         else:
             hidden = ''
         action = self.link()
 
         if not self.user():
             name, email, url = map(self.htmlEncode, self.cookieAuthorInfo())
-            metaFields = '''<table>
-            <tr><td><label for="authorName">Your name:</label></td>
-            <td><input type="text" name="authorName" value="%s" size=20
-            id="authorName">
-            </td></tr>
-            <tr><td><label for="authorEmail">Your email:</label></td>
-            <td><input type="text" name="authorEmail" value="%s" size=20
-            id="authorEmail"> <small><i>(will not be displayed)</i></small>
-            </td></tr>
-            <tr><td><label for="authorURL">URL:</label></td>
-            <td><input type="text" name="authorURL" value="%s" size=30
-            id="authorURL">
-            </td></tr>
-            </table>''' % (name, email, url)
+            metaFields = dedent('''\
+                <table>
+                <tr><td><label for="authorName">Your name:</label></td>
+                <td><input type="text" name="authorName" value="%s" size=20
+                id="authorName">
+                </td></tr>
+                <tr><td><label for="authorEmail">Your email:</label></td>
+                <td><input type="text" name="authorEmail" value="%s" size=20
+                id="authorEmail">
+                <small><i>(will not be displayed)</i></small>
+                </td></tr>
+                <tr><td><label for="authorURL">URL:</label></td>
+                <td><input type="text" name="authorURL" value="%s" size=30
+                id="authorURL">
+                </td></tr>
+                </table>''' % (name, email, url))
         else:
             metaFields = ''
         if self.page.exists():
-            describe = '''Describe your changes:<br>
-            <input type="text" name="changeLog" size=30 style="width: 100%%" value="%(htmlLog)s"><br>
-            ''' % locals()
+            describe = dedent('''\
+                Describe your changes:<br>
+                <input type="text" name="changeLog" size=30
+                style="width: 100%%" value="%(htmlLog)s"><br>
+                ''' % locals())
         else:
             describe = ''
+        self.write(dedent('''\
+            <form action="%(action)s" method="POST" enctype="multipart/form-data" name="f">
+            <input type="text" name="title" value="%(htmlTitle)s" size=30 style="font-size: large">
+            <input type="hidden" name="mimeType" value="%(mimeType)s">
+            %(commenting)s
+            %(attaching)s
+            MIME type:
+            <tt>%(mimeType)s</tt>
+            %(changeLink)s
+            %(mimeHelpLink)s
+            <br>
 
+            %(editField)s
+            <br>
 
-        self.write('''<form action="%(action)s" method="POST" enctype="multipart/form-data" name="f">
-        <input type="text" name="title" value="%(htmlTitle)s" size=30 style="font-size: large">
-        <input type="hidden" name="mimeType" value="%(mimeType)s">
-        %(commenting)s
-        %(attaching)s
-        MIME type:
-        <tt>%(mimeType)s</tt>
-        %(changeLink)s
-        %(mimeHelpLink)s
-        <br>
+            %(describe)s
 
-        %(editField)s
-        <br>
-
-        %(describe)s
-
-        <script type="text/javascript">
-        function relatedAdd(name, mimeType, title) {
-            var field = document.forms.f.elements.keywords;
-            if (field.value) {
-                field.value += ", ";
+            <script type="text/javascript">
+            function relatedAdd(name, mimeType, title) {
+                var field = document.forms.f.elements.keywords;
+                if (field.value) {
+                    field.value += ", ";
+                }
+                field.value += name;
             }
-            field.value += name;
-        }
-        </script>
+            </script>
 
-        %(hidden)s<br>
-        %(metaFields)s
-        ''' % locals())
-        self.write('''
-        <input type="submit" name="_action_save" value="Save">
-        %(previewButton)s
-        <input type="submit" name="_action_cancel" value="Cancel">
-        </form>''' % locals())
+            %(hidden)s<br>
+            %(metaFields)s
+            ''' % locals()))
+        self.write(dedent('''\
+            <input type="submit" name="_action_save" value="Save">
+            %(previewButton)s
+            <input type="submit" name="_action_cancel" value="Cancel">
+            </form>
+            ''' % locals()))
         if req.field('commenting', None):
             commentPage = self.wiki.page(req.field('commenting'))
             self.write('<h2>Commenting on:</h2>\n')
@@ -692,41 +710,41 @@ class Main(SitePage):
             relatedDateLimit = p.relatedDateLimit.seconds / 60 / 60 / 24
         else:
             relatedDateLimit = ''
-        self.write('''
-        <b>Summarizing options:</b> %(summarizingHelp)s<br>
-        <input type="hidden" name="relatedOptions" value="yes">
-        <label for="relatedSummaries">Summaries only:
-        <input type="checkbox" id="relatedSummaries"
-        name="relatedSummaries"%(relatedSummariesCheck)s>
-        </label>
-        &nbsp;
-        <label for="relatedShowDates">Show dates on entries:
-        <input type="checkbox" id="relatedShowDates"
-        name="relatedShowDates"%(relatedShowDatesCheck)s>
-        </label>
-        &nbsp;
-        Use date:
-        <select name="relatedSortField">
-        <option value="creationDate"%(creationDateSelected)s>Creation date</option>
-        <option value="modifiedDate"%(modifiedDateSelected)s>Modified date</option>
-        </select>
-        <br>
+        self.write(dedent('''\
+            <b>Summarizing options:</b> %(summarizingHelp)s<br>
+            <input type="hidden" name="relatedOptions" value="yes">
+            <label for="relatedSummaries">Summaries only:
+            <input type="checkbox" id="relatedSummaries"
+            name="relatedSummaries"%(relatedSummariesCheck)s>
+            </label>
+            &nbsp;
+            <label for="relatedShowDates">Show dates on entries:
+            <input type="checkbox" id="relatedShowDates"
+            name="relatedShowDates"%(relatedShowDatesCheck)s>
+            </label>
+            &nbsp;
+            Use date:
+            <select name="relatedSortField">
+            <option value="creationDate"%(creationDateSelected)s>Creation date</option>
+            <option value="modifiedDate"%(modifiedDateSelected)s>Modified date</option>
+            </select>
+            <br>
 
-        Date limit:
-        <input type="text" name="relatedDateLimitDays" value="%(relatedDateLimit)s" size=3>
-        <i style="font-size: small">days</i>
-        &nbsp;
-        Item limit:
-        <input type="text" name="relatedEntryLimit" value="%(relatedEntryLimit)s" size=3><br>
-        ''' % {
-            'summarizingHelp': self.helpLink('wikisummarizing', 'Help on the Wiki\'s summarizing'),
-            'relatedSummariesCheck': self.test(p.relatedSummaries, ' checked', ''),
-            'relatedShowDatesCheck': self.test(p.relatedShowDates, ' checked', ''),
-            'creationDateSelected': self.test(p.relatedSortField == 'creationDate', ' selected', ''),
-            'modifiedDateSelected': self.test(p.relatedSortField == 'modifiedDate', ' selected', ''),
-            'relatedDateLimit': relatedDateLimit,
-            'relatedEntryLimit': p.relatedEntryLimit or '',
-            })
+            Date limit:
+            <input type="text" name="relatedDateLimitDays" value="%(relatedDateLimit)s" size=3>
+            <i style="font-size: small">days</i>
+            &nbsp;
+            Item limit:
+            <input type="text" name="relatedEntryLimit" value="%(relatedEntryLimit)s" size=3><br>
+            ''' % {
+                'summarizingHelp': self.helpLink('wikisummarizing', 'Help on the Wiki\'s summarizing'),
+                'relatedSummariesCheck': self.test(p.relatedSummaries, ' checked', ''),
+                'relatedShowDatesCheck': self.test(p.relatedShowDates, ' checked', ''),
+                'creationDateSelected': self.test(p.relatedSortField == 'creationDate', ' selected', ''),
+                'modifiedDateSelected': self.test(p.relatedSortField == 'modifiedDate', ' selected', ''),
+                'relatedDateLimit': relatedDateLimit,
+                'relatedEntryLimit': p.relatedEntryLimit or '',
+                }))
 
     def canPreview(self, page, mimeType):
         return mimeType.startswith('text/')
@@ -754,48 +772,49 @@ class Main(SitePage):
         text = req.field('text', page.text)
         # Code for selection from:
         # http://www.alexking.org/blog/2003/06/02/inserting-at-the-cursor-using-javascript/
-        return '''
-        <textarea name="text" id="text" rows=20 cols=50
-         style="width: 100%%">%(text)s</textarea>
-        <input type="hidden" name="inputType" value="restTextarea"><br>
-        <span style="font-size: small">%(insertLink)s | %(markupHelpLink)s <i>(note:
-        no HTML tags allowed)</i></span><br>
-        <script type="text/javascript">
-        function insertAtCursor(field, text) {
-            // IE:
-            if (document.selection) {
-                field.focus();
-                var sel = document.selection.createRange();
-                sel.text = text;
+        text = self.htmlEncode(text)
+        markupHelpLink = str(self.helpLink('quickresthelp',
+            '   help on markup', useImage=False))
+        insertLink = self.popupLink('quickfind?callParent=restlink',
+            'Insert wiki link')
+        return dedent('''\n
+            <textarea name="text" id="text" rows=20 cols=50
+             style="width: 100%%">%(text)s</textarea>
+            <input type="hidden" name="inputType" value="restTextarea"><br>
+            <span style="font-size: small">%(insertLink)s | %(markupHelpLink)s <i>(note:
+            no HTML tags allowed)</i></span><br>
+            <script type="text/javascript">
+            function insertAtCursor(field, text) {
+                // IE:
+                if (document.selection) {
+                    field.focus();
+                    var sel = document.selection.createRange();
+                    sel.text = text;
+                }
+                // Mozilla:
+                else if (field.selectionStart
+                         || field.selectionStart == "0") {
+                    var startPos = field.selectionStart;
+                    var endPos = field.selectionEnd;
+                    field.value = field.value.substring(0, startPos)
+                        + text
+                        + field.value.substring(endPos, field.value.length);
+                } else {
+                    field.value += text;
+                }
             }
-            // Mozilla:
-            else if (field.selectionStart
-                     || field.selectionStart == "0") {
-                var startPos = field.selectionStart;
-                var endPos = field.selectionEnd;
-                field.value = field.value.substring(0, startPos)
-                    + text
-                    + field.value.substring(endPos, field.value.length);
-            } else {
-                field.value += text;
+            function restlink(name, mimeType, title) {
+                var textarea = document.getElementById("text");
+                var link;
+                if (title.indexOf(" ") == -1) {
+                    link = title + "_";
+                } else {
+                    link = "`" + title + "`_";
+                }
+                insertAtCursor(textarea, link);
             }
-        }
-        function restlink(name, mimeType, title) {
-            var textarea = document.getElementById("text");
-            var link;
-            if (title.indexOf(" ") == -1) {
-                link = title + "_";
-            } else {
-                link = "`" + title + "`_";
-            }
-            insertAtCursor(textarea, link);
-        }
-        </script>
-        ''' % {'markupHelpLink': self.helpLink('quickresthelp', 'help on markup', useImage=False),
-               'text': self.htmlEncode(text),
-               'insertLink': self.popupLink('quickfind?callParent=restlink', 'Insert wiki link'),
-               }
-
+            </script>
+            ''' % locals())
 
     def editFieldHTML(self, page):
         req = self.request()
@@ -805,61 +824,61 @@ class Main(SitePage):
         #            % (wikipage.canonicalName(self.user().name()),
         #               self.user().name(),
         #               datetime.datetime.now().strftime('%d %b \'%y')))
-        return '''
-        <script type="text/javascript">
-            _editor_url = '/htmlarea';
-            _editor_lang = 'en';
-        </script>
-        <script type="text/javascript" src="htmlarea.js"></script>
-        <script type="text/javascript" src="lang/en.js"></script>
-        <script type="text/javascript" src="dialog.js"></script>
-        <style type="text/css">
-            @import url(htmlarea.css);
-        </style>
-        <script type="text/javascript">
-            var editor = null;
-            function initEditor() {
-                editor = new HTMLArea("text");
-                var cfg = editor.config;
-                cfg.registerButton({
-                  id: "wikilink",
-                  tooltip: "link to a wiki page",
-                  image: "images/ed_wikilink.gif",
-                  textMode: false,
-                  action: function (editor) {
-                    window.open("quickfind?callParent=wikilink", "blank_",
-                                "width=400,height=500,location=yes,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no");
-                  },
-                  context: ""
-                });
-                cfg.toolbar = [
-                  ["fontname", "fontsize", "formatblock", "space",
-                   "bold", "italic", "separator",
-                   "copy", "cut", "paste", "space",
-                   "undo", "redo"],
-                  ["justifyleft", "justifycenter", "justifyright", "separator",
-                   "insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",
-                   "forecolor", "hilitecolor", "textindicator", "separator",
-                   "inserthorizontalrule", "createlink", "wikilink", "insertimage", "inserttable", "htmlmode", "separator",
-                   "popupeditor", "separator",
-                   "showhelp", "about"]
-                ];
-                //cfg.toolbar.push(["linebreak", "wikilink"]);
-                //cfg.imgURL = "htmlarea/images/";
-                //cfg.popupURL = "htmlarea/popups/";
-                editor.generate();
-            }
-            function wikilink(name, mimeType, title) {
-                editor.insertHTML(\'<a href="\' + name + \'.html">\'
-                                  + title + "</a>");
-            }
-        </script>
-        <textarea name="text" id="text" rows=30 cols=50 style="width: 100%%">%s</textarea>
-        <input type="hidden" name="inputType" value="htmlarea">
-        <script type="text/javascript">
-            initEditor();
-        </script>
-        ''' % self.htmlEncode(text)
+        return dedent('''\n
+            <script type="text/javascript">
+                _editor_url = '/htmlarea';
+                _editor_lang = 'en';
+            </script>
+            <script type="text/javascript" src="htmlarea.js"></script>
+            <script type="text/javascript" src="lang/en.js"></script>
+            <script type="text/javascript" src="dialog.js"></script>
+            <style type="text/css">
+                @import url(htmlarea.css);
+            </style>
+            <script type="text/javascript">
+                var editor = null;
+                function initEditor() {
+                    editor = new HTMLArea("text");
+                    var cfg = editor.config;
+                    cfg.registerButton({
+                      id: "wikilink",
+                      tooltip: "link to a wiki page",
+                      image: "images/ed_wikilink.gif",
+                      textMode: false,
+                      action: function (editor) {
+                        window.open("quickfind?callParent=wikilink", "blank_",
+                            "width=400,height=500,location=yes,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no");
+                      },
+                      context: ""
+                    });
+                    cfg.toolbar = [
+                      ["fontname", "fontsize", "formatblock", "space",
+                       "bold", "italic", "separator",
+                       "copy", "cut", "paste", "space",
+                       "undo", "redo"],
+                      ["justifyleft", "justifycenter", "justifyright", "separator",
+                       "insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",
+                       "forecolor", "hilitecolor", "textindicator", "separator",
+                       "inserthorizontalrule", "createlink", "wikilink", "insertimage", "inserttable", "htmlmode", "separator",
+                       "popupeditor", "separator",
+                       "showhelp", "about"]
+                    ];
+                    //cfg.toolbar.push(["linebreak", "wikilink"]);
+                    //cfg.imgURL = "htmlarea/images/";
+                    //cfg.popupURL = "htmlarea/popups/";
+                    editor.generate();
+                }
+                function wikilink(name, mimeType, title) {
+                    editor.insertHTML(\'<a href="\' + name + \'.html">\'
+                                      + title + "</a>");
+                }
+            </script>
+            <textarea name="text" id="text" rows=30 cols=50 style="width: 100%%">%s</textarea>
+            <input type="hidden" name="inputType" value="htmlarea">
+            <script type="text/javascript">
+                initEditor();
+            </script>
+            ''' % self.htmlEncode(text))
 
     def editFieldBinary(self, page, mimeType):
         text = self.request().field('text', page.text)
@@ -871,13 +890,13 @@ class Main(SitePage):
         if saveText:
             src += ('<input type="hidden" name="text" value="base64,%s">'
                     % (saveText.encode('base64')))
-        return '''
-        %s
-        Upload: <input type="file" name="textUpload">
-        <input type="hidden" name="inputType" value="upload"><br>
-        Comments:<br>
-        <textarea name="comments" style="width: 100%%" rows=3 cols=60 wrap="SOFT">%s</textarea>
-        ''' % (src, self.htmlEncode(page.comments))
+        return dedent('''\
+            %s
+            Upload: <input type="file" name="textUpload">
+            <input type="hidden" name="inputType" value="upload"><br>
+            Comments:<br>
+            <textarea name="comments" style="width: 100%%" rows=3 cols=60 wrap="SOFT">%s</textarea>
+            ''' % (src, self.htmlEncode(page.comments)))
 
     def writePreview(self):
         req = self.request()
@@ -901,40 +920,97 @@ class Main(SitePage):
         self.writeEdit()
 
     def writeHistory(self):
-        self.write('<form action="%s" method="GET">'
-                   % (self.link(unversioned=True)))
-        self.write('<input type="hidden" name="_action_" value="diff">\n')
-        self.write('''<table>
-        <tr class="header">
-        <th>Version</th>
-        <th>Created on</th>
-        <th>Log</th>
-        <th>User</th>
-        <th>Compare</th>
-        </tr>
-        ''')
+        if self.request().field('delete', None):
+            versions = self.request().field('deleteVersion', None)
+            if isinstance(versions, (str, unicode)):
+                versions = (versions,)
+            elif isinstance(versions, list):
+                versions = tuple(versions)
+            try:
+                versions = map(int, versions)
+            except:
+                versions = None
+            if versions:
+                for page in self.page.versions():
+                    if page.version in versions:
+                        self.assertPermission('delete', page=page)
+                delete = self.request().field('deleteUsers', None)
+                if delete:
+                    self.assertPermission('deleteuser')
+                users = self.page.delete(versions)
+                self.write('<p>Selected versions deleted.</p>')
+                myusername = self.user() and self.user().username()
+                if delete and users:
+                    deleted = []
+                    for username in users:
+                        if username != myusername:
+                            try:
+                                user = self.userManager().userForUsername(username)
+                                self.userManager().deleteUser(user)
+                                deleted.append(username)
+                            except:
+                                pass
+                    if deleted:
+                        msg = 'Users deleted: ' + ', '.join(deleted)
+                        # @@ we should change ownership of all remaining pages of users
+                    elif myusername in users:
+                        msg = 'No hara-kiri allowed.'
+                    else:
+                        msg = 'Users were already deleted.'
+                    self.write('<p>%s</p>' % msg)
         versions = self.page.versions()
+        if not versions:
+            self.write('<p>There are no archived versions available.</p>')
+            return
+        delete = False
+        for page in versions:
+            if self.checkPermission('delete', page=page):
+                delete = True
+                break
+        self.write('<form action="%s" method="GET">'
+            % (self.link(unversioned=True)))
+        self.write('<input type="hidden" name="_action_" value="diff">\n')
+        header = ['Version', 'Created on', 'Log', 'User', 'Compare']
+        if delete:
+            header.append('Delete')
+        header = ''.join(['<th>%s</th>' % h for h in header])
+        self.write('<table><tr class="header">%s</tr>\n' % header)
+        firstIndex = len(versions)-2
+        otherIndex = firstIndex+1
         for index, page in enumerate(versions):
-            fromEnd = len(versions)-index
             self.write('<tr class="%s">\n' %
                        ['odd', 'even'][index%2])
-            self.write('<td style="text-align: center"><a class="version" href="%s">%s</a></td>\n'
-                       % (page.link, page.version or 'current'))
+            self.write('<td style="text-align: center">'
+                '<a class="version" href="%s">%s</a></td>\n'
+                % (page.link, page.version or 'current'))
             self.write('<td>%s</td>\n' % self.format_date(page.modifiedDate, nonbreaking=True))
             self.write('<td>%s</td>\n'
-                       % self.htmlEncode(page.lastChangeLog or ''))
+                % self.htmlEncode(page.lastChangeLog or ''))
             self.write('<td>%s</td>\n'
-                       % self.htmlEncode(page.lastChangeUser or ''))
-            self.write('''
-            <td><input type="radio" name="version" value="%s"%s>
-            <input type="radio" name="otherVersion" value="%s"%s></td>
-            ''' % (page.version, test(fromEnd==2, ' checked'),
-                   page.version, test(fromEnd==1, ' checked')))
+                % self.htmlEncode(page.lastChangeUser or ''))
+            self.write('<td style="text-align: center">'
+                '<input type="radio" name="firstVersion" value="%s"%s>'
+                '<input type="radio" name="otherVersion" value="%s"%s></td>\n'
+                % (page.version, test(index==firstIndex, ' checked'),
+                    page.version, test(index==otherIndex, ' checked')))
+            if delete:
+                if self.checkPermission('delete', page=page):
+                    self.write('<td style="text-align: center">'
+                        '<input type="checkbox" name="deleteVersion" value="%s">' % page.version)
+                else:
+                    self.write('<td>&nbsp;</td>')
             self.write('</tr>\n')
+        if delete and self.checkPermission('deleteuser'):
+            self.write('<tr><td colspan="5" style="text-align: right">'
+                'Check this if you want to delete the user accounts as well:'
+                '</td><td style="text-align: center">'
+                '<input type="checkbox" name="deleteUsers" value="yes"></td></tr>')
         self.write('</table>')
         self.write('<input type="submit" name="compare_brief" value="Compare content">\n')
         self.write('<input type="submit" name="compare_thorough" value="Compare complete">\n')
         self.write('<input type="submit" name="compare_source" value="Compare source">\n')
+        if delete:
+            self.write('<input type="submit" name="delete" value="Delete">\n')
         self.write('</form>\n')
 
     def writeBacklinks(self):
@@ -954,36 +1030,31 @@ class Main(SitePage):
                 compType = name[len('compare_'):]
         if compType == 'thorough':
             Matcher = htmldiff.HTMLMatcher
-            source1 = self.page.html
+            source1 = self.firstPage.html
             source2 = self.otherPage.html
         elif compType == 'brief':
             Matcher = htmldiff.NoTagHTMLMatcher
-            source1 = self.page.html
+            source1 = self.firstPage.html
             source2 = self.otherPage.html
         elif compType == 'source':
             Matcher = htmldiff.TextMatcher
-            source1 = self.page.text
+            source1 = self.firstPage.text
             source2 = self.otherPage.text
         else:
             assert 0, "Unknown comparison type: %r" % compType
         matcher = Matcher(source1, source2)
         diff = matcher.htmlDiff()
-        start = 'version %s' % (self.page.version or 'Current')
+        start = 'version %s' % (self.firstPage.version or 'Current')
         end = 'version %s' % (self.otherPage.version or 'Current')
-        self.write('''
-        <p><span class="insert">Added to %s (present in %s)</span><br>
-        <span class="delete">Deleted from %s (present in %s)</span></p>
-        ''' % (start, end, end, start))
+        self.write('<p><span class="insert">Added to %s (present in %s)</span><br>'
+            '<span class="delete">Deleted from %s (present in %s)</span></p>\n'
+            % (start, end, end, start))
         self.write(diff)
 
     def writeChangeMimeType(self):
         req = self.request()
-        self.write('''<p>
-        Current MIME type:
-        <tt>%s</tt>
-        %s
-        </p>
-        ''' % (self.page.mimeType,
+        self.write('<p>Current MIME type: <tt>%s</tt>\n%s</p>\n'
+            % (self.page.mimeType,
                self.helpLink('mimetypes', 'Help on MIME types')))
         self.write('<p>Edit with a different MIME type:</p>\n')
         allTypes = [t for t in self.wiki.availableMimeTypes

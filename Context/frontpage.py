@@ -20,38 +20,43 @@ class frontpage(SitePage):
         SitePage.writeRelatedLinks(self)
 
     def writeContent(self):
-        if time.time() - self._cache_time > self._cache_timeout:
-            frontpage._cached_content = self.getContent()
-            frontpage._cache_time = time.time()
-        self.write(self._cached_content)
+        if self.wiki.config.getbool('blog', False):
+            if not self._cached_contenttime or \
+                    time() - self._cache_time > self._cache_timeout:
+                frontpage._cached_content = self.getBlogContent()
+                frontpage._cache_time = time.time()
+            self.write(self._cached_content)
+        else:
+            self.write(self.getWikiContent())
 
-    def getContent(self):
+    def getBlogContent(self):
         result = []
         write = result.append
-        if self.wiki.config.getbool('blog', False):
-            recent = [p for p in self.wiki.recentCreated()
-                      if p.pageClass == 'posting'][:10]
-            for page in recent:
-                write('<a href="%s"><h2>%s</h2></h2>\n' %
-                      (page.link, page.title))
-                write(page.html)
-                comments = page.commentPages
-                if not comments:
-                    comment_text = 'No comments'
-                elif len(comments) == 1:
-                    comment_text = '1 thread'
-                else:
-                    comment_text = '%i threads' % len(comments)
-                write('<div align="right"><a href="%s">#</a> ** %s ** '
-                    '<a href="%s#comments">%s</a></div>\n'
-                    % (page.link, self.format_date(page.creationDate),
-                           page.link, comment_text))
-                write('<hr noshade>\n')
-            result.pop() # remove last <hr>
-        else: # use index as front page
-            page = self.wiki.page('index')
+        recent = [p for p in self.wiki.recentCreated()
+                  if p.pageClass == 'posting'][:10]
+        for page in recent:
+            write('<a href="%s"><h2>%s</h2></h2>\n' %
+                  (page.link, page.title))
             write(page.html)
-            if self.user():
-                write('<div align="right"><a href="%s">Edit this page</a>'
-                    '</div>\n' % (page.link))
+            comments = page.commentPages
+            if not comments:
+                comment_text = 'No comments'
+            elif len(comments) == 1:
+                comment_text = '1 thread'
+            else:
+                comment_text = '%i threads' % len(comments)
+            write('<div align="right"><a href="%s">#</a> ** %s ** '
+                '<a href="%s#comments">%s</a></div>\n'
+                % (page.link, self.format_date(page.creationDate),
+                       page.link, comment_text))
+            write('<hr noshade>\n')
+        result.pop() # remove last <hr>
         return ''.join(result)
+
+    def getWikiContent(self):
+        page = self.wiki.page('index')
+        result = page.html
+        if self.user():
+            result += ('\n<div align="right"><a href="%s">'
+                'Edit this page</a></div>\n' % (page.link))
+        return result

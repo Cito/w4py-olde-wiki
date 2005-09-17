@@ -125,7 +125,7 @@ class Wiki(object):
                 self.basepath, 'publish.queue'))
 
         if not canonical:
-            if (config.getbool('rebuildindex', False) or 
+            if (config.getbool('rebuildindex', False) or
                 not wikiindex.WikiIndex.exists(self.basepath)):
                 needRebuild = True
             else:
@@ -164,7 +164,7 @@ class Wiki(object):
         urlName = name
         name = canonicalName(name)
         return wikipage.WikiPage(self, self.basepath,
-                                 name, urlName=urlName, version=version)
+            name, urlName=urlName, version=version)
 
     def pageByAtomID(self, atomID):
         if atomID in self._knownAtomIDs:
@@ -257,13 +257,14 @@ class Wiki(object):
             pageName = pageName.name
         else:
             page = self.page(pageName)
+        pageName = pageName.lower()
         if '.' in pageName:
             # Already has an extension
             return self.basehref + pageName
         else:
             url = self.basehref + pageName
             if not source:
-                return url + self.config.get('wikiextension', '.html')
+                return url + str(self.config.get('wikiextension', '.html'))
             else:
                 return url + self.extensionForMimeType(page.mimeType)
 
@@ -411,7 +412,7 @@ class Wiki(object):
     def _unpublishTempFiles(self, fileList):
         for source, dest in fileList:
             os.unlink(source)
-            
+
     def publishedText(self, page):
         if self.template is None:
             if not os.path.exists(self.config.staticTemplate):
@@ -458,7 +459,7 @@ class Wiki(object):
             return cmp(
                 rssobject.parseDate(item1.pubDate),
                 rssobject.parseDate(item2.pubDate))
-        rss = rssobject.RSS(self.syndicateNewPagesFilename, 
+        rss = rssobject.RSS(self.syndicateNewPagesFilename,
                             sortOrder=sorter)
         conf = self.config.get('rss', {})
         for attribute in rssobject.rssAttributes:
@@ -522,7 +523,7 @@ class Wiki(object):
         for name, type in self.index.backConnections(page.name):
             result.append((self.page(name), type))
         return result
-        
+
     ############################################################
     ## Administrative and maintenance functions
     ############################################################
