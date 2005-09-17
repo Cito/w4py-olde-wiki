@@ -1,5 +1,6 @@
 from SitePage import *
 from WebKit.HTTPExceptions import *
+from lib.common import dedent
 
 def d(**kw): return kw
 
@@ -52,12 +53,18 @@ class login(SitePage):
             errors['username'] = 'That username is taken'
         if not name:
             errors['name'] = 'Your name is required'
-        if not email or not '@' in email:
+        if not self.check_email(email):
             errors['email'] = 'Your email address is required'
         if not password:
             errors['password'] = 'Please enter a password'
         if password != req.field('confirm_password', ''):
             errors['password'] = 'Your password does not match your confirmation'
+        captcha = self.captcha()
+        if captcha:
+            id= req.field('captcha_id', None)
+            input = req.field('captcha_input', '')
+            if not captcha.check(input, id):
+                errors['captcha'] = 'This was not the expected input'
         if errors:
             self.writeHTML()
             return
@@ -79,7 +86,7 @@ class login(SitePage):
     def writeContent(self):
         self.write(self.simpleLoginForm())
         self.write('<p><a href="%s">Forgot your password?</a></p>\n' %
-                   self.servletLink('forgotten'))
+                self.servletLink('forgotten'))
         if self.newUsers():
             self.write('<h2>Or create a new user account...</h2>\n')
             self.writeCreateForm(self.linkToSelf())
@@ -90,7 +97,7 @@ class login(SitePage):
     def writeCreateForm(self, returnTo=''):
         values = {}
         values['action'] = self.servletLink('login')
-        for key in 'username name email website password confirm_password returnTo'.split():
+        for key in 'username name email website password confirm_password captcha returnTo'.split():
             values[key] = self.htmlEncode(self.request().field(key, ''))
             if self._formErrors.has_key(key):
                 values['error_%s' % key] = '<span class="formError">%s</span><br>\n' % self._formErrors[key]
@@ -99,7 +106,28 @@ class login(SitePage):
         if returnTo:
             values['returnTo'] = self.htmlEncode(returnTo)
 
-        self.write('''
+        values['captcha'] = ''
+        captcha = self.captcha()
+        if captcha:
+            field = self.request().field
+            id= field('captcha_id', None)
+            input = field('captcha_input', '')
+            if captcha.check(input, id):
+                values['captcha'] = dedent('''\
+                <input type="hidden" name="captcha_input" value="%s">
+                <input type="hidden" name="captcha_id" value="%s">
+                ''' % (input, id))
+            else:
+                values['captcha'] = captcha.create()
+                values['captcha'] = dedent('''\
+                <tr><td colspan="2"><p>&nbsp;</p>
+                <p>To avoid abuse of this Wiki, we have to make a simple<br>
+                plausibility test that checks whether you are a serious user.</p>
+                </td></tr><tr><td></td><td>%(error_captcha)s</td></tr>
+                <tr><td>Please fill in:</td><td>%(captcha)s</td></tr>
+                ''' % values)
+
+        self.write(dedent('''\
         <form action="%(action)s" method="POST">
         <p>No email confirmation required; just fill in the values
         and go!</p>
@@ -144,11 +172,32 @@ class login(SitePage):
         <input type="password" name="confirm_password" value="%(confirm_password)s" size=20></td>
         </tr>
 
+        %(captcha)s
+
         <tr>
         <td colspan=2 align=center>
         <input type="submit" value="Create user"></td>
         </tr>
         </table>
-        '''
-                   % values)
+        </form>
+        ''' % values))
 
+    def check_email(self, email):
+        email = email.split('@', 2)
+        if len(email) != 2:
+            return False
+        if len(email[0]) < 1:
+            return False
+        if len(email[1]) < 5:
+            return False
+        if not '.' in email[1]:
+            return False
+        return True
+
+    def captcha(self):
+        captcha = str(self.config.get('captcha'))
+        if captcha:
+            module = 'lib.captchas.' + captcha
+            return __import__(module, None, None, module).Captcha()
+        else:
+            return None

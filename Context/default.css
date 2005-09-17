@@ -78,7 +78,7 @@ div.attention, div.caution, div.danger, div.error, div.hint,
 div.important, div.note, div.tip, div.warning {
   /* margin: 2em ; */
   background-color: #cccccc;
-  align: center;
+  text-align: center;
   /* width: 60%; */
   /* border: medium outset ; */
   padding: 3px;
