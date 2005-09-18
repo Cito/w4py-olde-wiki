@@ -6,7 +6,7 @@
 
 /* First import default style for pages created with Docutils: */
 
-@import url(docutils.css);
+@import url(default.css);
 
 /* Customization for the Wiki goes here: */
 
