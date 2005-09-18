@@ -271,7 +271,7 @@ class Main(SitePage):
         self.writeHTML()
 
     def backlinks(self):
-        self.assertPermission('navigation')
+        self.assertPermission(['navigation', 'view'])
         self.setView('writeBacklinks')
         self.titlePrefix = 'Backlinks to: '
         self.writeHTML()
