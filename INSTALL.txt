@@ -1,15 +1,15 @@
 How to install this thing:
 
-Checkout the following parts of the Subversion repository::
+Export the following parts from the Subversion repository::
 
     mkdir ~/w4py; cd ~/w4py
-    svn co http://svn.w4py.org/Webware/trunk Webware
-    svn co http://svn.w4py.org/Component/trunk/Component Webware/Component
-    svn co http://svn.w4py.org/LoginKit/trunk/LoginKit Webware/LoginKit
-    svn co http://svn.w4py.org/Wiki/trunk Wiki
+    svn export http://svn.w4py.org/Webware/trunk Webware
+    svn export http://svn.w4py.org/Component/trunk/Component Webware/Component
+    svn export http://svn.w4py.org/LoginKit/trunk/LoginKit Webware/LoginKit
+    svn export http://svn.w4py.org/Wiki/trunk Wiki
 
-You can also use export instead of checkout, but using checkout allows
-yout to later update these parts quickly from the repository using "svn update".
+You can also use "checkout" instead of "export"; this will allow you to later quickly
+update these parts from the repository using "svn update".
 
 Run the Webware installer::
 
