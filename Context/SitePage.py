@@ -35,7 +35,6 @@ class SitePage(CPage):
             domain = domain.split(':')[0]
         self.wiki = self.TheGlobalWiki.site(domain=domain)
         self.wiki.basehref = self.request().adapterName() + '/'
-        #self.wiki.config.rssFilename = os.path.join(thisDir, 'rss.xml')
         self.suppressFooter = False
         self.response().setHeader(
             'content-type', 'text/html; charset=utf-8')
@@ -257,10 +256,10 @@ class SitePage(CPage):
 
     def menuGoto(self):
         menu = [
-            ('Home', '/'),
-            ('Recent Changes', 'recentchanges'),
-            ('Orphaned Pages', 'orphans'),
-            ('Wanted Pages', 'wanted'),
+            ('Home', self.wiki.basehref),
+            ('Recent Changes', self.wiki.basehref + 'recentchanges'),
+            ('Orphaned Pages', self.wiki.basehref + 'orphans'),
+            ('Wanted Pages', self.wiki.basehref + 'wanted'),
             ]
         if self.checkPermission(action='edit',
                 pageClass='posting'):
@@ -272,21 +271,21 @@ class SitePage(CPage):
                 "'?_action_=edit'"
                 % self.request().adapterName()))
         if self.user() and 'admin' in self.user().roles():
-            menu.append(('Administration', 'admin'))
+            menu.append(('Administration', self.wiki.basehref + 'admin'))
         menu.append((menubar.Separator, ''))
         if self.user():
             menu.append(('Logout', '?_actionLogout=yes'))
         else:
-            menu.append(('Login', 'login?returnTo=%s'
+            menu.append(('Login', self.wiki.basehref + 'login?returnTo=%s'
                 % self.request().environ()['REQUEST_URI'].split('?')[0]))
         return ('Goto', menu)
 
     def menuHelp(self):
         return ('Help', [
-            ('About this wiki', 'thiswiki.html'),
-            ('Help with markup', 'quickresthelp.html'),
+            ('About this wiki', self.wiki.basehref + 'thiswiki.html'),
+            ('Help with markup', self.wiki.basehref + 'quickresthelp.html'),
             (menubar.Separator, ''),
-            ('Related terms', 'relatedterms.html'),
+            ('Related terms', self.wiki.basehref  + 'relatedterms.html'),
             ])
 
     def menuSearch(self):
