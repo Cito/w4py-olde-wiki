@@ -1,0 +1,465 @@
+/*
+	Webware for Python Wiki (http://wiki.webwareforpython.org)
+
+	Common style sheet for the Webware Wiki pages
+*/
+
+/* First import default style for pages created with Docutils: */
+
+@import url(docutils.css);
+
+/* Customization for the Wiki goes here: */
+
+body {
+		background-color: #FFFFFF;
+		font-family: sans-serif;
+		font-size: 11pt;
+		line-height: 14pt;
+		padding: 4pt;
+}
+i, em {
+	font-family: serif;
+	font-size: 12pt;
+}
+a.target {
+	color: blue;
+}
+a.reference {
+	text-decoration: none;
+	border-bottom: 1px dotted #0000ff;
+}
+a.reference:hover {
+	background-color: #cceeff;
+}
+span.nowiki {
+	background-color: #ffff99;
+}
+a.wiki {
+	text-decoration: none;
+	border-bottom: 1px dashed #ff6600;
+}
+a.version {
+	display: block;
+}
+a.version:hover {
+	text-decoration: none;
+	background-color: #ddddff;
+}
+cite {
+	font-style: normal;
+	font-family: monospace;
+	font-weight: bold;
+}
+table {
+	margin-top: 6pt;
+	margin-bottom: 6pt;
+	border-color: #909097;
+	empty-cells: show;
+	border-spacing: 0pt;
+	border-collapse: collapse;
+}
+td, th {
+	font-family: sans-serif;
+	font-size: 11pt;
+	padding: 2pt 4pt;
+	border-color: green;
+	vertical-align: top
+}
+tr.even {
+	background-color: #dddddd;
+}
+tr.header {
+	background-color: #000066;
+	color: #ffffff;
+}
+hr {
+	width: 75% }
+p {
+	margin-top: 6pt;
+	margin-bottom: 6pt;
+	text-align: justify;
+}
+li {
+	margin-bottom: 5pt;
+	list-style-type: circle;
+}
+dt {
+	margin-bottom: 2pt;
+}
+dd {
+	margin-bottom: 5pt;
+}
+h1 {
+	font-size: 17pt;
+}
+h2 {
+	font-size: 15pt;
+}
+h3 {
+	font-size: 14pt;
+}
+h4 {
+	font-size: 13pt;
+}
+h5 {
+	font-size: 12pt;
+}
+.contents {
+	font-family: sans-serif;
+}
+.contents ul {
+	list-style: none;
+	padding-left: 0em;
+	margin-left: 2em;
+}
+.contents ul li {
+	font-size: medium;
+	margin-bottom: 3pt;
+}
+.contents ul ul {
+	list-style-type: none;
+	margin-top: 2pt;
+	padding-left: 0em;
+	margin-left: 1.5em;
+}
+.contents ul ul li {
+	font-size: small;
+	margin-bottom: 1pt;
+}
+.contents .topic-title {
+	font-size: 16pt;
+}
+code, .literal, .literal-block, .pre, .py {
+	font-family: monospace;
+	font-size: 10pt;
+	color: #052;
+}
+tt {
+	color: #000066
+}
+tt.literal, span.pre {
+	background-color: #FFFFFF;
+}
+pre.py, pre.literal-block {
+	margin: 0;
+	padding: 2pt 1pt 1pt 2pt;
+	background-color: #F0F0F8;
+}
+.typed {
+	font-weight: bold;
+}
+.error {
+	color: red;
+}
+.warning {
+	color: brown;
+}
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+	background-color: #cccccc;
+	padding: 2pt;
+}
+
+/* Highlighting: */
+
+.function {color: #000077; font-weight: bold}
+.keyword {color: #004444;}
+.comment {color: #770000; font-style: italic}
+.normal {color: #000000;}
+.string {color: #006600;}
+.symbol {color: #000000;}
+
+.htmltag {color: #000077;}
+.htmlsymbol {color: #000000;}
+.htmlnormal {color: #000000;}
+.htmlcomment {color: #770000; font-style: italic}
+.htmlstring {color: #006600;}
+.htmlattr {color: #000000;}
+
+.stmlfunction {color: #000077; font-weight: bold}
+.stmlattr {color: #000000;}
+.stmlstring {color: #006600;}
+.stmlexpr {color: #004444;}
+
+/* Page tabs: */
+
+#page_nav ul {
+	display: block;
+	list-style: none outside;
+	padding: 0;
+	margin: 0 0 0 10px;
+	font-size: medium;
+}
+#page_nav li {
+	padding: 0;
+	margin: 0 4px 0 0;
+	border: 1px solid #cecbc6;
+	background-color: #000066;
+	color: #ffffff;
+	font-weight: bold;
+	/* the next 4 lines are magic */
+	display: block;
+	float: left;
+	position: relative;
+	bottom: 1.32em;
+}
+#page_nav a:link,
+#page_nav a:visited {
+	background-color: #000066;
+	color: #ffffff;
+	text-decoration: none;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+#page_nav a:hover {
+	background-color: #cecbc6;
+	color: #000066;
+}
+a.viewing#viewing {
+	/* For some reason I can't get it to
+	work without both the class and ID */
+	background-color: #ffffff;
+	color: #000066;
+	border: 1px solid #000066;
+}
+div#bottom_nav {
+	border-top: 1px solid black;
+	background-color: #000066;
+	color: #ffffff;
+	padding: 0px 5px 1px 5px;
+}
+span.navgroup {
+	border: 1px solid white;
+	font-weight: bold;
+}
+a#recentchanges_xml {
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+}
+a#recentchanges {
+	padding-right: 0.25em;
+}
+.navgroup a {
+	color: #ffffff;
+	text-decoration: none;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+select.navgroup {
+	color: #ffffff;
+	background-color: #000066;
+	border: thin solid #ffffff;
+	font-weight: bold;
+}
+.navgroup a:hover {
+	background-color: #cecbc6;
+	color: #000066;
+}
+
+/* Magic stuff to stop display:float */
+
+#page_navclear {
+	display: none;
+}
+html>body #page_navclear {
+	display: block;
+	clear: both;
+}
+
+/* Search results */
+
+dd.summary {
+	font-size: small;
+}
+form#searchbar {
+	border: 1px solid black;
+	background-color: #ddddff;
+	padding: 0.5em;
+}
+#searchbar tt {
+	color: #000099;
+	font-weight: bold;
+}
+
+/* Diff results */
+
+.insert { background-color: #aaffaa }
+.delete { background-color: #ff8888 }
+.tagInsert { background-color: #004400; color: #ffffff }
+.tagDelete { background-color: #770000; color: #ffffff }
+.tagInsert tt { color: #99ff99 }
+
+/* summary/keyword pages */
+
+.modifiedDate { font-size: small }
+
+/* NotifyComponent */
+
+.notifyMessage {
+	border: thin black solid;
+	width: 70%;
+	background-color: #006600;
+	color: #ffffff;
+}
+.notifyMessage a {
+	color: #bbffbb;
+}
+.notifyMessage a:visited {
+	color: #ddddff;
+}
+
+/* Login/forms */
+
+.loginForm input {
+	border: thin solid #000066;
+}
+.formError {
+	background-color: #993333;
+	color: #ffffff;
+	padding: 1pt 4pt;
+}
+a.button {
+	background-color: #000066;
+	color: #ffffff;
+	font-weight: bold;
+	text-decoration: none;
+	padding: 2px;
+	/* border: #cecbc6 groove medium; */
+	border: #000066 outset medium;
+}
+a.button:hover {
+	background-color: #cecbc6;
+	color: #000000;
+	border: #cecbc6 outset medium;
+}
+a.menu {
+	display: block;
+	padding: 2px;
+	text-decoration: none;
+	font-weight: bold;
+}
+a.menu:hover {
+	background-color: #cccccc;
+}
+
+/* Related entries */
+
+.related {
+	/* border-top: 2px solid black; */
+}
+.relatedEntry {
+	border-bottom: 1px dotted #999999;
+}
+
+.relatedDate {
+	text-align: right;
+	font-size: small;
+}
+
+/* Menubar */
+
+div.menuBar,
+div.menuBar a.menuButton,
+div.menu,
+div.menu a.menuItem {
+	font-family: "MS Sans Serif", Arial, sans-serif;
+	font-size: 8pt;
+	font-style: normal;
+	font-weight: normal;
+	color: #000000;
+}
+div.menuBar {
+	background-color: #d0d0da;
+	border: 2px solid;
+	border-color: #f0f0fc #909097 #909097 #f0f0fc;
+	padding: 4px 2px;
+	text-align: left;
+}
+div.menuBar span.menuUser {
+	background-color: #f0f0fc;
+	color: #990000;
+	margin: 0px 2px;
+	padding: 1px 6px;
+	text-align: right;
+	float: right;
+}
+div.menuBar span.menuTitle {
+	color: #000099;
+	margin: 1px;
+	padding: 2px 6px;
+}
+div.menuBar a.menuButton {
+	background-color: transparent;
+	border: 1px solid #d0d0da;
+	color: #000000;
+	cursor: default;
+	left: 0px;
+	margin: 1px;
+	padding: 2px 6px;
+	position: relative;
+	text-decoration: none;
+	top: 0px;
+	z-index: 100;
+}
+div.menuBar a.menuButton:hover {
+	background-color: transparent;
+	border-color: #f0f0fc #909097 #909097 #f0f0fc;
+	color: #000000;
+}
+div.menuBar a.menuButtonActive,
+div.menuBar a.menuButtonActive:hover {
+	background-color: #a0a0c8;
+	border-color: #909097 #f0f0fc #f0f0fc #909097;
+	color: #ffffff;
+	left: 1px;
+	top: 1px;
+}
+div.menu {
+	background-color: #d0d0da;
+	border: 2px solid;
+	border-color: #f0f0fc #909097 #909097 #f0f0fc;
+	left: 0px;
+	padding: 0px 1px;
+	position: absolute;
+	top: 0px;
+	visibility: hidden;
+	z-index: 101;
+}
+div.menu a.menuItem {
+	color: #000000;
+	cursor: default;
+	display: block;
+	padding: 3px 1em;
+	text-decoration: none;
+	white-space: nowrap;
+}
+div.menu a.menuItem:hover, div.menu a.menuItemHighlight {
+	background-color: #000090;
+	color: #ffffff;
+}
+div.menu a.menuItem span.menuItemText {}
+div.menu a.menuItem span.menuItemArrow {
+	margin-right: -.75em;
+}
+div.menu div.menuItemSep {
+	border-top: 1px solid #909097;
+	border-bottom: 1px solid #f0f0fc;
+	margin: 4px 2px;
+}
+input.menuSearch {
+	font-family: "MS Sans Serif", Arial, sans-serif;
+	font-size: 7pt;
+	padding: 0px;
+	border: 1px #909097 #f0f0fc #f0f0fc #909097;
+}
+div.menu span.disabled {
+	color: #666666;
+}
+div.source-code {
+	background-color: #000000;
+	border: inset #999999 3px;
+	overflow: auto;
+}
+div.source-code a.source-link {
+	float: right;
+}

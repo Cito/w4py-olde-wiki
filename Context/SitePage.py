@@ -195,7 +195,7 @@ class SitePage(CPage):
                    % self.wiki.linkTo('feeds/new_pages.xml'))
 
     def writeStyleSheet(self):
-        self.write('<link rel="stylesheet" href="%s/default.css" type="text/css">\n'
+        self.write('<link rel="stylesheet" href="%s/wiki.css" type="text/css">\n'
                    % self.request().adapterName())
 
     def writeJavascript(self):
