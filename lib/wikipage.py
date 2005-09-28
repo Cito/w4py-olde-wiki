@@ -663,7 +663,11 @@ class WikiPage(object):
         re.I+re.S)
     def wikiLinks(self):
         """The names of all the wiki pages that this page links to."""
-        results = {}
+        if self.name == 'index':
+            # add some faked links so that these do not appear as orphaned
+            results = { 'index': None, 'thiswiki': None, 'quickresthelp': None }
+        else:
+            results = {}
         for match in self._wikiLinkRE.finditer(self._rawHTML()):
             name = match.group(2)
             if self.wiki.page(name).exists():
