@@ -32,11 +32,14 @@ a.reference:hover {
 	background-color: #eeeeee;
 }
 span.nowiki {
-	background-color: #ffff99;
+	background-color: #ffffcc;
 }
 a.wiki {
 	text-decoration: none;
-	border-bottom: 1px dashed #ff6600;
+	border-bottom: 1px dotted #0000cc;
+}
+a.wiki:hover {
+	background-color: #eeeeff;
 }
 a.version {
 	display: block;
@@ -358,7 +361,6 @@ a.menu:hover {
 .relatedEntry {
 	border-bottom: 1px dotted #999999;
 }
-
 .relatedDate {
 	text-align: right;
 	font-size: small;
