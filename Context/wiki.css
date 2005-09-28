@@ -26,10 +26,10 @@ a.target {
 }
 a.reference {
 	text-decoration: none;
-	border-bottom: 1px dotted #0000ff;
+	border-bottom: 1px dotted #666666;
 }
 a.reference:hover {
-	background-color: #cceeff;
+	background-color: #eeeeee;
 }
 span.nowiki {
 	background-color: #ffff99;
