@@ -24,16 +24,16 @@ class WikiIndex(object):
         return os.path.exists(os.path.join(dir, cls._dbName))
     exists = classmethod(exists)
 
+    def clear(self):
+        """Clear the index."""
+        self.store.clear()
+
     def backlinks(self, pageName):
-        """
-        Returns a list of pages that link to pageName
-        """
+        """Returns a list of pages that link to pageName."""
         return self._getLinks('backlink', pageName)
 
     def forwardLinks(self, pageName):
-        """
-        Returns a list of pages to which pageName links
-        """
+        """Returns a list of pages to which pageName links."""
         return self._getLinks('forward', pageName)
 
     def _setBacklinks(self, pageName, links):
@@ -43,27 +43,27 @@ class WikiIndex(object):
         self._setLinks('forward', pageName, links)
 
     def setLinks(self, pageName, links):
-        """
-        Indexes all the backlinks for a page; also indexes forward
-        links, so that we can tell when a backlink needs to be
-        removed.
+        """Indexes all the backlinks for a page.
+
+        Also indexes forward links, so that we can tell
+        when a backlink needs to be removed.
+
         """
         oldLinks = self.forwardLinks(pageName)
+        oldLinks.sort()
+        newLinks = links[:]
+        newLinks.sort()
         toRemove = []
         toAdd = []
-        toSetLinks = links[:]
-        links.sort()
-        while links and oldLinks:
+        while newLinks and oldLinks:
             if links[0] > oldLinks[0]:
                 toRemove.append(oldLinks.pop(0))
             elif links[0] < oldLinks[0]:
                 toAdd.append(links.pop(0))
             else:
                 oldLinks.pop(0)
-                links.pop(0)
         toRemove.extend(oldLinks)
-        toAdd.extend(links)
-        
+        toAdd.extend(newLinks)
         for link in toRemove:
             prev = self.backlinks(link)
             try:
@@ -79,7 +79,7 @@ class WikiIndex(object):
             prev.append(pageName)
             prev.sort()
             self._setBacklinks(link, prev)
-        self._setForwardLinks(pageName, toSetLinks)
+        self._setForwardLinks(pageName, links)
 
     def _getLinks(self, type, pageName):
         result = self.store.get(str('%s.%s' % (type, pageName)), '')
@@ -91,10 +91,10 @@ class WikiIndex(object):
         self.store['%s.%s' % (type, pageName)] = links
 
     def connections(self, pageName):
-        """
-        Returns a list of all the connections, as
-        [(connection_type_string, pageName), ...].  This is pages
-        connected *to* this page.
+        """Returns a list of all the connections.
+
+        The list has the form [(connection_type_string, pageName), ...].
+        This is pages connected *to* this page.
         """
         result = self.store.get('connections.%s' % pageName, '')
         values = result.split(',')
@@ -147,7 +147,7 @@ class WikiIndex(object):
 
     def _packDict(self, d):
         return ','.join(['%s:%s' % (k, v)
-                         for (k, v) in d.items()])        
+                         for (k, v) in d.items()])
 
     def _unpackDict(self, s):
         v = [t.split(':', 1) for t in s.split(',') if t]

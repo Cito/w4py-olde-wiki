@@ -1021,7 +1021,7 @@ class Main(SitePage):
                        % (['odd', 'even'][index%2],
                           page.link,
                           page.title))
-        self.write('</table>')
+        self.write('</table>\n')
 
     def writeDiff(self):
         compType = 'thorough'

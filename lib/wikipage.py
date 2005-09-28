@@ -335,8 +335,8 @@ class WikiPage(object):
                 # caller to call .save()
                 self.metadata.save()
         origSummary = self.summary
-        self._summary = self._convertSummary(self._text, html,
-                                             self.mimeType)
+        self._summary = self._convertSummary(self._text,
+            html, self.mimeType)
         if self._summary:
             f = open(self.basePath + '.summary.html', 'w')
             f.write(self._summary)
@@ -358,32 +358,32 @@ class WikiPage(object):
         return self._subWikiLinks(self._convertText(text, mimeType))
 
     def _subWikiLinks(self, text):
-        return self._wikiLinkRE.sub(self._subWikiLinksSubber, ' %s '
-            % text.decode('utf-8')).encode('utf-8')
+        return self._wikiLinkRE.sub(self._subWikiLinksSubber,
+            text.decode('utf-8')).encode('utf-8')
 
     def _subWikiLinksSubber(self, match):
-        name = match.group(2).split('.')[0]
-        if self.wiki.exists(name):
-            return (match.group(1)
-                    + self.wiki.linkTo(match.group(2))
-                    + match.group(3)
-                    + match.group(4)
-                    + match.group(5))
+        name = match.group(2)
+        if self.wiki.page(name).exists():
+            name = self.wiki.page(name).name
+            return ('<a class="wiki" href="%s%s%s%s'
+                % (self.wiki.linkTo(name), match.group(3),
+                    match.group(4), match.group(5)))
         else:
-            return '<span class="nowiki">%s%s%s%s?%s</span>' \
-                   % (match.group(4),
-                      match.group(1),
-                      self.wiki.linkTo(match.group(2)),
-                      match.group(3),
-                      match.group(5))
+            return ('<span class="nowiki">'
+                '%s%s%s%s?%s</span>'
+                % (match.group(4), match.group(1),
+                    self.wiki.linkTo(name),
+                    match.group(3), match.group(5)))
 
     def _subStaticLinks(self, text):
-        return self._wikiLinkRE.sub(self._subStaticLinksSubber, ' %s ' % text)
+        return self._wikiLinkRE.sub(self._subStaticLinksSubber, text)
     def _subStaticLinksSubber(self, match):
-        if self.wiki.exists(match.group(2)):
+        name = match.group(2)
+        if self.wiki.page(name).exists():
             # Normal link...
+            name = self.wiki.page(name).name
             return (match.group(1)
-                    + self.wiki.staticLinkTo(match.group(2))
+                    + self.wiki.staticLinkTo(name)
                     + match.group(3)
                     + match.group(4)
                     + match.group(5))
@@ -659,15 +659,15 @@ class WikiPage(object):
     ############################################################
 
     _wikiLinkRE = re.compile(
-        r'(<a[^>]* href=")([a-z0-9]+(?:\.[a-z0-9]+)?)("[^>]*>)(.*?)(</a>)',
+        r'(<a[^>]* href=["\'])([\-a-z0-9]+(?:[\.\-a-z0-9]+)?)(["\'].*?>)(.*?)(</a>)',
         re.I+re.S)
     def wikiLinks(self):
-        """
-        The names of all the wiki pages that this page links to.
-        """
+        """The names of all the wiki pages that this page links to."""
         results = {}
         for match in self._wikiLinkRE.finditer(self._rawHTML()):
-            name = match.group(2).split('.')[0]
+            name = match.group(2)
+            if self.wiki.page(name).exists():
+                name = self.wiki.page(name).name
             results[name] = None
         return results.keys()
 

@@ -24,10 +24,12 @@ warnings.filterwarnings(
 class GlobalWiki(object):
 
     def __init__(self, config):
-        """
+        """Initialize Wiki.
+
         root is the path to root storage location for Wiki sites.
         This class will make any necessary subdirectories or other
         structure.
+
         """
         self.config = config
         self.root = os.path.join(os.path.dirname(__file__), config['basepath'])
@@ -38,10 +40,12 @@ class GlobalWiki(object):
         self.allSites = {}
 
     def site(self, domain):
-        """
+        """Get site Wiki.
+
         Retrieves the Wiki that corresponds to this domain.
         Currently by looking for a similarly named subdirectory
         (creating directory if necessary).
+
         """
         assert '/' not in domain
         # We go through all this trouble to make sure Wikis are
@@ -84,10 +88,12 @@ class GlobalWiki(object):
         return result
 
     def addSpecialName(self, specialName):
-        """
-        A 'special name' is a name which isn't in the wiki, but
+        """Add special Name.
+
+        A 'special name' is a name which isn't in the Wiki, but
         still exists as a page.  Like 'recentchanges', which is
-        not a wiki page.
+        not a Wiki page.
+
         """
         self.specialNames[specialName] = None
 
@@ -157,9 +163,11 @@ class Wiki(object):
     ############################################################
 
     def page(self, name, version=None):
-        """
+        """Get a page.
+
         Returns a page by the given name, with the given version
-        (None == current version)
+        (None == current version).
+
         """
         urlName = name
         name = canonicalName(name)
@@ -179,24 +187,27 @@ class Wiki(object):
         return os.path.join(self.basepath, filename + '.txt')
 
     def exists(self, name):
-        """
-        True if wiki page by name exists.
-        """
+        """True if wiki page by name exists."""
         if self.globalWiki.specialNames.has_key(name):
             return True
         else:
             return os.path.exists(self.filenameForName(name))
 
     def search(self, text):
-        """
-        Search titles and bodies of pages for ``text``, returning list
-        of pages
+        """Search titles and bodies of pages for ``text``.
+
+        Returns a list of pages.
+
         """
         return [page for page in self.allPages()
                 if page.searchMatches(text)]
 
     def searchTitles(self, text):
-        """Search page titles for ``text``, returning list of pages"""
+        """Search page titles for ``text``.
+
+        Returns a list of pages
+
+        """
         return [page for page in self.allPages()
                 if page.searchTitleMatches(text)]
 
@@ -205,19 +216,19 @@ class Wiki(object):
                 if page.searchNameMatches(text)]
 
     def recentPages(self):
-        """All pages, sorted by date modified, most recent first"""
+        """All pages, sorted by date modified, most recent first."""
         pages = self.allPages()
         pages.sort(lambda a, b: cmp(b.modifiedDate, a.modifiedDate))
         return pages
 
     def recentCreated(self):
-        """All pages, sorted by date created, most recent first"""
+        """All pages, sorted by date created, most recent first."""
         pages = self.allPages()
         pages.sort(lambda a, b: cmp(b.creationDate, a.creationDate))
         return pages
 
     def orphanPages(self):
-        """All pages which are not linked to by another page"""
+        """All pages which are not linked to by another page."""
         orphans = []
         for page in self.allPages():
             if not page.backlinks:
@@ -239,7 +250,7 @@ class Wiki(object):
                 for (name, wants) in wantedPages.items()]
 
     def allPages(self):
-        """All pages with content in the system"""
+        """All pages with content in the system."""
         return [self.page(filename[:-4])
                 for filename in os.listdir(self.basepath)
                 if filename.endswith('.txt')]
@@ -249,9 +260,7 @@ class Wiki(object):
     ############################################################
 
     def linkTo(self, pageName, source=False):
-        """
-        Returns the href to refer to pageName
-        """
+        """Return the href to refer to pageName."""
         if isinstance(pageName, wikipage.WikiPage):
             page = pageName
             pageName = pageName.name
@@ -284,9 +293,11 @@ class Wiki(object):
     ############################################################
 
     def notifyChange(self, page, action, **args):
-        """
+        """Notify page change.
+
         Called by the page everytime it is changed, so global
         indexing and updating can occur.
+
         """
         if action != 'connected':
             changed = self.syndicateRecentChanges
@@ -418,7 +429,7 @@ class Wiki(object):
             if not os.path.exists(self.config.staticTemplate):
                 filename = (
                     os.path.join(os.path.dirname(__file__),
-                                 'default_static.tmpl'))
+                        'default_static.tmpl'))
             else:
                 filename = self.config.staticTemplate
             self.template = pooledtemplate.Template(file=filename)
@@ -440,9 +451,7 @@ class Wiki(object):
             page.recreateThumbnail()
 
     def syndicateRecentChanges__get(self):
-        """
-        Returns the rssobject.RSS object.
-        """
+        """Returnsthe rssobject.RSS object."""
         rss = rssobject.RSS(self.syndicateRecentChangesFilename)
         conf = self.config.get('rss', {})
         for attribute in rssobject.rssAttributes:
@@ -529,12 +538,14 @@ class Wiki(object):
     ############################################################
 
     def rebuildIndex(self):
-        print "Rebuilding index"
+        print 'Rebuilding index...'
+        self.index.clear()
         for page in self.allPages():
             self.index.setLinks(page.name, page.wikiLinks())
             self.index.setConnections(
                 page.name,
                 [(p.name, type) for p, type in page.connections])
+        print 'The index has been rebuilt.'
 
     def checkDistributionFiles(self):
         sourcePath = os.path.join(os.path.dirname(__file__), 'distpages')
@@ -548,11 +559,9 @@ class Wiki(object):
         for name in names:
             page = self.page(name)
             if not page.exists() or page.distributionOriginal:
-                f = open(os.path.join(sourcePath, name+'.txt'), 'r')
-                newText = f.read()
-                f.close()
+                newText = open(os.path.join(sourcePath, name+'.txt')).read()
                 d = rfc822persist.RFC822Dict(
-                    os.path.join(sourcePath, name+'.meta'), 'r')
+                    os.path.join(sourcePath, name+'.meta'))
                 if page.text == newText:
                     for name, value in page.metadata.items():
                         if d.has_key(name) and d[name] != value:
