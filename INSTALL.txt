@@ -8,8 +8,8 @@ Export the following parts from the Subversion repository::
     svn export http://svn.w4py.org/LoginKit/trunk/LoginKit Webware/LoginKit
     svn export http://svn.w4py.org/Wiki/trunk Wiki
 
-You can also use "checkout" instead of "export"; this will allow you to later quickly
-update these parts from the repository using "svn update".
+You can also use "checkout" instead of "export"; this will allow you to later
+quickly update these parts from the repository using "svn update".
 
 Run the Webware installer::
 
@@ -19,8 +19,7 @@ Run the Webware installer::
 Set up a new WebKit working directory::
 
     ~/w4py/Webware/bin/MakeAppWorkDir.py \
-        -c Wiki -d ~/w4py/Wiki/Context \
-        -l ~/w4py/Wiki ~/WikiWorkDir
+        -c Wiki -d ~/w4py/Wiki/Context -l ~/w4py/Wiki ~/WikiWorkDir
 
 Copy the standard ``wiki.ini`` file to the working directory::
 
