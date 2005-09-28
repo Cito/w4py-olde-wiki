@@ -310,12 +310,20 @@ form#searchbar {
 
 /* Login/forms */
 
+table.loginForm {
+	background-color: #d0d0da;
+	color: #000066;
+	border: 2px solid;
+	border-color: #f0f0fc #909097 #909097 #f0f0fc;
+}
 .loginForm input {
-	border: thin solid #000066;
+	border: 1px solid;
+	border-color: #909097 #f0f0fc #f0f0fc #909097;
 }
 .formError {
 	background-color: #993333;
 	color: #ffffff;
+	font-size: 10pt;
 	padding: 1pt 4pt;
 }
 a.button {
@@ -450,7 +458,8 @@ input.menuSearch {
 	font-family: "MS Sans Serif", Arial, sans-serif;
 	font-size: 7pt;
 	padding: 0px;
-	border: 1px #909097 #f0f0fc #f0f0fc #909097;
+	border: 1px solid;
+	border-color: #909097 #f0f0fc #f0f0fc #909097;
 }
 div.menu span.disabled {
 	color: #666666;

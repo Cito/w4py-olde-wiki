@@ -120,15 +120,16 @@ class login(SitePage):
             else:
                 values['captcha'] = captcha.create()
                 values['captcha'] = dedent('''\
-                <tr><td colspan="2"><p>&nbsp;</p>
+                <tr><td colspan="2">
                 <p>To avoid abuse of this Wiki, we have to make a simple<br>
                 plausibility test that checks whether you are a serious user.</p>
                 </td></tr><tr><td></td><td>%(error_captcha)s</td></tr>
-                <tr><td>Please fill in:</td><td>%(captcha)s</td></tr>
+                <tr><td><p>Please fill in:</p></td><td>%(captcha)s</td></tr>
+                <tr><td colspan="2"></td></tr>
                 ''' % values)
 
         self.write(dedent('''\
-        <form action="%(action)s" method="POST">
+        <form action="%(action)s" method="post">
         <p>No email confirmation required; just fill in the values
         and go!</p>
         <input type="hidden" name="_action_" value="create">
@@ -139,44 +140,43 @@ class login(SitePage):
         <tr>
         <td>Username:</td>
         <td>%(error_username)s
-        <input type="text" name="username" value="%(username)s" size=30></td>
+        <input type="text" name="username" value="%(username)s" size="30"></td>
         </tr>
 
         <tr>
         <td>Full name:</td>
         <td>%(error_name)s
-        <input type="text" name="name" value="%(name)s" size=40></td>
+        <input type="text" name="name" value="%(name)s" size="40"></td>
         </tr>
 
         <tr>
         <td>Email address:</td>
         <td>%(error_email)s
-        <input type="text" name="email" value="%(email)s" size=40></td>
+        <input type="text" name="email" value="%(email)s" size="40"></td>
         </tr>
 
         <tr>
         <td>Website:</td>
         <td>%(error_website)s
-        <input type="text" name="website" value="%(website)s" size=40></td>
+        <input type="text" name="website" value="%(website)s" size="40"></td>
         </tr>
 
         <tr>
         <td>Password:</td>
         <td>%(error_password)s
-        <input type="password" name="password" value="%(password)s" size=20></td>
+        <input type="password" name="password" value="%(password)s" size="20"></td>
         </tr>
 
         <tr>
         <td>Confirm:</td>
         <td>%(error_confirm_password)s
-        <input type="password" name="confirm_password" value="%(confirm_password)s" size=20></td>
+        <input type="password" name="confirm_password" value="%(confirm_password)s" size="20"></td>
         </tr>
 
         %(captcha)s
 
         <tr>
-        <td colspan=2 align=center>
-        <input type="submit" value="Create user"></td>
+        <td align="center" colspan="2"><input type="submit" value="Create user"></td>
         </tr>
         </table>
         </form>
