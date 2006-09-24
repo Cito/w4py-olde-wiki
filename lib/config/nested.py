@@ -27,7 +27,7 @@ class NestedDict(DictMixin):
         assert isinstance(configs, (list, tuple)), (
             "The configs must be a list or tuple, not: %r"
             % configs)
-        self.configs = configs
+        self.configs = [conf.copy() for conf in configs]
         self.mutable = mutable
         self.nest = nest
 
