@@ -110,7 +110,7 @@ class NestedDict(DictMixin):
                 "Key does not exist: %r" % key)
 
     def keys(self):
-        return self.configs[-1].keys()
+        return [key for key in self]
 
     def __contains__(self, key):
         for config in self.configs:
