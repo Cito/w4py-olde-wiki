@@ -87,12 +87,12 @@ class WikiLink(Transform):
     def apply(self):
         visitor = WikiLinkResolver(self.document)
         self.document.walk(visitor)
-        
+
 class Reader(standalone.Reader):
 
     supported = standalone.Reader.supported + ('wiki',)
 
-    default_transforms = standalone.Reader.default_transforms \
-                         + (WikiLink,)
-
-
+    def get_transforms(self):
+        transforms = standalone.Reader.get_transforms(self)
+        transforms.append(WikiLink)
+        return transforms
