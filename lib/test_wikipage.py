@@ -1,4 +1,5 @@
 import test_wiki
+import os
 import wiki
 import rfc822persist
 from test_fixture import DoctestCollector
@@ -36,8 +37,8 @@ def test_page():
     assert not page.originalFilename
     assert not page.hidden
     assert not page.distributionOriginal
-    assert page.basePath == w.basepath + '/test1'
-    assert page.archiveBasePath == w.basepath + '/archive/test1'
+    assert page.basePath == os.path.join(w.basepath, 'test1')
+    assert page.archiveBasePath == os.path.join(w.basepath, 'archive', 'test1')
     # None = current version
     assert page.version is None
     assert page.link == 'http://test.domain/test1.html'
@@ -59,7 +60,7 @@ def test_page():
     assert page.searchTitleMatches('1')
     assert page.searchNameMatches('1')
     assert 'A test' in page.searchSegment('test')
-    
+
 def test_relations():
     conf = test_wiki.make_conf()
     w = wiki.GlobalWiki(conf).site('test.domain')
@@ -98,14 +99,16 @@ def test_relations():
     assert len(back) == 1
     assert back[0].name == 'test3'
     print page.html
-    assert re.search(r'<a href="[^"]*test5.html">', page.html)
-    assert 'nowiki' in page.html
+    assert re.search(r'<a [^>]*href="[^"]*test5.html">', page.html)
+    assert 'class="nowiki"' in page.html
+    assert 'class="wiki"' not in page.html
     page5.text = 'test'
     page5.save()
-    print '>>', repr(page.html)
-    assert re.search(r'<a href="[^"]*test5.html">', page.html)
-    assert 'nowiki' not in page.html
-    
+    print page.html
+    assert re.search(r'<a [^>]*href="[^"]*test5.html">', page.html)
+    assert 'class="nowiki"' not in page.html
+    assert 'class="wiki"' in page.html
+
 def test_error():
     conf = test_wiki.make_conf()
     w = wiki.GlobalWiki(conf).site('test.domain')

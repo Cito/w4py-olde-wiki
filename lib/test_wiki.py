@@ -53,7 +53,7 @@ def test_wiki():
     w.recreateThumbnails()
     w.rebuildIndex()
     w.checkDistributionFiles()
-    rss = str(w.syndicateRecentChanges__get())
+    rss = str(w.syndicateRecentChanges)
     assert rss.startswith('<?xml')
     assert rss.find('<channel>') != -1
     for mime_type, ext in [('text/plain', '.txt'),

@@ -363,6 +363,8 @@ class WikiPage(object):
 
     def _subWikiLinksSubber(self, match):
         name = match.group(2)
+        if name.endswith('.html'):
+            name = name[:-5]
         if self.wiki.page(name).exists():
             name = self.wiki.page(name).name
             return ('<a class="wiki" href="%s%s%s%s'
@@ -672,6 +674,8 @@ class WikiPage(object):
             name = match.group(2)
             if self.wiki.page(name).exists():
                 name = self.wiki.page(name).name
+            if name.endswith('.html'):
+                name = name[:-5]
             results[name] = None
         return results.keys()
 
