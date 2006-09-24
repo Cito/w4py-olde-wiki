@@ -330,7 +330,7 @@ class SitePage(CPage):
     def popupLink(self, link, text):
         return ('<a href="%s" onClick="'
             "window.open('%s','"
-            'width="400",height="500",location=yes,menubar=no,'
+            'width=400,height=500,location=yes,menubar=no,'
             'resizable=yes,scrollbars=yes,status=no,toolbar=no'
             "'); return false"
             '">%s</a>' % (link, link, text))
