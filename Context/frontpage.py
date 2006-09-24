@@ -1,4 +1,4 @@
-from SitePage import *
+from SitePage import SitePage
 import time
 
 class frontpage(SitePage):
@@ -57,6 +57,6 @@ class frontpage(SitePage):
         page = self.wiki.page('index')
         result = page.html
         if self.user():
-            result += ('\n<div align="right"><a href="%s">'
-                'Edit this page</a></div>\n' % (page.link))
+            result += '\n<div align="right"><a href="%s?_action_=edit">' \
+                'Edit this page</a></div>\n' % page.link
         return result

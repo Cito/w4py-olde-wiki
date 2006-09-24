@@ -423,4 +423,3 @@ scheduler = Scheduler()
 scheduler.start()
 scheduler.addPeriodicAction(time.time(), 10, PublishTask(TheGlobalWiki),
                             'PublishTask')
-
