@@ -1,5 +1,4 @@
-from py.test.collect import Module, PyCollector
-#from py.test.item import Item
+from py.test.collect import Collector
 import doctest24 as doctest
 import sys
 from cStringIO import StringIO
@@ -22,7 +21,7 @@ class DummyMethod(object):
     def __call__(self, *args, **kw):
         return self.return_value
 
-class ParamCollector(PyCollector):
+class ParamCollector(Collector):
 
     def collect_function(self, extpy):
         if not extpy.check(func=1, basestarts='test_'):
@@ -32,12 +31,12 @@ class ParamCollector(PyCollector):
             params = func.params
             for i, param in enumerate(params):
                 item = self.Item(extpy, *param)
-                item.name = item.name + '.%i' % i
+                item.name += '.%i' % i
                 yield item
         else:
-            yield self.Item(extpy)
-    
-class DoctestCollector(PyCollector):
+            yield extpy
+
+class DoctestCollector(Collector):
 
     def __init__(self, extpy_or_module):
         if isinstance(extpy_or_module, types.ModuleType):
@@ -60,7 +59,7 @@ class DoctestCollector(PyCollector):
         for t in tests:
             yield DoctestItem(self.extpy, t)
 
-class DoctestItem(DoctestCollector.Item):
+class DoctestItem:
 
     def __init__(self, extpy, doctestitem, *args):
         self.extpy = extpy
@@ -77,11 +76,10 @@ class DoctestItem(DoctestCollector.Item):
             (failed, tried), run_output = capture_stdout(runner.run, self.doctestitem)
             if failed:
                 raise self.Failed(msg=run_output, tbindex=-2)
-                
         finally:
             if teardown:
                 teardown(target)
-                
+
 def capture_stdout(func, *args, **kw):
     newstdout = StringIO()
     oldstdout = sys.stdout
