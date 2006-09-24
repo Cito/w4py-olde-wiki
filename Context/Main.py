@@ -25,7 +25,7 @@ class Main(SitePage):
     def __init__(self):
         SitePage.__init__(self)
         self._inputTypeCleaners = {}
-        self._inputTypeCleaners['htmlarea'] = self.cleanHTMLArea
+        self._inputTypeCleaners['xinha'] = self.cleanXinha
 
     def setupEarly(self):
         req = self.request()
@@ -535,7 +535,7 @@ class Main(SitePage):
         if self.checkPermission('edit'):
             menu = [
                 ('Edit this page', self.link(action='edit')),
-                ('External editor <img src="%s" width=10 height=10 border=0>'
+                ('External editor <img src="%s" width="10" height="10" border="0">'
                  % self.wiki.linkTo('edit_icon.gif'),
                  self.link(action='externalEdit'))]
         if (self.page.exists()
@@ -650,13 +650,13 @@ class Main(SitePage):
             %(describe)s
 
             <script type="text/javascript">
-            function relatedAdd(name, mimeType, title) {
+              function relatedAdd(name, mimeType, title) {
                 var field = document.forms.f.elements.keywords;
                 if (field.value) {
-                    field.value += ", ";
+                  field.value += ", ";
                 }
                 field.value += name;
-            }
+              }
             </script>
 
             %(hidden)s<br>
@@ -762,7 +762,7 @@ class Main(SitePage):
     def editFieldText(self, page):
         req = self.request()
         text = req.field('text', page.text)
-        return ('<textarea name="text" rows=20 cols=50 '
+        return ('<textarea name="text" rows="20" cols="50" '
                 'style="width: 100%%">%s</textarea>\n'
                 '<input type="hidden" name="inputType" value="textarea">'
                 % self.htmlEncode(text))
@@ -778,41 +778,38 @@ class Main(SitePage):
         insertLink = self.popupLink('quickfind?callParent=restlink',
             'Insert wiki link')
         return dedent('''\n
-            <textarea name="text" id="text" rows=20 cols=50
+            <textarea name="text" id="text" rows="20" cols="50"
              style="width: 100%%">%(text)s</textarea>
             <input type="hidden" name="inputType" value="restTextarea"><br>
             <span style="font-size: small">%(insertLink)s | %(markupHelpLink)s <i>(note:
             no HTML tags allowed)</i></span><br>
             <script type="text/javascript">
-            function insertAtCursor(field, text) {
-                // IE:
-                if (document.selection) {
-                    field.focus();
-                    var sel = document.selection.createRange();
-                    sel.text = text;
+              function insertAtCursor(field, text) {
+                if (document.selection) { // IE:
+                  field.focus();
+                  var sel = document.selection.createRange();
+                  sel.text = text;
                 }
-                // Mozilla:
                 else if (field.selectionStart
-                         || field.selectionStart == "0") {
-                    var startPos = field.selectionStart;
-                    var endPos = field.selectionEnd;
-                    field.value = field.value.substring(0, startPos)
-                        + text
-                        + field.value.substring(endPos, field.value.length);
+                    || field.selectionStart == "0") { // Mozilla:
+                  var startPos = field.selectionStart;
+                  var endPos = field.selectionEnd;
+                  field.value = field.value.substring(0, startPos) + text
+                    + field.value.substring(endPos, field.value.length);
                 } else {
-                    field.value += text;
+                  field.value += text;
                 }
-            }
-            function restlink(name, mimeType, title) {
+              }
+              function restlink(name, mimeType, title) {
                 var textarea = document.getElementById("text");
                 var link;
                 if (title.indexOf(" ") == -1) {
-                    link = title + "_";
+                  link = title + "_";
                 } else {
-                    link = "`" + title + "`_";
+                  link = "`" + title + "`_";
                 }
                 insertAtCursor(textarea, link);
-            }
+              }
             </script>
             ''' % locals())
 
@@ -826,58 +823,71 @@ class Main(SitePage):
         #               datetime.datetime.now().strftime('%d %b \'%y')))
         return dedent('''\n
             <script type="text/javascript">
-                _editor_url = '/htmlarea';
-                _editor_lang = 'en';
+              _editor_url = '/xinha/';
+              _editor_lang = 'en';
             </script>
-            <script type="text/javascript" src="htmlarea.js"></script>
-            <script type="text/javascript" src="lang/en.js"></script>
-            <script type="text/javascript" src="dialog.js"></script>
-            <style type="text/css">
-                @import url(htmlarea.css);
-            </style>
+            <script type="text/javascript" src="/xinha/htmlarea.js"></script>
             <script type="text/javascript">
-                var editor = null;
-                function initEditor() {
-                    editor = new HTMLArea("text");
-                    var cfg = editor.config;
-                    cfg.registerButton({
-                      id: "wikilink",
-                      tooltip: "link to a wiki page",
-                      image: "images/ed_wikilink.gif",
-                      textMode: false,
-                      action: function (editor) {
-                        window.open("quickfind?callParent=wikilink", "popup",
-                            "width=400,height=560,location=yes,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no");
-                      },
-                      context: ""
-                    });
-                    cfg.toolbar = [
-                      ["fontname", "fontsize", "formatblock", "space",
-                       "bold", "italic", "separator",
-                       "copy", "cut", "paste", "space",
-                       "undo", "redo"],
-                      ["justifyleft", "justifycenter", "justifyright", "separator",
-                       "insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",
-                       "forecolor", "hilitecolor", "textindicator", "separator",
-                       "inserthorizontalrule", "createlink", "wikilink", "insertimage", "inserttable", "htmlmode", "separator",
-                       "popupeditor", "separator",
-                       "showhelp", "about"]
-                    ];
-                    //cfg.toolbar.push(["linebreak", "wikilink"]);
-                    //cfg.imgURL = "htmlarea/images/";
-                    //cfg.popupURL = "htmlarea/popups/";
-                    editor.generate();
+              xinha_editors = null;
+              xinha_init  = null;
+              xinha_config = null;
+              xinha_plugins = null;
+              xinha_init = xinha_init ? xinha_init : function()
+              {
+                xinha_plugins = xinha_plugins ? xinha_plugins :
+                  [
+                    'Abbreviation',
+                    'CharacterMap',
+                    'ContextMenu',
+                    'Equation',
+                    'FullScreen',
+                    'InsertSmiley',
+                    'Linker',
+                    'ListType',
+                    'QuickTag',
+                    'TableOperations'
+                  ];
+                if (!HTMLArea.loadPlugins(xinha_plugins, xinha_init)) return;
+                xinha_editors = xinha_editors ? xinha_editors :
+                  [
+                    'text'
+                  ];
+                xinha_config = xinha_config ? xinha_config() : new HTMLArea.Config();
+                xinha_editors = HTMLArea.makeEditors(xinha_editors, xinha_config, xinha_plugins);
+                cfg = xinha_editors.text.config
+                cfg.registerButton({
+                  id: "wikilink",
+                  tooltip: "Link to a Wiki Page",
+                  image: "images/ed_wikilink.gif",
+                  textMode: false,
+                  action: function (editor) {
+                    window.open("quickfind?callParent=wikilink", "popup",
+                      "width=400,height=560,location=yes,menubar=no,"
+                        + "resizable=yes,scrollbars=yes,status=no,toolbar=no");
+                  },
+                  context: ""
+                });
+                // add wikilink to toolbar
+                toolbar = cfg.toolbar;
+                for (i=0; i<toolbar.length; ++i) {
+                  bar = toolbar[i];
+                  for (j=0; j<bar.length; ++j)
+                    if (bar[j] == 'createlink') {
+                      bar.splice(j+1, 0, 'wikilink');
+                      i = toolbar.length;
+                      break;
+                    }
                 }
-                function wikilink(name, mimeType, title) {
-                    editor.insertHTML(\'<a href="\' + name + \'.html">\'
-                                      + title + "</a>");
-                }
+                HTMLArea.startEditors(xinha_editors);
+              }
+              function wikilink(name, mimeType, title) {
+                xinha_editors.text.insertHTML(\'<a href="\' + name
+                  + \'.html">\' + title + "</a>");
+              }
+              window.onload = xinha_init;
             </script>
-            <textarea name="text" id="text" rows=30 cols=50 style="width: 100%%">%s</textarea>
-            <input type="hidden" name="inputType" value="htmlarea">
-            <script type="text/javascript">
-                initEditor();
-            </script>
+            <textarea name="text" id="text" rows="30" cols="50" style="width: 100%%">%s</textarea>
+            <input type="hidden" name="inputType" value="xinha">
             ''' % self.htmlEncode(text))
 
     def editFieldBinary(self, page, mimeType):
@@ -895,7 +905,7 @@ class Main(SitePage):
             Upload: <input type="file" name="textUpload">
             <input type="hidden" name="inputType" value="upload"><br>
             Comments:<br>
-            <textarea name="comments" style="width: 100%%" rows=3 cols=60 wrap="SOFT">%s</textarea>
+            <textarea name="comments" style="width: 100%%" rows="3" cols="60" wrap="soft">%s</textarea>
             ''' % (src, self.htmlEncode(page.comments)))
 
     def writePreview(self):
@@ -1069,7 +1079,7 @@ class Main(SitePage):
                           mimeType))
 
     _linkRE = re.compile('href\s*=\s*"(.*?)"', re.I+re.S)
-    def cleanHTMLArea(self, text):
+    def cleanXinha(self, text):
         if tidy:
             text = tidy.parseString(
                 text,
