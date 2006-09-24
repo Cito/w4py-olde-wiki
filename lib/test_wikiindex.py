@@ -14,13 +14,12 @@ def set_match(s1, s2):
     return True
 
 def recur_delete(dir):
-    if not os.path.isdir(dir):
-        os.unlink(dir)
-    else:
+    if os.path.isdir(dir):
         for fn in os.listdir(dir):
             recur_delete(os.path.join(dir, fn))
         os.rmdir(dir)
-
+    else:
+        os.unlink(dir)
 
 def runner(func):
     global base_dir
@@ -31,6 +30,7 @@ def runner(func):
         os.makedirs(base_dir)
     index = wikiindex.WikiIndex(base_dir)
     func(index)
+    wikiindex._closeHandler()
 
 def test_links(index):
     index.setLinks('test', ['test2', 'test3'])
@@ -73,6 +73,7 @@ def test_connections(index):
     assert set_match(index.connections('test'), [('test3', 'attach')])
 
 def teardown_module(mod):
+    wikiindex._closeHandler()
     recur_delete(base_dir)
 
 test_connections = runner(test_connections)

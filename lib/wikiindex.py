@@ -5,8 +5,8 @@ import atexit
 _shelvesToClose = []
 
 def _closeHandler():
-    for db in _shelvesToClose:
-        db.close()
+    while _shelvesToClose:
+        _shelvesToClose.pop().close()
 
 atexit.register(_closeHandler)
 
