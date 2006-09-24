@@ -7,9 +7,9 @@ Test
 This is a test_
 """,
           '''
-<h1 class="title">Test</h1>
 <div class="document" id="test">
-<p>This is a <a class="wiki reference" href="test">test</a></p>
+<h1 class="title">Test</h1>
+<p>This is a <a class="reference" href="test">test</a></p>
 </div>
 ''')]
 
