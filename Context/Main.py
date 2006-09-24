@@ -567,7 +567,7 @@ class Main(SitePage):
         if self.page.exists():
             changeLink = ''
         else:
-            changeLink = '<a href="%s" class="button">change...</a>' % \
+            changeLink = '<a href="%s" class="button">Change...</a>' % \
                 self.pageLink(self.page.name + ".html", action='changeMimeType',
                 args={'commenting': req.field('commenting', None)})
         if self.canPreview(self.page, mimeType):
