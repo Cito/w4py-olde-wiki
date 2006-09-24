@@ -846,8 +846,8 @@ class Main(SitePage):
                       image: "images/ed_wikilink.gif",
                       textMode: false,
                       action: function (editor) {
-                        window.open("quickfind?callParent=wikilink", "blank_",
-                            "width=400,height=500,location=yes,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no");
+                        window.open("quickfind?callParent=wikilink", "popup",
+                            "width=400,height=560,location=yes,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no");
                       },
                       context: ""
                     });
