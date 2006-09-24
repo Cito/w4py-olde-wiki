@@ -109,7 +109,7 @@ class RSS(object):
             self.metadata.update(metadata)
         if items:
             for item in items:
-                self.addItem(item)
+                self.addItem(item, len(items))
 
     def parseFile(self, f):
         xml.sax.parse(f, SAXHandler(self))
