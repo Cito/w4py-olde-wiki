@@ -11,7 +11,6 @@ from LoginKit.rfc822usermanager import RFC822UserManager
 from LoginKit import UserComponent
 from lib import user
 from lib.securehidden import SecureSigner
-from WebKit.ImportSpy import modloader
 from WebKit import AppServer
 import shutil
 from TaskKit.Task import Task
@@ -392,7 +391,7 @@ if not os.path.exists(configFilename):
                     configFilename)
 config = wikiconfig.WikiConfig()
 config.load(configFilename)
-modloader.watchFile(configFilename)
+AppServer.globalAppServer._imp.watchFile(configFilename)
 TheGlobalWiki = wiki.GlobalWiki(config)
 for filename in os.listdir(thisDir):
     if filename.endswith('.py'):
