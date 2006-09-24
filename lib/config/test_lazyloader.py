@@ -1,5 +1,9 @@
 import lazyloader
-from wsgikit.tests.fixture import sorted, assert_error, DoctestCollector
+
+import sys
+sys.path.append('..')
+from test_fixture import DoctestCollector
+from test_fixture import sorted, assert_error
 
 data1 = """\
 [ages]
@@ -35,7 +39,7 @@ def test_create():
     assert_error(
         config.__getitem__, 'child',
         error=KeyError)
-    
+
 data2 = """\
 [children]
 # Another child...
@@ -86,7 +90,6 @@ def test_global():
     assert merge2['something']['here!']['test']['this']['out'] == 'foo'
     config.merge(merge2)
     assert config['something']['here!']['test']['this']['out'] == 'foo'
-    
 
 collect_doctest = DoctestCollector(lazyloader)
 
@@ -109,4 +112,3 @@ def test_parse_section():
         input = trial[0]
         output = list(trial[1:])
         assert parse_keys(input) == output
-    

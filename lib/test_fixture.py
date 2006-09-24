@@ -75,3 +75,35 @@ def capture_stdout(func, *args, **kw):
     finally:
         sys.stdout = oldstdout
     return result, newstdout.getvalue()
+
+def assert_error(func, *args, **kw):
+    kw.setdefault('error', Exception)
+    kw.setdefault('text_re', None)
+    error = kw.pop('error')
+    text_re = kw.pop('text_re')
+    if text_re and isinstance(text_re, str):
+        import re
+        real_text_re = re.compile(text_re, re.S)
+    else:
+        real_text_re = text_re
+    try:
+        value = func(*args, **kw)
+    except error, e:
+        if real_text_re and not real_text_re.search(str(e)):
+            assert False, (
+                "Exception did not match pattern; exception:\n  %r;\n"
+                "pattern:\n  %r"
+                % (str(e), text_re))
+    except Exception, e:
+        assert False, (
+            "Exception type %s should have been raised; got %s instead (%s)"
+            % (error, e.__class__, e))
+    else:
+        assert False, (
+            "Exception was expected, instead successfully returned %r"
+            % (value))
+
+def sorted(l):
+    l = list(l)
+    l.sort()
+    return l
