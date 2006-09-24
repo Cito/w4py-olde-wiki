@@ -1,10 +1,6 @@
 from html_abstracts import *
-from test_fixture import ParamCollector as Collector
 
-def test_match(input, output):
-    assert find_abstract(input).strip() == output.strip()
-
-test_match.params = tests = [
+tests = [
     ("""
     This is a test
     blah blah
@@ -34,4 +30,6 @@ there</p>stop
      """\nThe whole doc...\n\n"""),
     ]
 
-
+def test_match():
+    for input, output in tests:
+        assert find_abstract(input).strip() == output.strip()

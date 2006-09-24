@@ -1,4 +1,5 @@
 from py.test.collect import Collector
+from py.test import Item
 import doctest24 as doctest
 import sys
 from cStringIO import StringIO
@@ -20,21 +21,6 @@ class DummyMethod(object):
 
     def __call__(self, *args, **kw):
         return self.return_value
-
-class ParamCollector(Collector):
-
-    def collect_function(self, extpy):
-        if not extpy.check(func=1, basestarts='test_'):
-            return
-        func = extpy.resolve()
-        if hasattr(func, 'params'):
-            params = func.params
-            for i, param in enumerate(params):
-                item = self.Item(extpy, *param)
-                item.name += '.%i' % i
-                yield item
-        else:
-            yield extpy
 
 class DoctestCollector(Collector):
 
@@ -59,7 +45,7 @@ class DoctestCollector(Collector):
         for t in tests:
             yield DoctestItem(self.extpy, t)
 
-class DoctestItem:
+class DoctestItem(Item):
 
     def __init__(self, extpy, doctestitem, *args):
         self.extpy = extpy
