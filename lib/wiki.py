@@ -451,7 +451,7 @@ class Wiki(object):
             page.recreateThumbnail()
 
     def syndicateRecentChanges__get(self):
-        """Returnsthe rssobject.RSS object."""
+        """Returns the rssobject.RSS object."""
         rss = rssobject.RSS(self.syndicateRecentChangesFilename)
         conf = self.config.get('rss', {})
         for attribute in rssobject.rssAttributes:

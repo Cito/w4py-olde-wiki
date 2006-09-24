@@ -9,7 +9,7 @@ def make_conf():
     return conf
 
 def setup_module(module):
-    shutil.rmtree(os.path.join(os.path.dirname(__file__), 'test_data'))
+    shutil.rmtree(os.path.join(os.path.dirname(__file__), 'test_data'), True)
     os.mkdir(os.path.join(os.path.dirname(__file__), 'test_data'))
 
 def test_global():
@@ -22,14 +22,14 @@ def test_global():
     assert g.config['testval2'] == 'None'
     assert s.config['testval'] == 'B'
     assert s.config['testval2'] == 'A'
-    assert s.basepath.endswith('/test.domain')
+    assert s.basepath.endswith(os.sep+'test.domain')
     assert s.basepath.startswith(g.root)
     s2 = g.site('test.virtual')
     assert s2.globalWiki is g
     assert s2.canonical is s
     assert s2.config['testval'] == 'C'
     assert s2.config['testval2'] == 'A'
-    
+
 def test_wiki():
     conf = make_conf()
     w = wiki.GlobalWiki(conf).site('test.domain')
@@ -38,10 +38,10 @@ def test_wiki():
     assert w.search('test') == []
     assert w.searchTitles('test') == []
     assert w.searchNames('test') == []
-    assert w.recentPages() == []
-    assert w.orphanPages() == []
-    assert w.wantedPages() == []
-    assert w.allPages() == []
+    dist = set(('thiswiki',))
+    assert dist.issuperset(p.name for p in w.recentPages())
+    assert dist.issuperset(p.name for p in w.orphanPages())
+    assert dist.issuperset(p.name for p in w.allPages())
     assert w.linkTo('test') == 'http://test.domain/test.html'
     assert w.linkTo('test.link') == 'http://test.domain/test.link'
     assert w.linkTo('test', source=True) == 'http://test.domain/test.txt'
@@ -53,7 +53,7 @@ def test_wiki():
     w.recreateThumbnails()
     w.rebuildIndex()
     w.checkDistributionFiles()
-    rss = str(w.rss)
+    rss = str(w.syndicateRecentChanges__get())
     assert rss.startswith('<?xml')
     assert rss.find('<channel>') != -1
     for mime_type, ext in [('text/plain', '.txt'),
@@ -62,6 +62,3 @@ def test_wiki():
                            ('text/html', '.html'),
                            ]:
         assert w.extensionForMimeType(mime_type) == ext
-
-
-
