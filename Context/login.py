@@ -2,17 +2,16 @@ from SitePage import *
 from WebKit.HTTPExceptions import *
 from lib.common import dedent
 
-def d(**kw): return kw
 
 class login(SitePage):
 
     def setup(self):
         self._formErrors = {}
-        if (self.user()
+        if (self.session() and self.session().hasValue('userID')
             and self.request().field('_actionLoginUsername_', False)):
             returnTo = self.request().field('returnTo', '')
             self.sendRedirectAndEnd(returnTo
-                                    or self.request().adapterName())
+                or self.request().adapterName() + '/')
 
     def pageClass(self):
         return 'none'
@@ -89,7 +88,7 @@ class login(SitePage):
                 self.servletLink('forgotten'))
         if self.newUsers():
             self.write('<h2>Or create a new user account...</h2>\n')
-            self.writeCreateForm(self.linkToSelf())
+            self.writeCreateForm()
 
     def writeSuccess(self):
         self.write('User created!')

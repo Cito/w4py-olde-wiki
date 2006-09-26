@@ -69,7 +69,6 @@ class SitePage(CPage):
             action = (action,)
         elif isinstance(action, list):
             action = tuple(action)
-
         userID = self.user() and self.user().userID()
         if not page:
             cacheKey = (userID, action, pageClass)
@@ -83,7 +82,6 @@ class SitePage(CPage):
                     return
             except KeyError:
                 pass
-
         if pageClass is not None and pageClass != self.pageClass():
             config = self.wiki.config.merge_page_class(pageClass)
         else:
@@ -154,7 +152,7 @@ class SitePage(CPage):
                           page.title))
         self.write('</table>\n')
 
-    def test(self, op, t, f):
+    def test(self, op, t, f=''):
         if op:
             return t
         else:

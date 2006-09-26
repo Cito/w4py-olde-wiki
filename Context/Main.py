@@ -14,11 +14,6 @@ import datetime
 from lib.format_date import format_date_relative
 from lib.common import dedent
 
-def test(val, a, b=''):
-    if val:
-        return a
-    else:
-        return b
 
 class Main(SitePage):
 
@@ -737,11 +732,16 @@ class Main(SitePage):
             Item limit:
             <input type="text" name="relatedEntryLimit" value="%(relatedEntryLimit)s" size=3><br>
             ''' % {
-                'summarizingHelp': self.helpLink('wikisummarizing', 'Help on the Wiki\'s summarizing'),
-                'relatedSummariesCheck': self.test(p.relatedSummaries, ' checked', ''),
-                'relatedShowDatesCheck': self.test(p.relatedShowDates, ' checked', ''),
-                'creationDateSelected': self.test(p.relatedSortField == 'creationDate', ' selected', ''),
-                'modifiedDateSelected': self.test(p.relatedSortField == 'modifiedDate', ' selected', ''),
+                'summarizingHelp': self.helpLink('wikisummarizing',
+                    'Help on the Wiki\'s summarizing'),
+                'relatedSummariesCheck':
+                    self.test(p.relatedSummaries, ' checked'),
+                'relatedShowDatesCheck':
+                    self.test(p.relatedShowDates, ' checked'),
+                'creationDateSelected':
+                    self.test(p.relatedSortField == 'creationDate', ' selected'),
+                'modifiedDateSelected':
+                    self.test(p.relatedSortField == 'modifiedDate', ' selected'),
                 'relatedDateLimit': relatedDateLimit,
                 'relatedEntryLimit': p.relatedEntryLimit or '',
                 }))
@@ -1001,8 +1001,8 @@ class Main(SitePage):
             self.write('<td style="text-align: center">'
                 '<input type="radio" name="firstVersion" value="%s"%s>'
                 '<input type="radio" name="otherVersion" value="%s"%s></td>\n'
-                % (page.version, test(index==firstIndex, ' checked'),
-                    page.version, test(index==otherIndex, ' checked')))
+                % (page.version, self.test(index==firstIndex, ' checked'),
+                    page.version, self.test(index==otherIndex, ' checked')))
             if delete:
                 if self.checkPermission('delete', page=page):
                     self.write('<td style="text-align: center">'
