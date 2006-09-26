@@ -22,7 +22,7 @@ def test_no_section():
         """# A file...
 a=10
 """, r'^Assignments can only.*')
-        
+
 def test_no_equal():
     raises(
         """[a file]
@@ -73,4 +73,3 @@ c=[blah]
     assert data['test']['a'] == ['a\npretty\nbird\nb=3']
     assert data['test']['b'] == ['another\nline']
     assert data['test3']['c'] == ['[blah]\n[blah]']
-        

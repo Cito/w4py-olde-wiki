@@ -178,7 +178,7 @@ class INIParser:
             self.error_section_without_end_bracket(line)
             return None
         return line[1:-1]
-                        
+
     def process_assignment(self, name, accumulated_content):
         content = '\n'.join([l.lstrip() for l in accumulated_content])
         self.assignment(name.strip(), content)
@@ -239,5 +239,3 @@ class BasicParser(INIParser):
                 'Assignments can only occur inside sections; no section has been defined yet')
         section = self.data.setdefault(self.section, {})
         section.setdefault(name, []).append(content)
-        
-    

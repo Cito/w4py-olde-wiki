@@ -71,7 +71,7 @@ class LazyLoader(NestedDict):
         self.master = master
         NestedDict.__init__(self, configs=configs, mutable=mutable,
                             nest=nest)
-        
+
     def load(self, filename):
         parser = LazyINIParser(allow_empty_sections=True)
         parser.load(filename)
@@ -226,5 +226,3 @@ class LazyLoader(NestedDict):
                 new_list.append(converter.convert(value))
         except inischema.ParseValueError, e:
             pass
-        
-        

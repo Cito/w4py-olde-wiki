@@ -1,7 +1,7 @@
 from inischema import *
 
 class Schema1(INISchema):
-    
+
     number = optint()
     maybe = optbool(names=['maybe', 'or not'])
     float = optfloat()
@@ -64,7 +64,7 @@ string=something
 string2=something
 whatever=5
 """
-                         
+
 
 default_ini = """
 a = 1
@@ -103,4 +103,3 @@ def test_gen2():
     assert s.ini_repr() == "a=1\nb=2\nc=3\n"
     s.a = 2
     assert s.ini_repr() == "a=2\nb=2\nc=3\n"
-    

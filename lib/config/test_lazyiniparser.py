@@ -24,5 +24,3 @@ def test_simple():
     assert [i.name for i in items] == ['a', 'a2', 'a']
     assert [i.lineno for i in items] == [3, 4, 6]
     assert c.source() == data
-        
-       

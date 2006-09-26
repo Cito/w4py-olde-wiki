@@ -172,7 +172,7 @@ class Config(object):
             return v
         else:
             return int(v)
-        
+
     def getinlinelist(self, key, default=(), section=None):
         """
         Get a list, where the list is defined like:
@@ -227,7 +227,7 @@ class Config(object):
                 for value in value_list:
                     data.append('%s: %s' % (name, value))
         return '\n'.join(data)
-                
+
 def load_options(parser, options, config, if_exists=True):
     """
     Given a parser object and the parsed options and a configuration
@@ -261,5 +261,3 @@ def load_options(parser, options, config, if_exists=True):
                 "Bad configuration file: option %r unexpected" % config_key)
         value = getattr(config, types[name])(config_key)
         setattr(options, dests[name], value)
-
-        

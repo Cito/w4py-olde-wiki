@@ -1,12 +1,9 @@
 import nested
 NestedDict = nested.NestedDict
 from pprint import pprint
-from wsgikit.tests.fixture import DoctestCollector
 
-def sorted(l):
-    l = l[:]
-    l.sort()
-    return l
+from test_fixture import DoctestCollector
+from test_fixture import sorted
 
 def test_empty():
     d = NestedDict()
@@ -60,4 +57,3 @@ def test_nested():
     assert d == concrete
 
 collect_doctest = DoctestCollector(nested)
-

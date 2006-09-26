@@ -1,7 +1,4 @@
 import lazyloader
-
-import sys
-sys.path.append('..')
 from test_fixture import DoctestCollector
 from test_fixture import sorted, assert_error
 
