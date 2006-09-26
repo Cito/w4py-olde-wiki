@@ -1,0 +1,5 @@
+Related terms are like a kind of backlink/inlining into other pages.
+
+When you list a page as being a related term, when you view that page you will see *this* page inlined into that page (along with any other pages that also are considered related).  You can also relate this to a page/term that does not yet exist in the wiki.  This is a way of creating a kind of table of contents for select topics.  You can use normal page terms, like "Related Terms", and it is converted to ``relatedterms`` for you.
+
+There is more to be done with this, mostly for customizing the target term -- so that things like a limit on the number of pages brought in, the sort order, indexing, RSS generation, and customization of how the page is inlined (just titles, summaries, entire pages).  It's just an idea for now.

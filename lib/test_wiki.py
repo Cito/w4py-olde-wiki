@@ -38,7 +38,7 @@ def test_wiki():
     assert w.search('test') == []
     assert w.searchTitles('test') == []
     assert w.searchNames('test') == []
-    dist = set(('thiswiki',))
+    dist = set(os.path.splitext(p)[0] for p in os.listdir('distpages'))
     assert dist.issuperset(p.name for p in w.recentPages())
     assert dist.issuperset(p.name for p in w.orphanPages())
     assert dist.issuperset(p.name for p in w.allPages())

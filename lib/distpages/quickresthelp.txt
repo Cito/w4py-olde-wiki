@@ -1,0 +1,12 @@
+In this Wiki, you can use **reStructuredText** markup language.
+
+For reference, please use the documentation available on the Docutils_ website:
+
+* `ReStructuredText Primer`_
+* `Quick reStructuredText`_
+* `Complete reST documentation`_
+
+.. _Docutils: http://docutils.sourceforge.net
+.. _`ReStructuredText Primer`: http://docutils.sourceforge.net/docs/user/rst/quickstart.html
+.. _`Quick reStructuredText`: http://docutils.sourceforge.net/docs/user/rst/quickref.html
+.. _`Complete reST documentation`: http://docutils.sourceforge.net/rst.html
