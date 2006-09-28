@@ -1,0 +1,184 @@
+Ideas for future Improvement
+----------------------------
+
+Some things I have in mind, though it's very unsure when and if ever:
+
+* Templating (configurable on a per-domain basis).
+  Probably with Cheetah_.
+  Choosable in some fashion as well, particularly a "printable" template.
+
+* More Indexing (backlinks are indexed)
+
+* More configuration options to control output and suppress links.
+
+* Mail notification on changes (though we have RSS now)
+
+* Some sort of categorization (maybe with more metadata; keyword
+  metadata, or a more controlled form of categorization)
+
+* InterWiki-links
+
+* Locking of pages for editing
+
+* `Related terms`_ starts the idea, but it needs a lot more flushing
+  out; more on that page.
+
+* Look at http://www.mnot.net/python/RSS.py , see if it should
+  replace ``rsspersist.py``
+
+* Maybe something with Atom, like described in
+  http://www.xml.com/pub/a/2004/04/14/atomwiki.html
+
+* Make implicit user logins -- with cookie or by IP address -- by user
+  preference.
+
+* Allow for deleting and moving pages.  I'm thinking this would be
+  implemented with a new page type, application/x-redirect, and with
+  deletes.  A rename or move would be a copy, delete, replace with
+  redirect.
+
+* Give untitled links titles by fetching the target and looking for a
+  ``<title>``.  Maybe part of restructured text parsing, and an
+  addition to the WYSIWYG editor, or maybe a post-processing filter.
+
+* Referrer tracking. Accept trackbacks (as comments?).
+
+* Many RSS (or whatever format) files.  One for each page (just append
+  ``.rss``).  One for each user?  One for site as well.
+
+* Note the many features on this page:
+  http://wikifeatures.wiki.taoriver.net/moin.cgi/IdeasToPlace and
+  also:
+  http://wikifeatures.wiki.taoriver.net/moin.cgi/FeatureSummaries
+  specifically...
+
+* `Fading Links`_: links change color depending on how often they are
+  followed.  Rates not just popularity of a page, but popularity of a
+  connection.
+
+* `Automatic Translation`_. Nice because it's easy.
+
+* `Email Address Protection`_. Or, more generally, pluggable output
+  filters.  In this case, a little Javascript "encryption".
+
+* `Fine Grained Addressing`_. This is like `Purple Number`_.
+  This could be added fairly easily to ``text/html`` content, but
+  restructured text will be harder.
+
+* `Event Casting`_, i.e., some sort of remote event notification.
+  Perhaps also trackback pings to all newly created links.
+
+* Obscure links behind redirects, like described here__.  But only
+  "unapproved" links -- i.e., new links.  (Note, we are already
+  telling search engines not to index the sandbox pages, which are
+  most prone to these abuses.)  IP tracking and banning might also go
+  with this.  Revert+ban (block IP, delete user account) would be
+  convenient, but it isn't that bad yet.
+
+* Boilerplate pages.  There's a number of pages (growing) related to
+  instructions about the Wiki.  When the Wiki starts up, it should
+  automatically install any new pages (pages that are listed in the
+  boilerplate, but aren't on the site).
+
+* Put templates, embedded content (e.g., navigation text), CSS into
+  Wiki.
+
+* Locking or edit conflict detection.
+
+* Links to pages that don't exist would pass the content of the anchor,
+  so that we have a decent idea of what the title should look like.
+
+* Attachments. Archives would be spiffy too -- download the archive,
+  or view the archive contents (maybe just a listing).  Serve as a
+  simple code repository.  (Single Python scripts are already
+  supported well enough.)
+
+* Permissions.  Restrict editing, creation, commenting based on roles,
+  assign roles.
+
+* Display entire page in RSS when a page is created.  If no log
+  message on an edit, include some sort of abbreviated diff.
+
+* `Machine Readable Pages`_.  I.e., an XMLRPC_ interface.  Should be
+  easy, but I'm not sure how many interesting clients there are.
+
+* `Near Links`_.  This might mean tracking the available pages in
+  several wikis, and noting similarities in page names (either
+  matches, or near matches, like `Like Pages`_).
+
+.. __: http://simon.incutio.com/archive/2004/05/11/approved
+
+* Some notes/links on wikis and blogs:
+  http://www.ourpla.net/cgi-bin/pikie.cgi?WikiWeblogs
+
+.. _Fading Links: http://wikifeatures.wiki.taoriver.net/moin.cgi/FadingLinks
+.. _Automatic Translation: http://wikifeatures.wiki.taoriver.net/moin.cgi/AutomaticTranslation
+.. _Email Address Protection: http://wikifeatures.wiki.taoriver.net/moin.cgi/EmailAddressProtection
+.. _Fine Grained Addressing: http://wikifeatures.wiki.taoriver.net/moin.cgi/FineGrainedAddressing
+.. _Purple number: http://www.eekim.com/software/purple/purple.html
+.. _Event Casting: http://wikifeatures.wiki.taoriver.net/moin.cgi/EventCasting
+.. _Machine Readable Pages: http://wikifeatures.wiki.taoriver.net/moin.cgi/MachineReadablePages
+.. _Near Links: http://wikifeatures.wiki.taoriver.net/moin.cgi/NearLink
+.. _Like Pages: http://wiki.wordpress.org/?pagename=LikePages
+
+Anything related to the markup should be put into docutils -- I think
+wiki links are nearly all we need in the way of extensions; everything
+else can be done in docutils directly.  (Though perhaps there should
+be a general directive, which simply passes parameters to the Wiki to
+be rendered at display time)
+
+Requested Features
+------------------
+
+Put whatever you want here.
+
+* Possibility to generate static pages for fast and scalable read-only
+  with any server. *request granted*
+
+* Breadcrumb links (showing your recent path through the wiki)
+
+  IB: What's the value over the back button?
+
+  CG: Well, if you click back then click a link, it erases the forward history,
+  so it's handy for that. I don't think I described it right -- it's more of
+  a static-length page history with most recently visited pages at the top
+  (and when you visit a page in that history, it pushes it back up to the top).
+  It lets you do non-linear history traversal. :) It's not really THAT useful,
+  but MoinMoin has it, and I find that it comes in handy when you want to go
+  back and forth between two wikipages that aren't linked directly to each other.
+  Plus, it's prominently visible, so you can quickly jump back 5 pages with ease!
+
+* Petition the docutils guys to make their formatting warning messages include
+  a piece (or the whole) line that generated the error. ;)
+
+* Javascript function that clears the "click here to search..." field when you
+  select it. (IB: it's supposed to do that now; works for me on Mozilla at least)
+
+* ReST Quick-Reference link on editing page (popup window)
+
+More ideas
+----------
+
+Things I don't really have in mind, but maybe would be a good idea:
+
+* Macros, like in MoinMoin_ -- would replace custom pages
+  (like `recent changes`_)
+
+* User preferences
+
+* Transclusion (including the contents of one page in another;
+  maybe it would be important with binary pages)
+
+* Internationalization (I have so little in-code text now, it would be
+  both easy and uninteresting)
+
+* Blog-like top-comment mode
+
+* Workflow.  Cool, but hard.  Note `Staged Commits`_.
+
+.. _Staged Commits: http://wikifeatures.wiki.taoriver.net/moin.cgi/StagedCommits
+
+.. _recent changes: recentchanges
+.. _htmlarea: http://www.interactivetools.com/products/htmlarea/
+.. _MoinMoin: http://moinmoin.wikiwikiweb.de/HelpOnMacros
+.. _Cheetah: http://www.cheetahtemplate.org/

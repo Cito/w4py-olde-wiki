@@ -1,8 +1,7 @@
 """
-These are routines common to the entire application.  We keep them
-separate to avoid circular dependencies.
+These are routines common to the entire application.
+We keep them separate to avoid circular dependencies.
 """
-
 
 import cgi
 import re
@@ -14,21 +13,21 @@ import os
 __all__ = ['canonicalName', 'htmlEncode', 'guessURLName', 'dprint',
            'pprint', 'guessTitle', 'dedent']
 
-_canonicalNameRE = re.compile(r'[^a-z0-9]')
+_canonicalNameRE = re.compile(r'[^a-z0-9-]')
 def canonicalName(name):
-    """
-    Turns a wiki name into its canonical form, which is generally with
-    nothing but letters and numbers in it.
-    """
-    return str(_canonicalNameRE.sub('', name.lower()))
+    """Turns a wiki name into its canonical form.
 
-_urlNameRE = re.compile(r'[^a-z0-9 ]')
-_whitespaceRE = re.compile(' +')
+    This may only have letters, numbers and hyphens in it.
+    """
+    name = name.lower().replace(' ', '-')
+    return str(_canonicalNameRE.sub('', name))
+
 def guessURLName(name):
-    name = str(_urlNameRE.sub('', name.lower()))
-    return _whitespaceRE.sub('-', name)
+    """Turns a URL into its canonical form."""
+    return canonicalName(name.replace('+', '-'))
 
 def guessTitle(name):
+    """Turns a canonical name into a title."""
     return ' '.join([w.capitalize() for w in name.split('-')])
 
 def htmlEncode(val, cgiEscape=cgi.escape):

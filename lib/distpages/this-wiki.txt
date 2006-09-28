@@ -1,0 +1,4 @@
+This is a Wiki based on Webware for Python written by `Ian Bicking`_.
+
+.. _Ian Bicking: http://ianbicking.org
+

@@ -551,8 +551,6 @@ class Main(SitePage):
         req = self.request()
         text = req.field('text', self.page.text)
         title = req.field('title', self.page.title)
-        if not self.page.exists() and not req.hasField('title'):
-            title = title.capitalize()
         htmlTitle = self.htmlEncode(title)
         log = req.field('changeLog', '')
         htmlLog = self.htmlEncode(log)

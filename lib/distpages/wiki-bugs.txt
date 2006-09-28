@@ -1,0 +1,11 @@
+Please list any bugs you find here.
+Feature requests should go on `Wiki ToDo`_.
+
+Indirect Wiki Names
+~~~~~~~~~~~~~~~~~~~
+
+This doesn't work, but it should::
+
+    Maybe you should look at this_
+
+    .. _this: `another wiki page`_

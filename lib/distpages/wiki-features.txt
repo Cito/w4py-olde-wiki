@@ -1,0 +1,114 @@
+Some of the features of this wiki:
+
+Restructured Text:
+    `Restructured Text`_ is fully supported, and is extended in a way
+    that is natural both for a wiki and for reST.  Any links (like
+    ``link_``) that cannot be resolved internally in a document are
+    considered to be wiki links to other pages on the system.
+
+    Because Restructured Text is a full-featured markup language, it
+    does not cut corners based on a limited initial domain.  It is not
+    wiki-specific, and does not produce output that is in any way
+    wiki-specific or of inferior layout.  It does not use WikiNames.
+
+.. _Restructured Text: http://docutils.sourceforge.net/rst.html
+
+WYSIWYG Editor:
+    WYSIWYG editing using Xinha_.  Includes a custom button to
+    insert intra-wiki links.
+
+.. _Xinha: http://docutils.sourceforge.net/rst.html
+
+External Editor:
+    The wiki supports using an `external editor`_ to edit content, to
+    avoid through-the-web editing (browser textareas are poor for
+    editing).
+
+.. _external editor: http://www.plope.com/software/ExternalEditor
+
+Searching:
+    Text and title searching.  Incremental page searches
+    when finding pages to link to.
+
+Non-text pages:
+    "Pages" can be of any type, including binary and image files
+    (e.g., PDF).
+
+RSS Feed:
+    XML RSS feeds for `new pages`_ and `recent changes`_
+    available for updates of the site.
+
+.. _new pages: /feeds/rss_new_pages.xml
+.. _recent changes: /feeds/recent_changes.xml
+
+Versioning:
+    All edits are versioned, and a history is kept.  You can compare
+    versions.
+
+Administration:
+    Administrators can easily rollback changes, remove old versions
+    or remove user accounts. This helps a lot in cleaning from spam.
+
+Captchas:
+    You can plug in your own captcha for creating user accounts.
+    Currently there are captchas suited for Python programmers and
+    musicians. Robots and stupid spammers will not be able to
+    create user accounts, but for serious users it is easy.
+
+Static publishing:
+    The wiki can be published to static files, with URLs that will be
+    analogous to the in-wiki URLs.  You can provide your own Cheetah
+    template to control the page content.  Pages are regenerated as
+    their wiki equivalents are edited.  Links to pages that do not
+    exist are removed from the static published content; creating
+    those pages will regenerate any pages that contained the
+    previously dangling link.
+
+    These pages can be statically published both locally, and to an
+    SFTP or FTP account.
+
+Virtual domains:
+    Multiple domains can be served off a single installation; both
+    aliases (e.g., http://wiki.webwareforpython.org and
+    http://wiki.w4py.org), or entirely separate sites
+    (http://wiki.cheetahtemplate.org).
+
+Configuration:
+    Configuration is done through a simple ``.ini`` file.
+    Configuration can be global or domain-specific.  One possibility
+    would be to configure two domains to point to the same content,
+    but for one domain to be marked read only.  As this wiki becomes
+    more configurable, this could allow for it to grow into more
+    CMS-like features.
+
+Simple persistence:
+    All data is stored in simple text files; pages in ``.txt`` files,
+    metadata in rfc822_-style files, RSS in its own RSS file
+    (as the canonical source of data), configuration in an ``.ini``
+    file.  There is no binary data and no pickles (except for some
+    indexing which is done in bdb files, which are not canonical sources
+    of data -- you can delete and regenerate those files at any
+    time).  This makes upgrading easy -- you only need to update the
+    code, not the data.
+
+.. _rfc822: http://www.ietf.org/rfc/rfc0822.txt
+
+No requirements:
+    Doesn't require any special tools, like RCS.  It is self-contained
+    (beyond the Webware requirement, and modules in the standard
+    Python library).  Though it has grown some other optional
+    libraries.
+
+Strong object model:
+    The logic for the *wiki* is separated from the logic for the
+    *interface*.  The wiki is written in independent modules which are
+    not bound to Webware or any particular interface.
+
+`Related Terms`_:
+    Another way of relating wiki pages to each other.  More on its
+    page.  This is the beginning of blog functionality.
+
+Comments:
+    Comments are a certain kind of related page -- both individually
+    addressable and editable, but are also shown inline in the
+    commented-upon page.
