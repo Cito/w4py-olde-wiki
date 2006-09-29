@@ -35,11 +35,11 @@ The Webware Wiki requires the following software:
 
   You can also check out the latest version from the Subversion repository::
 
-    svn co http://svn.w4py.org/Wiki/trunk Wiki
+    svn co svn://svn.w4py.org/Wiki/trunk Wiki
 
 * For WYSIWYG editing, the Wiki software needs to be supplemented with Xinha
   (http://xinha.python-hosting.com). Unpack the software into the subdirectory
-  ``Wiki/Context/Xinha`` (the subdirectory does not yet exist).
+  ``Wiki/Context/xinha`` (the subdirectory does not yet exist).
 
 * The next step is to set up a new Webware Wiki working directory::
 
