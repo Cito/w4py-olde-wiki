@@ -55,7 +55,7 @@ class WikiIndex(object):
         newLinks.sort()
         toRemove = []
         toAdd = []
-        while newLinks and oldLinks:
+        while links and oldLinks:
             if links[0] > oldLinks[0]:
                 toRemove.append(oldLinks.pop(0))
             elif links[0] < oldLinks[0]:
