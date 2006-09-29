@@ -13,18 +13,18 @@ import os
 __all__ = ['canonicalName', 'htmlEncode', 'guessURLName', 'dprint',
            'pprint', 'guessTitle', 'dedent']
 
-_canonicalNameRE = re.compile(r'[^a-z0-9-]')
+_canonicalNameRE = re.compile(r'[^a-z0-9]')
 def canonicalName(name):
     """Turns a wiki name into its canonical form.
 
     This may only have letters, numbers and hyphens in it.
     """
-    name = name.lower().replace(' ', '-')
-    return str(_canonicalNameRE.sub('', name))
+    return str(_canonicalNameRE.sub('', name.lower()))
 
+_urlNameRE = re.compile(r'[^a-z0-9 ]')
 def guessURLName(name):
-    """Turns a URL into its canonical form."""
-    return canonicalName(name.replace('+', '-'))
+    name = str(_urlNameRE.sub('', name.lower()))
+    return name.replace(' ', '-')
 
 def guessTitle(name):
     """Turns a canonical name into a title."""

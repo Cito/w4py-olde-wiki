@@ -280,7 +280,7 @@ class SitePage(CPage):
     def menuHelp(self):
         return ('Help', [
             ('About this wiki', self.wiki.basehref + 'thiswiki.html'),
-            ('Help with markup', self.wiki.basehref + 'quickresthelp.html'),
+            ('Help with markup', self.wiki.basehref + 'wikimarkup.html'),
             (menubar.Separator, ''),
             ('Related terms', self.wiki.basehref  + 'relatedterms.html'),
             ])

@@ -771,7 +771,7 @@ class Main(SitePage):
         # Code for selection from:
         # http://www.alexking.org/blog/2003/06/02/inserting-at-the-cursor-using-javascript/
         text = self.htmlEncode(text)
-        markupHelpLink = str(self.helpLink('quickresthelp',
+        markupHelpLink = str(self.helpLink('wikimarkup',
             '   Help on markup', useImage=False))
         insertLink = self.popupLink('quickfind?callParent=restlink',
             'Insert wiki link')

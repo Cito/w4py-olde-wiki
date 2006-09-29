@@ -667,7 +667,7 @@ class WikiPage(object):
         """The names of all the wiki pages that this page links to."""
         if self.name == 'index':
             # add some faked links so that these do not appear as orphaned
-            results = { 'index': None, 'this-wiki': None, 'wiki-markup': None }
+            results = { 'index': None, 'thiswiki': None, 'wikimarkup': None }
         else:
             results = {}
         for match in self._wikiLinkRE.finditer(self._rawHTML()):
@@ -749,3 +749,5 @@ class WikiPage(object):
 
     def formatDate(self, date):
         return date.strftime('%c')
+
+
