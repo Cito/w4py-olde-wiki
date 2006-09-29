@@ -1,12 +1,24 @@
-In this Wiki, you can use **reStructuredText** markup language.
+In this Wiki, you can use the reStructuredText_ markup language.
 
-For reference, please use the documentation available on the Docutils_ website:
+.. _restructuredText: http://docutils.sourceforge.net/rst.html
+
+For a quick introduction, please read:
 
 * `ReStructuredText Primer`_
 * `Quick reStructuredText`_
-* `Complete reST documentation`_
 
-.. _Docutils: http://docutils.sourceforge.net
 .. _`ReStructuredText Primer`: http://docutils.sourceforge.net/docs/user/rst/quickstart.html
 .. _`Quick reStructuredText`: http://docutils.sourceforge.net/docs/user/rst/quickref.html
-.. _`Complete reST documentation`: http://docutils.sourceforge.net/rst.html
+
+reStructuredText parser is a component of Docutils_.
+
+For reference, please use the documentation available on the Docutils website:
+
+* `Introduction to reStructuredText`_
+* `reStructuredText Markup Specification`_
+* `Complete reStructuredText documentation`_
+
+.. _Docutils: http://docutils.sourceforge.net
+.. _`Introduction to reStructuredText`: _http://docutils.sourceforge.net/docs/ref/rst/introduction.html
+.. _`reStructuredText Markup Specification`: http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html
+.. _`Complete reStructuredText documentation`: http://docutils.sourceforge.net/rst.html
