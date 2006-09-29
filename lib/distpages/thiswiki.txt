@@ -82,7 +82,7 @@ You can download the code for this Wiki at
 
 or check out the latest version from the Subversion repository with
 
-    $ svn co svn://svn.w4py.org/Wiki/trunk Wiki
+    $ svn co http://svn.w4py.org/Wiki/trunk Wiki
 
 Then follow the installation instructions in ``Wiki/README.txt``.
 
