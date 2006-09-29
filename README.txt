@@ -26,7 +26,7 @@ The Webware Wiki requires the following software:
   and move the Component and LoginKit directories into the Webware directory.
   Then run the install.py script inside the Webware directory.
 
-* Now you need to install the actual Wiki software. The download loaction is
+* Now you need to install the actual Wiki software. The download location is
 
     http://www.webwareforpython.org/downloads/Wiki/WebwareWiki-0.1.tar.gz
 
