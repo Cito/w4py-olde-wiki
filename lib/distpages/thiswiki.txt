@@ -78,7 +78,7 @@ Of course, it runs on Webware and Python.
 
 You can download the code for this Wiki at
 
-    http://www.webwareforpython.org/download/wiki/
+    http://www.webwareforpython.org/downloads/Wiki/
 
 or check out the latest version from the Subversion repository with
 
