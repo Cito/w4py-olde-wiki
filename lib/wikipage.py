@@ -101,7 +101,7 @@ class WikiPage(object):
         """Page title"""
         return self.metadata.get('title', self.name)
     def title__set(self, value):
-        self.metadata['title'] = value.encode('UTF-8')
+        self.metadata['title'] = value.encode('utf-8')
 
     def modifiedDate__get(self):
         """Date modified (integer timestamp)"""
@@ -436,7 +436,7 @@ class WikiPage(object):
             im.save(out, 'JPEG')
             self._thumbnail = out.getvalue()
         if isinstance(text, unicode):
-            text = text.encode('UTF-8')
+            text = text.encode('utf-8')
         self._text = text
 
     def thumbnail__get(self):
@@ -481,7 +481,7 @@ class WikiPage(object):
         out = StringIO()
         text = self._convertText(self.text, self.mimeType)
         if isinstance(text, unicode):
-            text = text.encode('UTF-8')
+            text = text.encode('utf-8')
         out.write(text)
         # related = self.relatedPages
         related = [] # @@ no related pages for the time being...

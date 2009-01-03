@@ -163,7 +163,7 @@ class RSS(object):
                     result.write(str(i))
                 continue
             if isinstance(value, unicode):
-                value = value.encode('UTF-8')
+                value = value.encode('utf-8')
             result.write('<%s>%s</%s>\n'
                          % (name, xmlEncode(value), name))
         result.write('</channel>\n</rss>\n')
@@ -230,7 +230,7 @@ class RSSItem(object):
         items.extend(metadata.items())
         for name, value in items:
             if isinstance(value, unicode):
-                value = value.encode('UTF-8')
+                value = value.encode('utf-8')
             result.write('<%s>%s</%s>\n' %
                          (str(name), xmlEncode(value), str(name)))
         result.write('</item>\n')

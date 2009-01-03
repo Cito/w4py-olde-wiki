@@ -1,5 +1,6 @@
 from SitePage import *
 
+
 class recentchanges(SitePage):
 
     def writeContent(self):

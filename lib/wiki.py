@@ -100,6 +100,7 @@ class GlobalWiki(object):
         """
         self.specialNames[specialName] = None
 
+
 class Wiki(object):
 
     __metaclass__ = propertymeta.MakeProperties
@@ -347,7 +348,6 @@ class Wiki(object):
             return self.canonical.domain
         else:
             return self.domain
-    canonicalDomain = property(canonicalDomain__get)
 
     def schedulePublish(self, page):
         if not self.config.getbool('staticpublish', False):

@@ -368,14 +368,14 @@ class SitePage(CPage):
 
     def htmlEncode(self, s):
         if isinstance(s, unicode):
-            s = s.encode('UTF-8')
+            s = s.encode('utf-8')
         return CPage.htmlEncode(self, s)
 
     def write(self, s):
         try:
             CPage.write(self, s)
         except UnicodeDecodeError:
-            CPage.write(self, s.encode('UTF-8'))
+            CPage.write(self, s.encode('utf-8'))
 
 
 ############################################################

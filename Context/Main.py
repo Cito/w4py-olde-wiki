@@ -472,7 +472,7 @@ class Main(SitePage):
         if self.checkPermission(['create', 'edit'], pageClass='comment'):
             data.append('<a href="%s">Add comment</a>'
                         % self.link('comment'))
-        self.write('<br>\n'.join(data).encode('UTF-8'))
+        self.write('<br>\n'.join(data).encode('utf-8'))
         self.write('</div>\n')
         if self.page.commentPages:
             self.write('<hr noshade><h3 id="comments">Comments:</h3>\n')

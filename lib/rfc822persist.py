@@ -219,11 +219,11 @@ class metaprop(object):
 
 def utf_str(s):
     if isinstance(s, unicode):
-        return s.encode('UTF-8')
+        return s.encode('utf-8')
     return s
 
 def utf_unstr(s):
-    return s.decode('UTF-8')
+    return s.decode('utf-8')
         
 class metabool(metaprop):
 

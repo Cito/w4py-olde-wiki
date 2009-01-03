@@ -25,7 +25,7 @@ class feeds(SitePage):
 
     def writeFeed(self, name):
         self.response().setHeader('Content-type',
-            'application/rss+xml; charset=UTF-8')
+            'application/rss+xml; charset=utf-8')
         if name == 'recent_changes.xml':
             f = open(self.wiki.syndicateRecentChangesFilename)
             self.write(f.read())
