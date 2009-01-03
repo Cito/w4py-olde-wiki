@@ -40,7 +40,7 @@ PREFERRED_XML_PARSERS = ["drv_libxml2"]
 # this to 1.  This is off by default because of reports of crashing on some
 # platforms.  If it crashes for you, please submit a bug report with your OS
 # platform, Python version, and the URL of the feed you were attempting to parse.
-# Requires mxTidy <http://www.egenix.com/files/python/mxTidy.html>
+# Requires mxTidy <http://www.egenix.com/products/python/mxExperimental/mxTidy/>
 TIDY_MARKUP = 0
 
 # ---------- required modules (should come with any Python distribution) ----------
@@ -79,7 +79,7 @@ _mxtidy = None
 if TIDY_MARKUP:
     try:
         from mx.Tidy import Tidy as _mxtidy
-    except:
+    except ImportError:
         pass
 
 # If a real XML parser is available, feedparser will attempt to use it.  feedparser has

@@ -4,9 +4,12 @@ from lib import htmldiff
 from lib import menubar
 from WebKit.HTTPExceptions import *
 try:
-    import tidy
+    from mx.Tidy import tidy
 except ImportError:
-    tidy = None
+    try:
+        from tidy import parseString as tidy
+    except ImportError:
+        tidy = None
 import re
 import os
 import mimetypes
@@ -823,8 +826,9 @@ class Main(SitePage):
             <script type="text/javascript">
               _editor_url = '/xinha/';
               _editor_lang = 'en';
+              _editor_skin = 'silva';
             </script>
-            <script type="text/javascript" src="/xinha/htmlarea.js"></script>
+            <script type="text/javascript" src="/xinha/XinhaCore.js"></script>
             <script type="text/javascript">
               xinha_editors = null;
               xinha_init  = null;
@@ -832,26 +836,28 @@ class Main(SitePage):
               xinha_plugins = null;
               xinha_init = xinha_init ? xinha_init : function()
               {
+                xinha_editors = xinha_editors ? xinha_editors :
+                  [
+                    'text'
+                  ];
                 xinha_plugins = xinha_plugins ? xinha_plugins :
                   [
                     'Abbreviation',
                     'CharacterMap',
                     'ContextMenu',
+                    'EditTag',
                     'Equation',
-                    'FullScreen',
                     'InsertSmiley',
                     'Linker',
                     'ListType',
                     'QuickTag',
+                    'SuperClean',
                     'TableOperations'
                   ];
-                if (!HTMLArea.loadPlugins(xinha_plugins, xinha_init)) return;
-                xinha_editors = xinha_editors ? xinha_editors :
-                  [
-                    'text'
-                  ];
-                xinha_config = xinha_config ? xinha_config() : new HTMLArea.Config();
-                xinha_editors = HTMLArea.makeEditors(xinha_editors, xinha_config, xinha_plugins);
+                if (!Xinha.loadPlugins(xinha_plugins, xinha_init)) return;
+                xinha_config = xinha_config ? xinha_config() : new Xinha.Config();
+                xinha_config.pageStyleSheets = [ "/wiki.css" ];
+                xinha_editors = Xinha.makeEditors(xinha_editors, xinha_config, xinha_plugins);
                 cfg = xinha_editors.text.config
                 cfg.registerButton({
                   id: "wikilink",
@@ -876,7 +882,7 @@ class Main(SitePage):
                       break;
                     }
                 }
-                HTMLArea.startEditors(xinha_editors);
+                Xinha.startEditors(xinha_editors);
               }
               function wikilink(name, mimeType, title) {
                 xinha_editors.text.insertHTML(\'<a href="\' + name
@@ -1079,11 +1085,14 @@ class Main(SitePage):
     _linkRE = re.compile('href\s*=\s*"(.*?)"', re.I+re.S)
     def cleanXinha(self, text):
         if tidy:
-            text = tidy.parseString(
+            text = tidy(
                 text,
                 break_before_br=True,
+                output_error=False,
                 show_body_only=True,
                 char_encoding='utf8')
+            if isinstance(text, tuple):
+                text = text[2]
         text = self._linkRE.sub(self._urlSubber, str(text))
         return text
 

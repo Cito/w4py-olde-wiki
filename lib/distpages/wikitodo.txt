@@ -3,8 +3,7 @@ Ideas for future Improvement
 
 Some things I have in mind, though it's very unsure when and if ever:
 
-* Templating (configurable on a per-domain basis).
-  Probably with Cheetah_.
+* Templating (configurable on a per-domain basis). Probably with Cheetah_.
   Choosable in some fashion as well, particularly a "printable" template.
 
 * More Indexing (backlinks are indexed)
@@ -179,6 +178,5 @@ Things I don't really have in mind, but maybe would be a good idea:
 .. _Staged Commits: http://wikifeatures.wiki.taoriver.net/moin.cgi/StagedCommits
 
 .. _recent changes: recentchanges
-.. _htmlarea: http://www.interactivetools.com/products/htmlarea/
 .. _MoinMoin: http://moinmoin.wikiwikiweb.de/HelpOnMacros
 .. _Cheetah: http://www.cheetahtemplate.org/

@@ -1,4 +1,4 @@
-Ian's Webware Wiki version 0.1
+Ian's Webware Wiki version 0.2
 ==============================
 
 How to install this thing:
@@ -8,17 +8,15 @@ The Webware Wiki requires the following software:
 
 * Python >= 2.3 (http://www.python.org)
 
-* The TidyLib Python wrapper (http://utidylib.berlios.de),
-  which in turn requires tidy (http://tidy.sourceforge.net) and
-  the Python ctypes library (http://starship.python.net/crew/theller/ctypes/).
+* mxTidy >= 3.0 (http://www.egenix.com/products/python/mxExperimental/mxTidy/)
 
 * Docutils >= 0.4 (http://docutils.sourceforge.net)
 
 * If you want to run the test modules, you need to install
   py.test (http://codespeak.net/py/current/doc/test.html).
 
-* Webware version 0.9.2 and the Component 0.2 and LoginKit 0.1 plug-ins,
-  (http://www.webwareforpython.org/downloads/Webware/Webware-0.9.2.tar.gz,
+* Webware version 1.0 and the Component 0.2 and LoginKit 0.1 plug-ins,
+  (http://www.webwareforpython.org/downloads/Webware/Webware-1.0.tar.gz,
   http://www.webwareforpython.org/downloads/Component/Component-0.2.tar.gz,
   http://www.webwareforpython.org/downloads/LoginKit/LoginKit-0.1.tar.gz)
 
@@ -28,7 +26,7 @@ The Webware Wiki requires the following software:
 
 * Now you need to install the actual Wiki software. The download location is
 
-    http://www.webwareforpython.org/downloads/Wiki/WebwareWiki-0.1.tar.gz
+    http://www.webwareforpython.org/downloads/Wiki/WebwareWiki-0.2.tar.gz
 
   You can unpack it as a subdirectory of the Webware directory or anywhere
   else, since this is not a Webware plugin, but just an additional library.
@@ -38,8 +36,9 @@ The Webware Wiki requires the following software:
     svn co svn://svn.w4py.org/Wiki/trunk Wiki
 
 * For WYSIWYG editing, the Wiki software needs to be supplemented with Xinha
-  (http://xinha.python-hosting.com). Unpack the software into the subdirectory
-  ``Wiki/Context/xinha`` (the subdirectory does not yet exist).
+  (http://xinha.webfactional.com), we were using Xinha 0.95 for this version.
+  Unpack the software into the subdirectory ``Wiki/Context/xinha`` (note that
+  the xinha subdirectory does not yet exist).
 
 * The next step is to set up a new Webware Wiki working directory::
 
@@ -71,7 +70,7 @@ The Webware Wiki requires the following software:
     ExtraPathInfo = True
 
   Also, set ``ErrorEmailServer`` and ``ErrorEmailHeaders``.
-  remove all Webware contexts that you don't want to use.
+  Remove all Webware contexts that you don't want to use.
   You should also customize the app server using the configuration file
   ``$WIKI_WORKDIR/Configs/AppServer.config``.
 
@@ -88,7 +87,8 @@ Start the Webware application as usual, e.g. by running
     $WIKI_WORKDIR/AppServer
 
 or by running the ``webkit`` start script under Unix. Under Windows,
-you need to run ``AppServer.bat`` or use ``AppServerService.py``. See also http://www.webwareforpython.org/Webware/WebKit/Docs/UsersGuide.html.
+you need to run ``AppServer.bat`` or use ``AppServerService.py``.
+See also http://www.webwareforpython.org/Webware/WebKit/Docs/UsersGuide.html.
 
 With the default settings in ``$WIKI_WORKDIR/Configs/AppServer.config``
 you should now be able to access the Wiki at http://localhost:8080.
@@ -97,5 +97,10 @@ If you want to use Apache or another web server see also
 http://www.w4py.org/Webware/WebKit/Docs/InstallGuide.html
 and http://wiki.w4py.org/webserverintegration.html.
 
+After creating a user account on the login page, you should grant yourself
+as the first user the "admin" role, by editing the users/User-1.txt file
+in the directory where the wiki is stored, so you can administer the wiki.
+
+
   -- Ian Bicking, 26 Apr 2004
-  -- Updated by Christoph Zwerschke, 28 Sep 2006
+  -- Updated by Christoph Zwerschke, 3 Jan 2009
