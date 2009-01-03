@@ -303,7 +303,7 @@ class Wiki(object):
         indexing and updating can occur.
 
         """
-        if action != 'connected':
+        if action != 'connected' and page.name not in ('wikisandbox',):
             changed = self.syndicateRecentChanges
             desc = page.lastChangeLog or ''
             if page.lastChangeUser:
