@@ -8,7 +8,8 @@ The Webware Wiki requires the following software:
 
 * Python >= 2.3 (http://www.python.org)
 
-* mxTidy >= 3.0 (http://www.egenix.com/products/python/mxExperimental/mxTidy/)
+* uTidylib >= 0.2 (http://utidylib.berlios.de) or
+  mxTidy >= 3.0 (http://www.egenix.com/products/python/mxExperimental/mxTidy/)
 
 * Docutils >= 0.4 (http://docutils.sourceforge.net)
 

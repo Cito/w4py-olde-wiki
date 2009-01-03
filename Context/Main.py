@@ -1,21 +1,32 @@
+import os
+import re
+import datetime
+import mimetypes
+
+from lib import wikipage, htmldiff, menubar
+from lib.common import dedent
+from lib.format_date import format_date_relative
+
+
 from SitePage import *
-from lib import wikipage
-from lib import htmldiff
-from lib import menubar
 from WebKit.HTTPExceptions import *
+
+tidy_options = dict(
+    break_before_br=True,
+    show_body_only=True,
+    char_encoding='utf8')
 try:
-    from mx.Tidy import tidy
+    from tidy import parseString as utidy
 except ImportError:
     try:
-        from tidy import parseString as tidy
+        from mx.Tidy import tidy as mxtidy
     except ImportError:
-        tidy = None
-import re
-import os
-import mimetypes
-import datetime
-from lib.format_date import format_date_relative
-from lib.common import dedent
+        tidy = lambda text: text
+    else:
+        tidy_options['output_error'] = False
+        tidy = lambda text: mxtidy(text, **tidy_options)[2]
+else:
+    tidy = lambda text: utidy(text, **tidy_options)
 
 
 class Main(SitePage):
@@ -1084,17 +1095,7 @@ class Main(SitePage):
 
     _linkRE = re.compile('href\s*=\s*"(.*?)"', re.I+re.S)
     def cleanXinha(self, text):
-        if tidy:
-            text = tidy(
-                text,
-                break_before_br=True,
-                output_error=False,
-                show_body_only=True,
-                char_encoding='utf8')
-            if isinstance(text, tuple):
-                text = text[2]
-        text = self._linkRE.sub(self._urlSubber, str(text))
-        return text
+        return self._linkRE.sub(self._urlSubber, str(tidy(text)))
 
     def _urlSubber(self, match):
         url = match.group(1)
