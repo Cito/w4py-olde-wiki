@@ -26,6 +26,11 @@ External Editor:
 
 .. _external editor: http://www.plope.com/software/ExternalEditor
 
+Universal Edit Button:
+    The wiki also supports the `Universal Edit Button`_ to edit content.
+
+.. _Universal Edit Button: http://universaleditbutton.org
+
 Searching:
     Text and title searching.  Incremental page searches
     when finding pages to link to.
