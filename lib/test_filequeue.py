@@ -1,6 +1,7 @@
 import os
-import filequeue
 import py
+import filequeue
+
 
 def runner(func):
     if os.path.exists('tmp.queue'):
@@ -8,6 +9,7 @@ def runner(func):
     q = filequeue.FileQueue('tmp.queue')
     func(q)
     os.unlink('tmp.queue')
+
 
 def test_queue(q):
     assert q.pop() is None

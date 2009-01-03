@@ -1,10 +1,12 @@
 import iniparser
 import re
 
+
 def parse(s, filename='test.ini'):
     p = iniparser.BasicParser()
     p.loadstring(s, filename=filename)
     return p
+
 
 def raises(sample, match):
     if isinstance(match, str):
@@ -16,6 +18,7 @@ def raises(sample, match):
             raise
     else:
         assert 0, "Parsing %r should have raised an error" % sample
+
 
 def test_no_section():
     raises(

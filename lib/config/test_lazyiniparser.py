@@ -1,5 +1,6 @@
 import lazyiniparser
 
+
 def parse(s, filename='test.ini'):
     p = lazyiniparser.LazyINIParser()
     p.loadstring(s, filename=filename)

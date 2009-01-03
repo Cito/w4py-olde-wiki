@@ -1,5 +1,6 @@
 from LoginKit.simpleuser import SimpleUser
 
+
 class WikiUser(SimpleUser):
 
     def __init__(self, manager):

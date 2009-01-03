@@ -1,26 +1,28 @@
-from Component import CPage
-import sys
-sys.path.append('/home/ianb/w4py.org/home/ianb/Wiki')
-from lib import wiki
-from lib import wikiconfig
-from lib.formatdate import format_date
 import os
+import sys
 import datetime
-from Component.notify import NotifyComponent
-from LoginKit.rfc822usermanager import RFC822UserManager
-from LoginKit import UserComponent
-from lib import user
-from lib.securehidden import SecureSigner
-from WebKit import AppServer
 import shutil
+import time
+
+from lib import wiki, wikiconfig, user, menubar
+from lib.common import pprint, dprint, dedent
+from lib.formatdate import format_date
+from lib.securehidden import SecureSigner
+
+from Component import CPage
+from Component.notify import NotifyComponent
+
+from LoginKit import UserComponent
+from LoginKit.rfc822usermanager import RFC822UserManager
+
 from TaskKit.Task import Task
 from TaskKit.Scheduler import Scheduler
-import time
-from lib import menubar
-from lib.common import pprint, dprint, dedent
+
+from WebKit import AppServer
 from WebKit.HTTPExceptions import *
 
 __all__ = ['SitePage', 'pprint', 'dprint']
+
 
 class SitePage(CPage):
 
@@ -31,7 +33,7 @@ class SitePage(CPage):
         CPage.awake(self, transaction)
         domain = self.request().environ().get('HTTP_HOST', 'SERVER_NAME')
         if ':' in domain:
-            domain = domain.split(':')[0]
+            domain = domain.split(':', 1)[0]
         self.wiki = self.TheGlobalWiki.site(domain=domain)
         self.wiki.basehref = self.request().adapterName() + '/'
         self.suppressFooter = False
@@ -375,6 +377,7 @@ class SitePage(CPage):
         except UnicodeDecodeError:
             CPage.write(self, s.encode('UTF-8'))
 
+
 ############################################################
 ## Global setup
 ############################################################
@@ -408,6 +411,7 @@ SitePage.components.append(UserComponent(manager, loginServlet='/login'))
 signatureFilename = os.path.join(TheGlobalWiki.root, 'secret.txt')
 SitePage._secureSigner = SecureSigner(signatureFilename)
 
+
 class PublishTask(Task):
 
     def __init__(self, globalWiki):
@@ -417,7 +421,8 @@ class PublishTask(Task):
         for wiki in self.globalWiki.cachedWikis.values():
             wiki.publish()
 
+
 scheduler = Scheduler()
 scheduler.start()
-scheduler.addPeriodicAction(time.time(), 10, PublishTask(TheGlobalWiki),
-                            'PublishTask')
+scheduler.addPeriodicAction(
+    time.time(), 10, PublishTask(TheGlobalWiki), 'PublishTask')

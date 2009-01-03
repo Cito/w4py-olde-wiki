@@ -1,6 +1,5 @@
-from SitePage import *
-from WebKit.HTTPExceptions import *
 from lib.common import dedent
+from SitePage import *
 
 
 class login(SitePage):

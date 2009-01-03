@@ -18,7 +18,10 @@ except ImportError:
 import converter_registry
 from html_abstracts import find_abstract
 from common import *
-import user
+try:
+    import user
+except ImportError:
+    user = None
 
 # Just make sure these are loaded:
 import convert_rest

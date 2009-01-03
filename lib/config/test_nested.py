@@ -1,9 +1,8 @@
 import nested
-NestedDict = nested.NestedDict
-from pprint import pprint
+from test_fixture import DoctestCollector, sorted
 
-from test_fixture import DoctestCollector
-from test_fixture import sorted
+NestedDict = nested.NestedDict
+
 
 def test_empty():
     d = NestedDict()
@@ -52,8 +51,6 @@ def test_nested():
     assert sorted(d['b'].keys()) == ['c', 'd', 'e']
     assert isinstance(d['b'], NestedDict)
     concrete = {'a': 1, 'b': {'c': 5, 'd': 3, 'e': 6}}
-    pprint(d)
-    pprint(concrete)
     assert d == concrete
 
 collect_doctest = DoctestCollector(nested)

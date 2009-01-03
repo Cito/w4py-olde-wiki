@@ -38,7 +38,7 @@ RSS Feed:
     XML RSS feeds for `new pages`_ and `recent changes`_
     available for updates of the site.
 
-.. _new pages: /feeds/rss_new_pages.xml
+.. _new pages: /feeds/new_pages.xml
 .. _recent changes: /feeds/recent_changes.xml
 
 Versioning:

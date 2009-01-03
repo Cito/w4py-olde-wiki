@@ -66,7 +66,7 @@ Other Notes
 Updates to this site are published to a `New Pages`_ and a `Recent Changes`_
 RSS feed, which you can subscribe to in order to receive updates.
 
-.. _New Pages: /feeds/rss_new_pages.xml
+.. _New Pages: /feeds/new_pages.xml
 .. _Recent Changes: /feeds/recent_changes.xml
 
 Acquiring the Wiki

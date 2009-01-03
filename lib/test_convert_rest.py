@@ -9,7 +9,8 @@ This is a test_
           '''
 <div class="document" id="test">
 <h1 class="title">Test</h1>
-<p>This is a <a class="reference" href="test">test</a></p>
+
+<p>This is a <a class="reference external" href="test">test</a></p>
 </div>
 ''')]
 

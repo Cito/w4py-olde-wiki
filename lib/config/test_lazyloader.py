@@ -1,6 +1,6 @@
+import sys
 import lazyloader
-from test_fixture import DoctestCollector
-from test_fixture import sorted, assert_error
+from test_fixture import DoctestCollector, sorted, assert_error
 
 data1 = """\
 [ages]

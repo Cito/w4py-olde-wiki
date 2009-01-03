@@ -1,9 +1,13 @@
-from py.test.collect import Collector
-from py.test import Item
-import doctest24 as doctest
 import sys
-from cStringIO import StringIO
+if '.' not in sys.path:
+    sys.path.append('.')
 import types
+from cStringIO import StringIO
+
+import doctest
+
+from py.test.collect import Collector, Item
+
 
 class Dummy(object):
 
@@ -14,6 +18,7 @@ class Dummy(object):
                 value = DummyMethod(value)
             setattr(self, name, value)
 
+
 class DummyMethod(object):
 
     def __init__(self, return_value):
@@ -21,6 +26,7 @@ class DummyMethod(object):
 
     def __call__(self, *args, **kw):
         return self.return_value
+
 
 class DoctestCollector(Collector):
 
@@ -45,6 +51,7 @@ class DoctestCollector(Collector):
         for t in tests:
             yield DoctestItem(self.extpy, t)
 
+
 class DoctestItem(Item):
 
     def __init__(self, extpy, doctestitem, *args):
@@ -66,6 +73,7 @@ class DoctestItem(Item):
             if teardown:
                 teardown(target)
 
+
 def capture_stdout(func, *args, **kw):
     newstdout = StringIO()
     oldstdout = sys.stdout
@@ -75,6 +83,7 @@ def capture_stdout(func, *args, **kw):
     finally:
         sys.stdout = oldstdout
     return result, newstdout.getvalue()
+
 
 def assert_error(func, *args, **kw):
     kw.setdefault('error', Exception)
@@ -102,6 +111,7 @@ def assert_error(func, *args, **kw):
         assert False, (
             "Exception was expected, instead successfully returned %r"
             % (value))
+
 
 def sorted(l):
     l = list(l)

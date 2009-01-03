@@ -15,11 +15,14 @@ import ftpclient
 import warnings
 from common import canonicalName
 import rfc822persist
-from WebKit.HTTPExceptions import *
+try:
+    from WebKit.HTTPExceptions import HTTPNotFound
+except ImportError:
+    HTTPNotFound = KeyError
 
-warnings.filterwarnings(
-    'ignore',
+warnings.filterwarnings('ignore',
     message='tempnam is a potential security risk to your program')
+
 
 class GlobalWiki(object):
 
@@ -462,7 +465,7 @@ class Wiki(object):
         return rss
 
     def syndicateRecentChangesFilename__get(self):
-        return os.path.join(self.basepath, 'rss_recent_changes.xml')
+        return os.path.join(self.basepath, 'recent_changes.xml')
 
     def syndicateNewPages__get(self):
         def sorter(item1, item2):
@@ -479,7 +482,7 @@ class Wiki(object):
         return rss
 
     def syndicateNewPagesFilename__get(self):
-        return os.path.join(self.basepath, 'rss_new_pages.xml')
+        return os.path.join(self.basepath, 'new_pages.xml')
 
     def extensionForMimeType(self, mimeType):
         return _reverseMimeMap[mimeType]

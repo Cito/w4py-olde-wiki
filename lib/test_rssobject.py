@@ -1,6 +1,7 @@
 import rssobject
 import test_htmldiff
 
+
 def assertXMLEqual(source, pattern):
     result = test_htmldiff.htmlcompareError(source, pattern)
     if result:
@@ -109,14 +110,14 @@ addRoundTrip(
 		<managingEditor>dave@userland.com</managingEditor>
 		<webMaster>dave@userland.com</webMaster>
 		<ttl>40</ttl>
-                <pubDate>Fri 09 Apr 2004 12:00:00 GMT</pubDate>
+			<pubDate>Fri 09 Apr 2004 12:00:00 GMT</pubDate>
 		<item>
 
 			<description>&quot;rssflowersalignright&quot;With any luck we should have one or two more days of namespaces stuff here on Scripting News. It feels like it's winding down. Later in the week I'm going to a &lt;a href=&quot;http://harvardbusinessonline.hbsp.harvard.edu/b02/en/conferences/conf_detail.jhtml?id=s775stg&amp;pid=144XCF&quot;&gt;conference&lt;/a&gt; put on by the Harvard Business School. So that should change the topic a bit. The following week I'm off to Colorado for the &lt;a href=&quot;http://www.digitalidworld.com/conference/2002/index.php&quot;&gt;Digital ID World&lt;/a&gt; conference. We had to go through namespaces, and it turns out that weblogs are a great way to work around mail lists that are clogged with &lt;a href=&quot;http://www.userland.com/whatIsStopEnergy&quot;&gt;stop energy&lt;/a&gt;. I think we solved the problem, have reached a consensus, and will be ready to move forward shortly.</description>
 
 			<pubDate>Mon, 30 Sep 2002 01:56:02 GMT</pubDate>
 			<guid>http://scriptingnews.userland.com/backissues/2002/09/29#When:6:56:02PM</guid>
-                        <link>http://scriptingnews.userland.com/backissues/2002/09/29#When:6:56:02PM</link>
+				<link>http://scriptingnews.userland.com/backissues/2002/09/29#When:6:56:02PM</link>
 			</item>
 		<item>
 			<description>Joshua Allen: &lt;a href=&quot;http://www.netcrucible.com/blog/2002/09/29.html#a243&quot;&gt;Who loves namespaces?&lt;/a&gt;</description>

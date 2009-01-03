@@ -1,5 +1,6 @@
 from inischema import *
 
+
 class Schema1(INISchema):
 
     number = optint()
@@ -10,21 +11,26 @@ class Schema1(INISchema):
     rep = optlist(subtype=optint())
     whatever = opt(default=5)
 
+
 class Schema2(INISchema):
 
     a = optint()
     default = optdefault()
 
+
 class Schema3(Schema2):
     pass
+
 Schema3.add_option('default', optdefault(allow_multiple=False))
 Schema3.add_option('b', optlist(subtype=optint()))
+
 
 def parse_schema(schema, string, filename='test.ini'):
     if not isinstance(schema, INISchema):
         schema = schema()
     schema.loadstring(string)
     return schema
+
 
 load_ini = """
 number = 1
@@ -36,6 +42,7 @@ rep=1
 rep=5
 rep=10
 """
+
 
 def test_load():
     s = parse_schema(Schema1, load_ini)
@@ -64,7 +71,6 @@ string=something
 string2=something
 whatever=5
 """
-
 
 default_ini = """
 a = 1

@@ -1,16 +1,21 @@
 import os
 import shutil
+
 import wiki
+
 from wikiconfig import WikiConfig
+
 
 def make_conf():
     conf = WikiConfig()
     conf.load(os.path.join(os.path.dirname(__file__), "test.conf"))
     return conf
 
+
 def setup_module(module):
     shutil.rmtree(os.path.join(os.path.dirname(__file__), 'test_data'), True)
     os.mkdir(os.path.join(os.path.dirname(__file__), 'test_data'))
+
 
 def test_global():
     conf = make_conf()
@@ -30,12 +35,13 @@ def test_global():
     assert s2.config['testval'] == 'C'
     assert s2.config['testval2'] == 'A'
 
+
 def test_wiki():
     conf = make_conf()
     w = wiki.GlobalWiki(conf).site('test.domain')
     assert w.filenameForName('test').endswith('test.txt')
     assert not w.exists('test')
-    assert w.search('test') == []
+    assert w.search('testword') == []
     assert w.searchTitles('test') == []
     assert w.searchNames('test') == []
     dist = set(os.path.splitext(p)[0] for p in os.listdir('distpages'))
