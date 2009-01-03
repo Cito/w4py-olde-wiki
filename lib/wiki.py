@@ -574,7 +574,7 @@ class Wiki(object):
                 print "Updating %s from distribution" % name
                 page.updateRawMetadata(d)
                 page.text = newText
-                page.distributionOriginal = True
+                page.more = True
                 page.lastChangeLog = 'Updated from distribution'
                 page.save()
 
