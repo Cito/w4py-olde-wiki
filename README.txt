@@ -14,7 +14,7 @@ The Webware Wiki requires the following software:
 * Docutils >= 0.4 (http://docutils.sourceforge.net)
 
 * If you want to run the test modules, you need to install
-  py.test (http://codespeak.net/py/current/doc/test.html).
+  py.test (http://codespeak.net/py/dist/test.html).
 
 * Webware version 1.0 and the Component 0.2 and LoginKit 0.1 plug-ins,
   (http://www.webwareforpython.org/downloads/Webware/Webware-1.0.tar.gz,
