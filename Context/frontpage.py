@@ -12,12 +12,16 @@ class frontpage(SitePage):
             self.wiki.config.get('rss').get('title') or 'The Wiki Frontpage'
 
     def writeRelatedLinks(self):
+        SitePage.writeRelatedLinks(self)
         description = self.wiki.config.get('rss') and \
             self.wiki.config.get('rss').get('description')
         if description:
-            self.write('<meta name="description" content="%s">\n'
-                % description)
-        SitePage.writeRelatedLinks(self)
+            self.write('<meta name="description" content="%s">\n' % description)
+        if self.user() and self.checkPermission('edit'):
+            # add universal edit button
+            page = self.wiki.page('index')
+            self.write('<link rel="alternate" type="application/wiki"'
+                ' title="Edit this page" href="%s?_action_=edit">'  % page.link)
 
     def writeContent(self):
         if self.wiki.config.getbool('blog', False):
@@ -56,7 +60,7 @@ class frontpage(SitePage):
     def getWikiContent(self):
         page = self.wiki.page('index')
         result = page.html
-        if self.user():
-            result += '\n<div align="right"><a href="%s?_action_=edit">' \
-                'Edit this page</a></div>\n' % page.link
+        if self.user() and self.checkPermission('edit'):
+            result += ('\n<div align="right"><a href="%s?_action_=edit">'
+                'Edit this page</a></div>\n') % page.link
         return result

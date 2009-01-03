@@ -410,9 +410,16 @@ class Main(SitePage):
         return self.titlePrefix + title
 
     def writeHeader(self):
-        if self.page.name.find('sandbox') != -1:
+        if not self.page.name in ('wikisandbox',):
             self.write('<meta name="robots" content="noindex,nofollow">\n')
         SitePage.writeHeader(self)
+
+    def writeRelatedLinks(self):
+        SitePage.writeRelatedLinks(self)
+        if self.checkPermission('edit'):
+            # add universal edit button
+            self.write('<link rel="alternate" type="application/wiki"'
+                ' title="Edit this page" href="%s">'  % self.link(action='edit'))
 
     def link(self, action=None, unversioned=False, **kw):
         if action:
