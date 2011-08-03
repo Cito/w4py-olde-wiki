@@ -3,7 +3,7 @@ import shutil
 import time
 
 from lib import wiki, wikiconfig, user, menubar
-from lib.common import dedent
+from lib.common import pprint, dprint, dedent
 from lib.formatdate import format_date
 from lib.securehidden import SecureSigner
 
