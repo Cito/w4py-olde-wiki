@@ -17,8 +17,9 @@ from TaskKit.Task import Task
 from TaskKit.Scheduler import Scheduler
 
 from WebKit import AppServer
-from WebKit.Funcs import htmlEncode
 from WebKit.HTTPExceptions import *
+
+from WebUtils.Funcs import htmlEncode
 
 __all__ = ['SitePage', 'pprint', 'dprint']
 
