@@ -1,11 +1,9 @@
 import os
-import sys
-import datetime
 import shutil
 import time
 
 from lib import wiki, wikiconfig, user, menubar
-from lib.common import pprint, dprint, dedent
+from lib.common import dedent
 from lib.formatdate import format_date
 from lib.securehidden import SecureSigner
 
@@ -19,6 +17,7 @@ from TaskKit.Task import Task
 from TaskKit.Scheduler import Scheduler
 
 from WebKit import AppServer
+from WebKit.Funcs import htmlEncode
 from WebKit.HTTPExceptions import *
 
 __all__ = ['SitePage', 'pprint', 'dprint']
@@ -352,10 +351,10 @@ class SitePage(CPage):
         url = self.request().adapterName() + '/' + name
         if argsRendered:
             if '?' in url:
-                url = url + '&'
+                url += '&'
             else:
-                url = url + '?'
-            url = url + '&'.join(argsRendered)
+                url += '?'
+            url += '&'.join(argsRendered)
         return url
 
     def secureHidden(self, name, value, timeout=None):
@@ -366,10 +365,11 @@ class SitePage(CPage):
     def getSecureHidden(self, name):
         return self._secureSigner.parseSecure(self.request().field(name))
 
-    def htmlEncode(self, s):
+    def htmlEncode(s):
         if isinstance(s, unicode):
             s = s.encode('utf-8')
-        return CPage.htmlEncode(self, s)
+        return htmlEncode(s)
+    htmlEncode = staticmethod(htmlEncode)
 
     def write(self, s):
         try:
