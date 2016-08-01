@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware Wiki</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-wiki">
+<h1 class="title">Webware Wiki</h1>
+
+<p>(This App now exists: <a class="reference external" href="http://wiki.colorstudy.net">http://wiki.colorstudy.net</a> )</p>
+<p><a class="reference external" href="otherwikisfeatures.html">OtherWikisFeatures</a> -- cool things found elsewhere that we should
+steal^H^H^H^H^Hbe inspired by.</p>
+<p>Zope has ZWiki, why don't we have a WikiKit? We could write one from
+scratch or make a stub interface to one of the existing Python wikis
+(Twiki is working well here; there's also PikiPiki, MoinMoin,
+PikiePikie, Pyle). Using an existing one would, of course, allow us
+to leverage its features and development, but it requires kludging
+since none of the existing wikis were intended to be embedded thus.
+We could also tackle some existing problems in the wiki world, such as
+providing an XML DTD as a common base format for converting one wiki
+server's syntax to another's, and scripts for importing wiki data
+to/from other server's data stores.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="mikeorr.html">MikeOrr</a> - 07 Nov 2001</p></li>
+</ul>
+<p>If we go ahead and make this, the backend should be completely
+independent of Webware. Only the interface should be tied to it.</p>
+<p>Also, I prefer the names <a class="reference external" href="webwarewiki.html">WebwareWiki</a> and WWiki to WikiKit, but
+that's probably because I dislike the *kit naming scheme as whole.</p>
+<p>-- TavisRudd - 05 Nov 2001</p>
+<p>If you seperate out the concepts, it can be a more
+managable/reusable/aproachable project.</p>
+<p>For instance, there is the WikiSyntax, which is similar to
+StructuredText -- but it's only <em>societally</em> important to the Wiki,
+not technically.  Some Wikis use straight HTML anyway.</p>
+<p>Then there's the editing interface.  This is vaguely what I did in
+ComfyEdit , which is more notable to say that part isn't that hard
+either.  Most Wikis that aren't built on object databases of some sort
+are actually just a set of text files that get edited.  TWiki is
+clever enough to add RCS recording to that process as well -- but then
+it's just a bunch of <span class="docutils literal">.txt</span> and <span class="docutils literal">.txt,v</span> files.</p>
+<p>The third important part of a Wiki is the naming and linking
+mechanism.  Personally, I like the notion of named links ala Wiki much
+better than HREFs for internal links anyway.  The WikiName syntax can
+be awkard, but the essential flat namespace could be mapped to from
+different syntaxes -- that's more a text formating issue.</p>
+<p>Each of these really has a lot of value on its own.  Easy text editing
+is nice (maybe an appropriate format for WebwareDocumentation even).
+Editing pages/files/objects is generally useful -- it could even be
+considered a subset of something that includes FTP and <a class="reference external" href="webdav.html">WebDav</a>.  The
+named links are also a very interesting linking idea (including
+backlinks); it provides an interesting alternative to hierarchical
+namespaces.</p>
+<p>The lesson of WikiWiki isn't so much one of cool technologies -- it's
+of putting together a set of useful ideas into something that is much
+more than its parts.  There might be other combinations that lead to
+other cool stuff -- if the parts are all orthogonal, we might stumble
+on something great.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 07 Nov 2001</p>
+<p>Here's some ideas for possible enhancements to existing Wikis such as
+TWiki:</p>
+<ul class="simple">
+<li><p>firm up the StructuredText syntax (see
+<a class="reference external" href="http://structuredtext.sf.net">http://structuredtext.sf.net</a>)</p></li>
+<li><p>auto-syntax coloring of code listings (starting with Python, but
+extending to other langs)</p></li>
+<li><p>multi-topic search and replace tool</p></li>
+<li><p>make it possible to have <a class="reference external" href="nonwebinterfaces.html">non-web interfaces</a>, along the same lines as
+<a class="reference external" href="webdav.html">WebDav</a>.  Think of a WikiMode for Emacs! (already kind of
+possible, seeing as Emacs has a web browser and speaks HTTP)</p></li>
+<li><p>make it possible for the Wiki to understand several different
+WikiSyntax styles</p></li>
+<li><p>provide conversion and import tools, like Mike suggested above</p></li>
+<li><p>make the web interface prettier and more functional:</p>
+<ul>
+<li><p>edit-box that spans 90% of window width rather than a fixed width
+_(Not possible, as far as I know)_</p></li>
+<li><p>provide a more functional WebChanges page, or simply use a
+WebCVS script</p></li>
+<li><p>make the homepage of the Wiki prettier (TWiki's is rather ugly)
+_(Simply because I haven't changed the templates -- not really
+TWiki's fault)_</p></li>
+<li><p>make it possible to roll-back changes (to an abritrary
+rev. number) _(You can do this in TWiki)_</p></li>
+</ul>
+</li>
+<li><p>make it possible to use Subversion rather than CVS. _(Why? What is
+Subversion?)_</p></li>
+<li><p>extend TWiki's concept of 'webs' to allow nesting of 'webs' (like
+Python's package structure.  ... blends the flat namespace of
+traditional Wiki's with a hierarchical structure like Zope's
+folders.</p></li>
+<li><p>use something other than basic HTTP authentification for logging in.</p></li>
+<li><p>allow tight integration with the other <a class="reference external" href="appideas.html">AppIdeas</a> that we've floated.
+In particular:</p>
+<ul>
+<li><p>WebwareZope / <a class="reference external" href="webwaresourceforge.html">WebwareSourceforge</a> -- huge potential here!</p></li>
+<li><p><a class="reference external" href="webwarelistarchive.html">WebwareListArchive</a></p></li>
+<li><p>WebwareForum</p></li>
+<li><p><a class="reference external" href="webwarevaults.html">WebwareVaults</a></p></li>
+<li><p><a class="reference external" href="pythonwebstats.html">PythonWebStats</a></p></li>
+<li><p>WebwareSlash</p></li>
+</ul>
+</li>
+<li><p>make it possible to embed editable regions in otherwise
+write-protected wiki pages (There's another Wiki that does this, but
+I can't remember which one)</p></li>
+<li><p>make it possible to view/preview the contents of one WikiTopic
+inside another.  This would be enabled via either a button on each
+topic or a user setting.  The view/preview bit could be done
+in-place or via a separate frame (preferable).  Think of it like the
+view pane in an email client.  Each WikiName link would be followed
+by a * or some other symbol when this feature was active.  Clicking
+on the * would display the contents of that WikiName in the view
+frame.</p></li>
+<li><p>make it possible to use Templates (like Cheetah's object-orientated
+ones) for individual WikiTopics.</p></li>
+<li><p>make it possible to drop in 'user interface components' such as
+ready built forms, surveys, etc. into a WikiTopic</p></li>
+<li><p>make it possible to store custom meta-informational fields about
+WikiTopics.</p></li>
+</ul>
+<p>-- TavisRudd - 07 Nov 2001 _(<a class="reference external" href="ianbicking.html">IanBicking</a>)_</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 28 Sep 2005</p>
+
+</div>
+</body>
+</html>

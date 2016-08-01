@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware Patch Manager</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-patch-manager">
+<h1 class="title">Webware Patch Manager</h1>
+
+<p>Use Subversion ( <a class="reference external" href="http://subversion.tigris.org/">http://subversion.tigris.org/</a> ) , when it is ready.</p>
+<p>I would say, &quot;use CVS&quot;, but it will never be ready, because the
+backend storage model does not support sandboxes (many short-lived
+experimental branches) well.</p>
+<p>Why does Subversion work?</p>
+<ul class="simple">
+<li><p>secure: branching/merging are almost trivial. rejecting/accepting a
+patch is very easy.</p></li>
+<li><p>barrier to entry: actually lower than with web/email-based
+interface.</p></li>
+<li><p>a developer with the commitment/skill level to contribute useful
+patches will probably already have the tools installed</p></li>
+<li><p>the tools create a valid patch automatically (no fiddling with diff
+options) based on current development (not what the person
+downloaded a week ago when he started the project)</p></li>
+<li><p>other developers can immediately (and easily) apply the patch and
+evaluate it.</p></li>
+<li><p>the automated build/test procedure can see and verify the change
+very quickly, rather than waiting for a harried developer to
+download the patch from the clunky web interface and apply it to
+code that has changed four times in the week since the patch was
+created.</p></li>
+</ul>
+<p>(all of these points except the first also apply to CVS.)</p>
+<p>Combined with a Roundup discussion, this is a killer tool with very
+useful history features.</p>
+<p>Bonus: subversion uses <a class="reference external" href="webdav.html">WebDAV</a> as its native network protocol, so you
+get a simple browser interface for free.</p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 16 Apr 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

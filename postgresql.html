@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>PostgreSQL</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="postgresql">
+<h1 class="title">PostgreSQL</h1>
+
+<p>Pro:</p>
+<ul class="simple">
+<li><p>The most sophisticated of all the open source RDBMS. Has declarative
+referential integrity constraints, triggers, stored procedures,
+mature transaction support, multi-versioning concurrency control
+(MVCC) and write-ahead logging for safety and excellent performance
+under load.</p></li>
+<li><p>More SQL-92 compliant than most RDBMS, including Oracle.</p></li>
+<li><p>Stored procedures can be written in PL/pgSQL (a PL/SQL workalike),
+PL/Tcl, PL/Perl, PL/Python (in 7.2).</p></li>
+<li><p>Very easy to port between Oracle and PostgreSQL. Makes it easier to
+migrate to Oracle if the customer wants it.</p></li>
+<li><p>Supports hot backups, OLAP and ad-hoc queries easily since use of
+MVCC means that readers never block writers, and writers never block
+readers. This is also the reason why PostgreSQL and Oracle scale so
+well. &lt;nop&gt;InterBase has MVCC, but has some internal design issues
+that cripple its performance.</p></li>
+<li><p>Well documented. No need to accumulate 1.5 ft of manuals and still
+wonder how to do/manage something, like Oracle.</p></li>
+</ul>
+<p>Con:</p>
+<ul class="simple">
+<li><p>Does not seem to have as widespread support amongst web developers,
+probably because of the nonsense &lt;nop&gt;NuSphere puts out regarding
+need for transactions, declarative referential integrity, etc. They
+are backpeddling on transactions now though, and might eventually
+acknowledge that the last 30 years of research into RDBMS systems is
+actually right.</p>
+<ul>
+<li><p>My perception on the lack of web developer support goes like this:
+Virtual web host providers typically provide MySQL, but not
+PostgreSQL because the former requires less CPU cycles (in fact
+some providers have just outright said this), so many people using
+such hosts learned MySQL because that was _the_ SQL database
+available. Also, as a MySQL user (for the reason just stated) I
+have never had any problems in _my_ projects and so never find the
+time to convert to Postgres among my list of TO DOs. --
+<a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p></li>
+</ul>
+</li>
+<li><p>I don't think it's an anti-PostgreSQL bias, just the ordinary hurdle
+of not being the first, like wxWindows trying to bust into the
+Tkinter scene.  Many MySQL developers (like me) want to switch to it
+eventually (because it's &quot;better&quot; -- more features, more robust,
+better OO, etc), but it's going against inertia.  I can add a MySQL
+database like that &amp;lt;snaps fingers&amp;gt;, but every time I browse
+the PostgreSQL manual I think, &quot;Aargh!  &amp;lt;recoil in horror&amp;gt; I
+don't have time to read all this, choose among PostgreSQL's many
+column types, or translate my queries!  Maybe later.&quot; --
+Main.MikeOrr - 31 Dec 2001</p></li>
+<li><p>Does not have as many third party books and software tools as
+MySQL. -- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p>
+<ul>
+<li><p>OTOH, you don't need anything except the excellent manuals if you
+already know about RDBMS. If you don't, Bruce Momjian's book is a
+good starter, and is freely downloadable at:
+<a class="reference external" href="http://www.ca.postgresql.org/docs/awbook.html">http://www.ca.postgresql.org/docs/awbook.html</a> . There's also
+<em>Practical PostgreSQL</em> which is also available at:
+<a class="reference external" href="http://www.postgresql.info/">http://www.postgresql.info/</a> . Frankly though, I find that the
+online manuals are more current since PostgreSQL is developing so
+quickly. For third-party tools, well anything that can handle
+SQL/ODBC will work. Crystal Reports, MS Excel, MS Access,
+etc. Just use the ODBC driver. -- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 31 Dec 2001</p></li>
+<li><p>Well in that case, can you recommend a GUI client that works with
+Postgres that is as nice as: <a class="reference external" href="http://anse.de/mysqlfront/">http://anse.de/mysqlfront/</a> , and a
+tool like: <a class="reference external" href="http://www.new.ox.ac.uk/~adam/computing/mysqldiff/">http://www.new.ox.ac.uk/~adam/computing/mysqldiff/</a> ? I
+would have a hard time migrating to Postgres without the
+latter. -- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p></li>
+<li><p>There is <a class="reference external" href="http://ns.flex.ro/pgaccess/">http://ns.flex.ro/pgaccess/</a> for graphical
+management/editing of tables, users, sequences functions,
+etc. There is also
+<a class="reference external" href="http://gborg.postgresql.org/project/pgmonitor/projdisplay.php">http://gborg.postgresql.org/project/pgmonitor/projdisplay.php</a> for
+monitoring the backend, and
+<a class="reference external" href="http://pgadmin.postgresql.org/pgadmin2.php?ContentID=1">http://pgadmin.postgresql.org/pgadmin2.php?ContentID=1</a> for the
+W95/8/NT client, which seems to be very nice and more capable than
+pgaccess. pg_dump and pg_dumpall will extract a database into a
+script file, which you can then diff. People use it for moving
+databases and all the associated functions, etc. to another
+installation. For most stuff, I actually just use psql (<a class="reference external" href="http://psql.sourceforge.net/">http://psql.sourceforge.net/</a>), the
+terminal-based front-end since I can script it. -- <a class="reference external" href="edmundlian.html">EdmundLian</a> -
+31 Dec 2001</p></li>
+</ul>
+</li>
+</ul>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> 31 Dec 2001</p>
+<p>I have outstanding questions regarding the so-called &quot;object oriented&quot;
+features of PostgreSQL. I created <a class="reference external" href="postgresoofeatures.html">PostgresOOFeatures</a> for this.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 01 Mar 2005</p>
+
+</div>
+</body>
+</html>

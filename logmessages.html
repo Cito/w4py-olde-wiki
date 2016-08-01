@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Log Messages</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="log-messages">
+<h1 class="title">Log Messages</h1>
+
+<p>Webware has a logging facility you can use for basic debugging.</p>
+<p>If you are running the application server in OneShot mode, output of
+self.log('Message') calls will appear toward the very bottom of the
+page if you have the showconsole parameter set to 1 in
+conf/oneshot.conf. Otherwise, the log messages will appear in the
+Webware console.</p>
+<p>FYI, the logging method is defined in WebKit.Servlet, and this is
+inherited by HTTPServlet, and then by Page. So, you should have this
+method available pretty much everywhere, unless it was over-ridden
+accidentally.</p>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 18 Mar 2002</p>
+<hr class="docutils" />
+<p>I'd also recommend Sacha's <a class="reference external" href="loggingkit.html">LoggingKit</a>.  It's very well designed and
+quite flexible.</p>
+<p>-- TavisRudd - 18 Mar 2002</p>
+<hr class="docutils" />
+<p>More information from BenParker:</p>
+<blockquote>
+<p>The constant AppServer will write to stdout, which could be the
+console, or you could redirect it to a file, which is what most
+people do. Then you can &quot;tail -f&quot; the file to monitor the output
+via the console, and still have a record of it in the file.  You
+could also pipe the output to a logging program instead of just
+appending straight to a file.</p>
+<p>OneShot errors always appear in our apache error logs.  Apache
+runs the CGI process, so error output from the process feeds back
+into Apache.  Standard &quot;print ...&quot; messages appear at the bottom
+of every OneShot page as long as you have verbose=1 in your
+OneShot config file; the stdout is captured by the OneShotAdapter
+I believe ... maybe the OneShotAppServer...</p>
+</blockquote>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 18 Mar 2002</p>
+<p>If this PEP becomes part of the core (which seems likely), this could
+be the basis for logging: <a class="reference external" href="http://www.python.org/peps/pep-0282.html">PEP 282</a></p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 19 Mar 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 17 May 2005</p>
+
+</div>
+</body>
+</html>

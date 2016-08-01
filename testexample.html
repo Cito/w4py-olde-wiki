@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title></title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document">
+
+
+<div class="section" id="testexample">
+<h1>Testexample</h1>
+</div>
+<div class="section" id="an-example-query-with-many-many-tables">
+<h1>An example query with Many-Many tables</h1>
+<p>I have an application with a class like:</p>
+<pre class="literal-block">class Job (SQLObject):
+    ...
+    keywords = RelatedJoin ('Keyword')</pre>
+<p>ie an object holding information about a job which I want to allow the users
+to be able to add (and remove) keywords.  The keyword table is simply:</p>
+<pre class="literal-block">class Keyword(SQLObject):
+    name = StringCol(alternateID=True,notNone=True,length=50)
+    jobs = RelatedJoin('Job')
+    _defaultOrder = 'name'</pre>
+<p>The application has a search page (a web form) which works by looking for
+various &lt;inputs&gt; for each field in the job, creating an SQL statement for each
+of these and joining these together with &quot;AND &quot; then doing
+Job.select(sqlstring).  Most of the fields are fairly trivial but the keywords
+are more interesting which is what I'm going to describe here.</p>
+<p>There are two operations the user wants to be able to do from the search page:</p>
+<blockquote>
+<ol class="arabic simple">
+<li><p>find jobs with any of a list of keywords</p></li>
+<li><p>find jobs with all of a given list of keywords</p></li>
+</ol>
+</blockquote>
+<p>For pedagogic purposes I'm assuming that <span class="docutils literal">input_keys</span> is a list of strings,
+one for each of the keywords selected on the form.  There is also a radio
+button to decide between AND and OR which is what these cases boil down to.</p>
+<p>The first case is relatively simple.  If the input was for three keywords it
+just needs an SQL statment like:</p>
+<pre class="literal-block">SELECT ..
+FROM job, job_keyword
+WHERE job.id = job_keyword.job_id and (job_keyword.keyword_id = k1 or
+                                      job_keyword.keyword_id = k2 or
+                                      job_keyword.keyword_id = k3)</pre>
+<p>so a simple piece of code like:</p>
+<pre class="literal-block">sqlstring.append (&quot;job.id = job_keyword.job_id and (%s)&quot;%
+                  ' OR '.join([&quot;job_keyword.keyword_id = %d&quot;%Keyword.byName(k).id
+                               for k in input_keys]]))
+tables.append ('job_keyword')</pre>
+<p>The second one is more challenging because you need to do multiple joins with
+the intermediate <span class="docutils literal">job_keyword table</span>.  So a piece of code like:</p>
+<pre class="literal-block">qhold = []
+for i,k in enumerate(input_keys):
+    tabl = 'jk%d'%i
+    qhold.append (&quot;job.id = %s.job_id and %s.keyword_id = %d&quot;%
+                  (tabl, tabl, Keyword.byName(k).id))
+    tables.append ('job_keyword AS %s'%tabl)
+q.append (&quot;(%s)&quot;%' AND '.join(qhold))</pre>
+<p>does the trick.  The final search is done by:</p>
+<pre class="literal-block">Q = ' AND '.join(sqlstring)
+items = Job.select(Q,clauseTables=tables)</pre>
+<dl class="simple">
+<dt>Notes:</dt>
+<dd><ul class="simple">
+<li><p>the main trick, which took me ages to think of, is that the <span class="docutils literal">clauseTables</span> list is really a list of expresssions not just table names.</p></li>
+<li><p>I didn't need to do the Keyword.byName(k) lookup in the code, it could have been added as another join but I know my keyword table is tiny compared to the number of jobs so I suspect it would be more efficient.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 28 Oct 2004</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware Groupware</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-groupware">
+<h1 class="title">Webware Groupware</h1>
+
+<p>(moved from <a class="reference external" href="appideas.html">AppIdeas</a>)</p>
+<p>This is a follow up to a topic <a class="reference external" href="http://www.geocrawler.com/lists/3/SourceForge_/3854/0/7099282/">thread</a> from the mailing list.</p>
+<p>Looking to create a Webware based Groupware application.  It should
+include email, and calendaring functions.  There's a million of them
+out there, but not for Webware ;D</p>
+<p>With this as a starting point I would like to eventually get to
+something like a WyattERP (<a class="reference external" href="http://www.wyatt-erp.com">http://www.wyatt-erp.com</a>, it's hosted on
+<a class="reference external" href="sourceforge.html">SourceForge</a>), except ASP and Python/WebWare based.</p>
+<p>-- RayLeyva - 17 Nov 2001</p>
+<p>I think for a heavy-use application like WyattERP you need a pretty
+good interface -- I'm not sure a normal HTML/HTTP interface is it
+(though maybe if you used browser extensions heavily).  For things
+like data entry and high-feedback interfaces, HTTP/HTML/ASP sucks :-(</p>
+<p>But maybe if certain pieces of the application use custom local
+program, it might work better (to reference the next idea).</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 19 Nov 2001</p>
+<p>This idea ties in fairly closely with many of the other ideas listed
+above.  The core of all these applications would the
+authenfication/authorization system. Maybe we should start with that.
+I haven't used <a class="reference external" href="userkit.html">UserKit</a> so I'm not sure if it is up to scratch.  The
+recent discussions about non-cookie based session management are
+related to this as well.</p>
+<p>Once a flexible authenfication/authorization system is in place, it
+would make sense to design a 'component/html-widget' system that
+allows multiple UI components to be used on a single page without
+namespace clashes, just as you can place multiple complex widgets on a
+GUI form and not have to worry about conflicts between them.  Most
+html-based applications I've seen fail miserably in this respect.  It
+should be possible to drop a calender 'component' into a page that
+already contains other components, or even other calendar components.
+ASP.net's server controls seem to do this quite well.  Here's an
+Cheetah-based example of what I'm going on about:</p>
+<pre class="literal-block">#from SiteTemplate_ import SiteTemplate_
+#from GroupwareWidgets_ import GroupwareWidgets_
+#extends SiteTemplate_, GroupwareWidgets_
+Surrounding text
+$calendarWidget(trans)
+Surrounding text
+$emailWidget(trans)
+Surrounding text
+$forumWidget(trans)</pre>
+<p>The widgets in the example above should manage their own state and
+automatically resolve namespace clashes (of query string/post vars)
+among themselves.</p>
+<p>-- TavisRudd - 20 Nov 2001</p>
+<p>It also involves having some information about what the variables mean
+-- for instance, all of the widgets should preserve the
+<span class="docutils literal">queryString</span> GET variable (that, say, defines the search results),
+but if you have a link on the page that deletes an item with a GET
+variable, then other widgets shouldn't preserve that variable in their
+generated URLs.  Perhaps this is a matter of seperating variables that
+effect the view, and variables that indicate an action to be
+performed.  Immediately redirecting after an action may be the best
+resolution, now that I think about it, using a <a class="reference external" href="redirectnotify.html">RedirectNotify</a>
+pattern.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 20 Nov 2001</p>
+<p>That's a great example of why it's better to use POST vars for
+performing actions like that.  GET vars are stateful, POST vars are
+not.  Once-off actions like deleting something shouldn't be encoded in
+the stateful queryString.  Other widgets shouldn't have to know
+anything about the GET vars or SESSION vars they aren't using. They
+should just preserve them.  This is also an example of where it is
+useful for Webware to preserve the GET vars during a POST operation.</p>
+<p>-- TavisRudd - 20 Nov 2001</p>
+<p>Unfortunately, GET vs. POST is also a UI issue -- you can't do POST
+without a FORM element, so you can't do something like &lt;a
+href=&quot;?deleteItem=%i&quot;&gt;[delete]&lt;/a&gt; with POST, even though that will
+probably be an action (POST-ish).  Blame it on HTML.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 20 Nov 2001</p>
+<p>Then use a form instead of a simple link.  It's more verbose on the
+HTML side, but to the servlet writer it isn't anything extra if
+they're using a well factored library. -- TavisRudd - 25 Nov 2001</p>
+<p>You don't get the same interface when you use a form -- forms aren't
+well suited to having a large number of divergent options.  For
+instance, when showing a table of 50 items, you don't want a submit
+button for each delete option.  Unfortunately, good UI dictates you
+use links sometimes when POST would be more appropriate from the
+server-side perspective.  -- <a class="reference external" href="ianbicking.html">IanBicking</a> - 25 Nov 2001</p>
+<p>You can use Javascript URIs to manipulate a form and get the best of
+both worlds. There's also other UI designs that solve this.  Consider
+the handling of delete/block in HOTMAIL.  Instead of having a delete
+link for each email they use a checkbox selection form and a single
+delete button.  -- TavisRudd - 25 Nov 2001</p>
+<p>Using Javascript to manipulate and fill forms is very fragile and,
+IMHO, very bad style.  I've seen far, far too many broken shopping
+carts that relied on Javascript to manipulate the client-side forms
+for the benefit of the server-side programmer.  The client in web
+programming is a given -- there are some things that can only be done
+(well) on the client side, but you should _never_ have the client side
+make up for problems of the server-side architecture.  Using POST and
+GET to indicate functional differences in variables is imposing
+server-side needs where they aren't appropriate.  I think
+<a class="reference external" href="redirectnotify.html">RedirectNotify</a> provides the safety of POST (or even better!) while
+being more general.  Leave the POST/GET decision to the UI and
+graphical designer, and implement new ideas with new (orthogonal)
+techniques -- <a class="reference external" href="ianbicking.html">IanBicking</a> - 25 Nov 2001</p>
+<p>I agree about Javascript being fragile when you have non-programmers
+fiddling with the code, but I'm thinking in terms of simple UI
+'widgets' that the non-programmers can insert in the page with a
+single statement in Cheetah.  The non-programmers would never touch
+the Javascript. With <a class="reference external" href="redirectnotify.html">RedirectNotify</a> I can't think of anyway that
+would work.  Your argument implies that client-side <a class="reference external" href="formvalidation.html">form validation</a>
+javascript is 'very bad style'. I disagree. -- TavisRudd - 26 Nov
+2001</p>
+<p>Not the form validation, but I get the impression you are talking
+about something like:</p>
+<pre class="literal-block">&lt;form action=&quot;deleteItem&quot; method=&quot;POST&quot; name=&quot;delForm&quot;&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;itemID&quot;&gt;
+&lt;/form&gt;
+&lt;script language=&quot;JavaScript_&quot;&gt;&lt;--
+function delItem(itemID) {
+    document.forms.delForm.itemID.value = itemID;
+    document.forms.delForm.submit();
+}
+//--&gt;&lt;/script&gt;
+
+to delete: &lt;a href=&quot;javascript:delItem(1)&quot;&gt;[delete]&amp;lt/a&gt;</pre>
+<p>That's the kind of Javascript I find to be particularly fragile.  When
+the Javascript is necessary to get the UI you want, then yeah, you
+have to use it, but that's something else.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 26 Nov 2001</p>
+<p>That's what I meant, but I should clarify that I've never had to use
+that style and don't think it would be necessary with the style of UI
+'widget' that I'm thinking of.  Even if that style was neccessary for
+a particular 'widget' I don't see why it would be fragile, as the
+'widget' would autogenerate all the HTML and Javascript code related
+to it.  There's nothing to be broken.  In other contexts I'd agree
+with you, but not when it's autogenerated. -- TavisRudd - 26 Nov 2001</p>
+<p>Actually, come to think of it, there are several ways of handling
+actions with just GET vars in the QUERY_STRING that don't require
+<a class="reference external" href="redirectnotify.html">RedirectNotify</a>.  The simplest would be to just drop any GET var that
+contains the word 'action' when rebuilding the URI.  That might cause
+problems if you were mixing these 'widgets/components' in with other
+systems, but you could get around that by adding a prefix specific to
+this UI system.  Another approach would be to make each
+'widget/component' remember what action it performed last and to
+ignore requests for it to be repeated.  And there's other ways ...</p>
+<p>What I'm getting at is that an interface to a 'component/widget'
+should be atomic: it shouldn't rely on external servlets.  On the
+other hand, forwarding from one servlet to another might make sense in
+a complex transactional process like order processing.</p>
+<p>To flesh out the GUI analogy a bit more:
+* a collection of related servlets == an application
+* a servlet == a form, a dialogue, or the main application window
+* a 'component' == a widget (stock or custom)</p>
+<p>-- TavisRudd - 26 Nov 2001</p>
+<p>If the widget is to be atomic, would it preclude items suchs as login
+boxes.  This would contain 2 label, and 2 txtbox widgets, but is
+itself a widget.</p>
+<p>Couldn't FFK be expanded to encompass this?</p>
+<p>-- RayLeyva - 27 Nov 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 28 Sep 2005</p>
+
+</div>
+</body>
+</html>

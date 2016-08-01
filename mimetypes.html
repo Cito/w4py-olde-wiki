@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>MIME types</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="mime-types">
+<h1 class="title">MIME types</h1>
+
+<p><em>Issues with MIME Types</em></p>
+<p>When you are using the Webware provided Webserver, chances are that
+Microsoft documents are not recognised. The reason for that is that
+the python module <a class="reference external" href="http://www.python.org/doc/current/lib/module-mimetypes.html">mimetypes</a> doesn't have them predefined.</p>
+<p>Do one of the following:</p>
+<ul class="simple">
+<li><p>add a fully functional &quot;mime.types&quot; file reference into the
+&quot;knownfiles&quot; list</p></li>
+<li><p>add the correct mimetype in the &quot;types_map&quot;. &quot;doc&quot; documents have
+the type <em>application/msword</em></p></li>
+</ul>
+<p>-- StephanDiehl - 14 Nov 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>User Handling Proj</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="user-handling-proj">
+<h1 class="title">User Handling Proj</h1>
+
+<div class="section" id="project-summary">
+<h1>Project Summary</h1>
+<p>Design and implement a flexible framework for handling user
+authentication and authorization in Webware applications.</p>
+</div>
+<div class="section" id="project-moderator">
+<h1>Project Moderator</h1>
+<p>TavisRudd</p>
+</div>
+<div class="section" id="project-members">
+<h1>Project Members</h1>
+<ul class="simple">
+<li><p>TavisRudd</p></li>
+<li><p><a class="reference external" href="mikeorr.html">MikeOrr</a></p></li>
+<li><p><a class="reference external" href="paulboddie.html">PaulBoddie</a></p></li>
+<li><p>RayLeyva</p></li>
+<li><p><a class="reference external" href="ianbicking.html">IanBicking</a></p></li>
+<li><p>DarrylVanDorp</p></li>
+</ul>
+</div>
+<div class="section" id="current-status">
+<h1>Current Status</h1>
+<ul class="simple">
+<li><dl class="simple">
+<dt>current -- discussion and design ongoing ... no code yet  ... We are focussing on authentication</dt>
+<dd><p>for the moment.</p>
+</dd>
+</dl>
+</li>
+<li><p>23 Nov 2001 -- formal Webware <a class="reference external" href="subproject.html">SubProject</a> created</p></li>
+<li><p>20 Nov 2001 -- discussion starts on WebwareDiscuss and <a class="reference external" href="webwareusermanager.html">WebwareUserManager</a> topic created</p></li>
+<li><p>Oct 2001 -- listed as an idea on the <a class="reference external" href="appideas.html">AppIdeas</a> page</p></li>
+</ul>
+</div>
+<div class="section" id="problem">
+<h1>Problem</h1>
+<p>A flexible and seamless framework for handling authentication and authorization is essential for all the ideas listed on the <a class="reference external" href="appideas.html">AppIdeas</a> page. It will also benefit users creating their own applications and serve as the foundation for the <a class="reference external" href="webwareusermanager.html">WebwareUserManager</a> application.</p>
+</div>
+<div class="section" id="solution">
+<h1>Solution</h1>
+<p>... see the design notes and discussion below.</p>
+</div>
+<div class="section" id="risks">
+<h1>Risks</h1>
+<ul class="simple">
+<li><p>performance overhead</p></li>
+<li><p>overdesign</p></li>
+</ul>
+</div>
+<div class="section" id="delivery-target">
+<h1>Delivery Target</h1>
+<p>Webware 0.7 (??)</p>
+</div>
+<div class="section" id="design-notes-in-documentmode">
+<h1>Design Notes (in <a class="reference external" href="documentmode.html">DocumentMode</a>)</h1>
+<p>It should provide the following layers:</p>
+<ul class="simple">
+<li><p>authentication:</p>
+<ul>
+<li><p>secure authentication mechanism; preferably works with or without
+cookies, and will fall back to semi-secure mechanisms when SSL
+and/or Javascript is not available.</p></li>
+<li><p>can reject non-secure authentication for all users, or only a
+class of users (e.g., people with admin privileges)</p></li>
+<li><p>keeps track of failed attempts to prevent dictionary attacks --
+also uses TarPit to hinder such attacks (as well as DoS?)</p></li>
+<li><p>flexible time-outs</p></li>
+<li><p>allows IP-based restrictions / filtering (for example root might
+only be allowed to login from localhost)</p></li>
+<li><p>auto-forwarding (a non-authenticated user tries to access
+something restricted, is sent to the login page, and then back to
+whatever they were trying to access)</p></li>
+<li><p>works with both dynamic and static content</p></li>
+</ul>
+</li>
+<li><p>authorization (aka permissions, access-control)</p>
+<ul>
+<li><p>concept of both users and groups (completely separate from the OS!
+-- plus hooks to tie it with OS if wanted)</p></li>
+<li><p>ability for one user to belong to multiple groups</p></li>
+<li><p>ability for a group to belong to other groups</p></li>
+<li><p>flexible, action based, permissions ... eg. members of group X are
+allowed to view resource Y, but not edit/delete/etc. it.  In the
+context of web publishing, actions can include the following:
+view, edit, delete, rollback, publish, hide, etc.</p></li>
+<li><p>an 'anonymous' or 'public' user  for non-authentificated users</p></li>
+<li><p>a catch-all group that includes all defined users (like
+'everybody' on NT)</p></li>
+<li><p>a root user and root group</p></li>
+<li><p>multiple users and groups can have permissions to a particular
+resource, unlike Unix permissions.</p></li>
+<li><p>concept of 'ownership' is distinct from that of 'permissions'.</p></li>
+</ul>
+</li>
+<li><p>management interfaces (as part of the <a class="reference external" href="webwareusermanager.html">WebwareUserManager</a> application):</p>
+<ul>
+<li><p>a user-info interface that allows individual users to do change
+passwds, personal data, etc.</p></li>
+<li><p>a 'registration' interface that lets the user choose a username
+and requires an e-mail address and password</p></li>
+<li><p>a mechanism to help those who have lost their password.  Specific
+password-recovery mechanisms are discussed <a class="reference external" href="#PasswordRecovery_">below</a>.</p></li>
+<li><p>web-based and command-line management interfaces that allows the
+'root' user or other authorized users and groups to quickly
+drill-down on users/groups and add/update/suspend/delete those
+users/groups.</p></li>
+<li><p>Users must re-enter their passwords before being able to change it
+or their email address.</p></li>
+</ul>
+</li>
+<li><p>In general, the system should:</p></li>
+<li><p>have support for multiple data stores(flat file, BDB, various
+relational databases, etc.)</p></li>
+<li><p>have the ability to tie into existing databases without needing to
+migrate data (i.e. soft-code the names of the fields used)</p></li>
+<li><p>support passwords stored in multiple forms -- plaintext, crypt (as
+traditional in Unix /etc/passwd), md5, SHA1, or homogenous (as in
+<span class="docutils literal">.htpasswd</span> for Apache)</p></li>
+<li><p>have a clean separation between the backend and the user-interface
+that permits quick customization of the UI.</p></li>
+<li><p>have interfaces that are seperate from Webware itself, as components
+of this may need to be implemented seperately from any Web
+environment (for instance, in a Tk interface, over <a class="reference external" href="xmlrpc.html">XmlRPC</a> by a
+non-Python application, etc).</p></li>
+<li><p>The key concepts are:</p>
+<ul>
+<li><p>user</p></li>
+<li><p>group -- comprised of 'users' and/or other 'groups'</p></li>
+<li><p>resource - an abstract concept of something in Webware (e.g. a
+page, a servlet, a wiki topic, etc.) that a user might use.</p></li>
+<li><p>action (e.g. view, edit, delete, publish, hide, rollback, etc.)</p></li>
+<li><p>permission -- is a 'user', or one of the 'groups' they belong to,
+allowed to perform an 'action' on a 'resource'.</p></li>
+<li><p>authentication -- the process of logging in</p></li>
+<li><p>authorization -- the process of checking to see if a 'user' has
+'permission' to perform an 'action' on a 'resource'.</p></li>
+<li><p>ownership -- who is allowed to change the permissions of
+particular resource.</p></li>
+</ul>
+</li>
+<li><p>Important questions about the Authentication layer*: (please answer
+them in the discussion below)</p></li>
+<li><p>At what stage in the request-response cycle does authentication take
+place (Adapter, Application, or Servlet)?  Doing it at the Adapter
+level means we can use the same mechanism to protect content that
+isn't served via <a class="reference external" href="webkit.html">WebKit</a>. Doing it at the Application level means
+that we can also protect static content that is served via
+<a class="reference external" href="webkit.html">WebKit</a>. Doing it at the Servlet level means that we can only
+protect servlets.</p></li>
+<li><p>Are we going to use an identifier in the session or a separate
+authentication cookie as is suggested in the two papers listed
+below?</p></li>
+<li><p>Assuming that we use sessions to store the authentication details,
+how do we make sessions work with/without cookies?  Extend this to
+protecting static content via WebKit.</p></li>
+<li><p>How do we store authentication information in the user session?</p></li>
+<li><p>How do we guard against session hijacking?</p></li>
+<li><p>How are password's stored internally? plain or hashed?</p></li>
+<li><p>How do we interface with arbitrary stores of user information and
+passwords (flat-file, BSD-DB, ZODB, relational database, LDAP, etc.)</p></li>
+<li><p>When Webware makes the shift to a multi-application framework, does
+authentfication span applications?</p></li>
+<li><p>How do we make the authentication system fall-back to a semi-secure
+mechanism (e.g. md5 hashes via javascript) when SSL isn't available.</p></li>
+<li><p>How are we going to implement IP filtering or automatic IP-userID
+mapping?</p></li>
+<li><p>How are we going to block brute-force dictionary attacks?</p></li>
+</ul>
+</div>
+<div class="section" id="background-reading-in-documentmode">
+<h1>Background Reading (in <a class="reference external" href="documentmode.html">DocumentMode</a>)</h1>
+<ul class="simple">
+<li><p><a class="reference external" href="http://cookies.lcs.mit.edu/pubs/webauth:tr.pdf">http://cookies.lcs.mit.edu/pubs/webauth:tr.pdf</a> -- a must read!</p></li>
+<li><p><a class="reference external" href="http://www.wwnet.net/~janc/auth.html">http://www.wwnet.net/~janc/auth.html</a></p></li>
+<li><p><a class="reference external" href="http://www.zope.org/Documentation/ZDG/Security.stx">http://www.zope.org/Documentation/ZDG/Security.stx</a></p></li>
+<li><p><a class="reference external" href="http://www.skyhunter.com/marcs/ewalnut.html#SEC41">http://www.skyhunter.com/marcs/ewalnut.html#SEC41</a> -- E, a
+capabilities language: relates to capabilities as a permission
+system (something to implement in Python?  Not according to E -- but
+maybe in a casual manner)</p></li>
+<li><p><a class="reference external" href="http://www.eros-os.org/essays/00Essays.html">http://www.eros-os.org/essays/00Essays.html</a> -- EROS: The Extremely
+Reliable Operating System, also uses capabilities.  <a class="reference external" href="http://www.eros-os.org/essays/capintro.html">What *is* a
+Capability, Anyway?</a> and <a class="reference external" href="http://www.eros-os.org/essays/ACLSvCaps_.html">Comparing ACLs and Capabilities</a> address
+the ACL vs. Capability question, with a decidedly mathemathical
+bend.  Makes the argument that the two are not orthogonal (i.e.,
+basically the same).</p></li>
+</ul>
+</div>
+<div class="section" id="general-discussion-in-threadmode">
+<h1>General Discussion (in <a class="reference external" href="threadmode.html">ThreadMode</a>)</h1>
+<p>I think permissions should be considered something of a different
+issue -- ACLs being traditional at this point, but not always
+appropriate. They are closely tied to the system's notion of a an
+object and the granularity of permissions.</p>
+<p>I myself have been thinking about a more OO way of doing
+permissions -- most of the ways seem to be based on static data
+structures with explicit algorithms: it's not possible, for
+instance, to say &quot;anyone can do action X if someone with permission
+Y requested that they do it&quot; -- you can make the request also grant
+the permission, but the algorithm itself is external to the
+security system.  You can't, for instance, retroactively change
+those permissions around, because the actions (the request) have
+already passed.</p>
+<p>Anyway, I'm not sure where I'm going with that idea, but it might
+only be to say that figuring out permissions is distinct from
+managing users and their roles/groups, and probably more
+complicated.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 20 Nov 2001</p>
+<p>Zope has a robust but (for some applications) overly complex security
+system: <a class="reference external" href="http://www.zope.org/Documentation/ZDG/Security.stx">http://www.zope.org/Documentation/ZDG/Security.stx</a> .</p>
+<p>We're leaving out the Zope term &quot;role&quot; because it ambiguously overlaps
+with our term &quot;group&quot;.  We're also leaving out Zope's &quot;Proxy Roles&quot;
+(analagous to Set-UID programs, or allowing a user to acquire extra
+permissions in certain circumstances.)</p>
+<p>Our &quot;ownership&quot; is different than Zope's.  What Zope calls ownership
+was added to Zope in 2000 to plug a security hole related to
+through-the-web editing and proxy roles.  For us, 'owner' means the
+user(s) who may reassign the permissions of a particular resource.</p>
+<p>As far as user interface, Zope uses one screen with a table of
+permisions down the left and roles along the top, another screen for
+linking groups to roles, and the user screen for assigning users to
+groups.</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 22 Nov 2001</p>
+<p>Let's scrap the term 'role' completely, and only use the terms of
+users, groups, actions and permissions.  Where 'actions' are things
+like view, edit, etc. and permissions are the authorization for
+particular users and groups to be able to perform those actions on an
+object.  An application designer should be able to define custom
+actions. 'roles' implies a strict connection between 'groups' and
+particular 'actions', which is not desirable.  The permissions system
+in Windows NT and Novell Netware are good models.</p>
+<p>-- TavisRudd - 20 Nov 2001</p>
+<p>I don't know what Novell uses -- it seemed very fine-grained -- but I
+don't particularly like NT.  The way permissions combined seemed very
+strange -- for instance, if you have Everyone: Deny All, then other
+more permissive permissions would be meaningless.  This seems
+backwards, and overall very confusing.  If you want to look at a
+particular ACL implementation -- ACLs are hardly novel, after all -- I
+think it should be possible to find something better than NT.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 20 Nov 2001</p>
+<p>Novell uses a modified version of LDAP to power it's NDS
+authentication system.  Couldn't we utilize OpenLDAP as a basis?</p>
+<p>-- RayLeyva - 20 Nov 2001</p>
+<p>With all this talk of users, groups, roles and so on, it's important
+not to forget applications where the concept of a user might be
+interesting, but where the relationships between users and actions are
+completely different (they could be determined by their position in an
+organisation, for example) and are irrelevant to the ownership of
+Webware resources (being relevant instead to the data manipulated by
+such resources).</p>
+<p>I have been thinking a bit about authentication and access in some
+recent experiments and I think it would be nice if one could have a
+layer where access checks are implemented separately from normal
+servlet code. In <a class="reference external" href="xmlforms.html">XmlForms</a> I would consider adding an <span class="docutils literal">access</span>
+section to each definition which can validate a user's credentials
+according to an arbitrary validation function, and should the
+validation fail, the user would be directed to another resource either
+to get authenticated or to be told what went wrong.</p>
+<p>These validation functions might well use a lot of
+application-specific logic, but they could benefit from simple,
+generic user support in Webware. One of the things about Zope which
+seemed either badly explained or badly designed was the tight binding
+between users and what Zope wanted users for. Clearly, Zope supports
+user sessions for itself, but then people mention that it doesn't
+support user sessions for Zope-based applications without add-on
+products being present to provide such sessions.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 21 Nov 2001</p>
+<p>Here are examples of group structures appropriate to different
+applications:</p>
+<p>(A) Unprivileged user, logged-in user, content manager.  The last may
+be factored out if the app doesn't allow through-the-web managing.
+The first may be factored out if user identification isn't necessary
+for these actions: simply put an if-anonymous-user branch in each
+servlet.  If you're left with only one group (logged-in user), maybe
+you won't use most of this kit/package.</p>
+<p>(B) Unprivileged user (may read some content and post to forums),
+privileged user (may read all content and post to forums), content
+manager (may add/edit articles; e.g., &quot;pages&quot;), app manager (may
+change the app's look or do more programmingish stuff).  All this is
+separate from the anonymous user, which has his own default
+permissions.</p>
+<p>Only some sites will have a web management interface.  Even fewer will
+allow non-managers to modify editorial content (&quot;articles&quot;, as opposed
+to forum postings or user-submitted entries) through the web.
+<a class="reference external" href="webwareusermanager.html">WebwareUserManager</a> should scale down to these sites and not require
+unnecessary complexity.  Complexity should be added only at the point
+it's needed.</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 22 Nov 2001</p>
+<p>Remember, this discussion is about a UserManagement system that can be
+used for the various application ideas on the <a class="reference external" href="appideas.html">AppIdeas</a> wiki page.
+Most of those would fall into the 'large, complex' category.  We would
+really need to discuss the permissions system in the context of each
+of those applications.  But as none of them exist let's focus on
+authentication for now.</p>
+<p>What are people using at the moment to do their authentication?</p>
+<p>Note:</p>
+<ul class="simple">
+<li><p>for authentication we only need to think in terms of users</p></li>
+</ul>
+<p>Here's a summary of the important questions:</p>
+<ul class="simple">
+<li><p>At what stage in the request-response cycle does authentication
+take place (Adapter, Application, or Servlet)?
+Doing it at the Adapter level means we can use the same mechanism to
+protect content that isn't served via <a class="reference external" href="webkit.html">WebKit</a>. Doing it at the
+Application level means that we can also protect static content that
+is served via <a class="reference external" href="webkit.html">WebKit</a>. Doing it at the Servlet level means that we can
+only protect servlets.</p></li>
+<li><p>are we going to use an identifier in the session or a separate
+authentication cookie as is suggested in the two papers I listed
+below?</p></li>
+<li><p>Assuming that we use sessions to store the authentication
+details, how do we make sessions work with/without cookies?  Extend
+this to protecting static content via <a class="reference external" href="webkit.html">WebKit</a>.</p></li>
+<li><p>How do we store authentication information in the user session?</p></li>
+<li><p>How do we guard against session hijacking?</p></li>
+<li><p>How are password's stored internally? plain or hashed?</p></li>
+<li><p>How do we interface with arbitrary stores of user information and
+passwords (flat-file, BSD-DB, ZODB, relational database, LDAP, etc.)</p></li>
+<li><p>When Webware makes the shift to a multi-application framework, does
+authentfication span applications?</p></li>
+<li><p>How do we make the authentication system fall-back to a
+semi-secure mechanism (e.g. md5 hashes via javascript) when SSL isn't
+available.</p></li>
+<li><p>Do we want to enable some sort of IP filtering or automatic
+IP-userID mapping?</p></li>
+<li><p>Are we going to block brute-force dictionary attacks with a failed
+login time-out mechanism?</p></li>
+<li><p>Are we going to worry about multi-machine failover support?</p></li>
+</ul>
+<p>-- TavisRudd - 21 Nov 2001</p>
+<p>Here's some excellent overviews of the issues involved and the schemes available:
+* <a class="reference external" href="http://www.wwnet.net/~janc/auth.html">http://www.wwnet.net/~janc/auth.html</a>
+* <a class="reference external" href="http://cookies.lcs.mit.edu/pubs/webauth:tr.pdf">http://cookies.lcs.mit.edu/pubs/webauth:tr.pdf</a></p>
+<p>-- TavisRudd - 22 Nov 2001</p>
+<p>Tavis said <a class="reference external" href="webwareusermanager.html">WebwareUserManager</a> (WUM) is meant for complex apps such as
+those on the <a class="reference external" href="appideas.html">AppIdeas</a> page.  But it would be better to have a system
+that scales up to those applications and also down to simpler
+applications that don't need all its features.  Because even the
+simplest application (with one group) may want some features, such as
+a registration screen and password-recovery screen.  And maybe this
+simple application will one day become more complex and require some
+features it didn't previously.  Then you can simply activate the
+features rather than porting the application to WUM.</p>
+<p>One of the goals mentioned above was seamless reauthentication.  That
+is, when the user hits an unauthorized page, the system prompts him to
+login, then retries the original request.  Zope does this through an
+Unauthorized exception, which Zope automatically catches and does the
+login prompting and retrying.</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 23 Nov 2001</p>
+<ul class="simple">
+<li><p>PasswordRecovery</p></li>
+<li><p>Lost-password recovery mechanisms:*</p></li>
+<li><p>&quot;mail me my password&quot; button (to my registered address).</p></li>
+<li><p>&quot;mail me a new password&quot; button.</p></li>
+<li><p>challenge question and answer, preselected during registration.  We
+can offer a single question, a choice of questions, or a
+user-provided question.  To reassure paranoid users, the question
+should not relate to any info that could be (mis)used to identify
+the user or place them in a marketing category.  &quot;Pet's name&quot; is
+safe; &quot;favorite sports team&quot; is questionable; &quot;birthdate&quot; and
+&quot;mother's maiden name&quot; is unacceptable.  (Disadvantage: user may not
+want to come up with and memorize a question/answer.)</p></li>
+<li><p>mail user a randomized URL, valid only for 30 minutes, where she can
+choose a new password.  (Tavis prefers this, and Mike thinks it may
+offer a fair compromise between security and convenience.)  -- I am
+absolutely against mailing passwords.  -- TavisRudd - 23 Nov 2001</p></li>
+</ul>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 22 Nov 2001</p>
+<p>One of the sites I used also did this:</p>
+<ul class="simple">
+<li><p>send a new, generated password by postal mail to the
+user. Unfortunately, despite attempting to select &quot;send by e-mail&quot;,
+the application decided to use postal mail instead, but I did get a
+letter a few days later with the password in it. :-) Is this a
+justification for the establishment of a PostKit component? ;-)</p></li>
+</ul>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 23 Nov 2001</p>
+<p>Something which I just realised: I have been following this page's
+progress using the WebChanges page, but the categorisation and naming
+of what is being discussed seems wrong. As one of the <a class="reference external" href="appideas.html">AppIdeas</a> which
+discusses a <a class="reference external" href="webwareusermanager.html">WebwareUserManager</a>, it seems to suggest an application
+which provides easy administration of user details, rather than a
+framework for the identification and authentication of
+users. Shouldn't we set up a <a class="reference external" href="wishlist.html">WishList</a> entry concerning sessions and
+users, or at least refer to this as &quot;WebwareUserHandling&quot;?</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 23 Nov 2001</p>
+<p>Paul, you're right.  This core of this is a system component rather
+than an application. However, I'd like to build an application for
+managing users on top of the framework.</p>
+<p>-- TavisRudd - 23 Nov 2001</p>
+<p>I think this is a new *Kit idea -- which isn't an application, but
+isn't part of <a class="reference external" href="webkit.html">WebKit</a>, or even necessarily Webware.  There should be a
+KitIdeas.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 25 Nov 2001</p>
+<p>Here's a good architectural doc from Sun:
+<a class="reference external" href="http://java.sun.com/security/jaas/doc/pam.html">http://java.sun.com/security/jaas/doc/pam.html</a></p>
+<p>-- TavisRudd - 14 Jan 2002</p>
+<p>Something more appropriate for Webware, at least in terms of how much
+effort we would want to put into this, is the &quot;realm-based&quot; security
+that you can get in various Java Servlet containers. For example, one
+can declare various realms in the configuration of a Servlet container
+(application server) which states where the user database is, or how
+the username and password details are validated. Then, and this is the
+bit we should change a little, one can declare which &quot;roles&quot; are
+required to access specific Web resources.</p>
+<p>Now, I personally don't believe that this Web-resource-based
+authorisation is the beginning and end of authorisation, since (as I
+note above) it can be meaningless for various kinds of application,
+and one may well end up checking roles or user identities in the
+application itself, so we could just specify an API which lets
+applications discover the roles associated with a user, or even just
+the user identity (both are found in the request object in the Java
+Servlet API). Whether or not we introduce a Web-resource-based access
+policies is an open question which hasn't really been answered above.</p>
+<p>The interesting part of the J2EE standard, though, is the way that one
+can either use the standard &quot;pop-up dialogue window&quot; or a &quot;form-based&quot;
+page to prompt for the user details in a Web application, should the
+user attempt to access a service which requires authentication. With
+this feature in Servlet containers, it's possible for authentication
+to occur transparently to the application - the user doesn't come
+close to a resource that is protected until he/she has the appropriate
+role(s).</p>
+<p>Anyway, perhaps this would be a start.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 05 Jun 2002</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Methods In PSP Syntax</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="methods-in-psp-syntax">
+<h1 class="title">Methods In PSP Syntax</h1>
+
+<p>PSP provides a <span class="docutils literal">&lt;psp:method&gt;</span> tag but that only lets you define a
+method using Python syntax.  Sometimes you want to define a method
+using PSP syntax instead.  If you're using Python 2.1 or higher, you
+can use nested scopes to accomplish this, in a somewhat hackish way.
+The best way to see how to do it is with an example:</p>
+<pre class="literal-block">&lt;%&#64; page imports=&amp;quot;__future__:nested_scopes&amp;quot; %&gt;
+&lt;%&#64; page imports=&amp;quot;new:instancemethod&amp;quot; %&gt;
+
+&lt;%def writeFoo(self):%&gt;
+Foo
+&lt;%end%&gt;
+&lt;%self.writeFoo = instancemethod(writeFoo, self, self.__class__)%&gt;
+
+&lt;p&gt;Before calling self.writeFoo()
+&lt;p&gt;&lt;%self.writeFoo()%&gt;
+&lt;p&gt;After calling self.writeFoo()</pre>
+<p>Save this as a PSP file and try it out.</p>
+<p>Note that this hack may be unsuitable for some applications because
+the method doesn't actually exist until the function definition is
+executed and the instance method created and assigned to self.</p>
+<p>This technique can also be used to create normal functions (not
+methods) in PSP syntax -- just leave out the call to instancemethod()
+and the assignment to self and be sure not to call the function until
+after it is defined.</p>
+<p>-- <a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 23 Apr 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

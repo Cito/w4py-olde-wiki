@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Singleton Classes</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="singleton-classes">
+<h1 class="title">Singleton Classes</h1>
+
+<p>You may sometime need to create classes that can only be instantiated
+once. There are many ways to create these so-called &quot;Singleton&quot;
+classes. Refer to this site and <a class="reference external" href="http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52558">also</a> for example code. One way not
+mentioned in these links (code is from <a class="reference external" href="http://www.faqts.com/knowledge_base/view.phtml/aid/4282">here</a>) is:</p>
+<pre class="literal-block">class MySingleton:
+    def __init__(self):
+        # Do something
+        pass
+    def __call__(self):
+        return self</pre>
+<p>MySingleton = MySingleton()
+&lt;/verbatim&gt;</p>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 21 Jan 2002</p>
+<p>Note that all these singleton ideas are equivalent to a module-level
+global -- the only advantage is that they allow using a class-like
+syntax.  Like a module-level global, if you have ambiguities in your
+path such that a module is imported twice, the object will not be a
+true singleton.  Also, like a global, you must be particularly careful
+about thread-safety.</p>
+<p>Singleton's are in some ways a case of using a factory: that is,
+instead of normal class instantiation, you use something that looks
+like instantiation but may return an already-created object.  I've
+written a small class that assists in creating factories:
+<a class="reference external" href="http://www.colorstudy.net/software/python/ParamFactory_.py">ParamFactory.py</a> -- useful for the case when you have an external ID
+(e.g., a username), and you want to be sure you create only one object
+for each ID.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 21 Jan 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

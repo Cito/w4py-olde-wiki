@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware Cofax</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-cofax">
+<h1 class="title">Webware Cofax</h1>
+
+<p>(moved from <a class="reference external" href="appideas.html">AppIdeas</a>)</p>
+<p>Cofax, <a class="reference external" href="http://www.cofax.org/">http://www.cofax.org/</a> -- is the Java software that powers
+Knight-Ridder newspaper web sites, like <a class="reference external" href="http://inq.philly.com/">http://inq.philly.com/</a>. Very
+cool, professional stuff.</p>
+<p>But it's Java. It needs to be ported to Webware.</p>
+<p>Cofax uses a lot of 3rd party libraries, which have Python
+equivalents, and if you abstract out the servlet and connection and
+caching stuff (much of which is duplicated by Webware, or will be
+eventually), what you're left with is a pretty manageable port.</p>
+<p>One thing that could stand upgrading is the template system Cofax
+uses; I'd prefer to use NITF (the news industry's XML vocabulary) and
+XSLT, but Cheetah should be available too.</p>
+<p>I'm very interested in building these kinds of sites, since I pretend
+to be a Web publisher most of the time, so I'd be interested in
+working actively with folks on a port.</p>
+<p>KendallClark - 16 Nov 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

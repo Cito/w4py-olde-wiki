@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>ExtraPathInfo</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="extrapathinfo">
+<h1 class="title">ExtraPathInfo</h1>
+
+<p>If Webware's ExtraPathInfo setting is true and you type a URL with a
+nonexistent directory component (e.g.,
+<a class="reference external" href="http://site.com/dir/subdir/NONEXISTENT">http://site.com/dir/subdir/NONEXISTENT</a>), WebKit returns the
+parent directory's index.py instead of a 404 Not Found error, because
+it thinks the invalid directory is actually extra path info.  But the
+servlet, if it's not designed to use the extra path info, will just
+display its normal thing, which is wrong because it's the wrong
+servlet.  Worse, any relative links on the page will loop back to that
+servlet, because they'll have the invalid pathname component(s) in the
+middle of the URL.</p>
+<p>The consensus among Webware developers is, this is not a bug, it's a
+feature.  It's just something to be aware of if you use
+ExtraPathInfo.</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 21 Feb 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

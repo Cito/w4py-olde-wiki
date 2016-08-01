@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Testing Framework</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="testing-framework">
+<h1 class="title">Testing Framework</h1>
+
+<p><em>Preliminaries</em></p>
+<p>I usually try to separate the presentation from the logic. This allows
+for testing the logic without much thinking about the Webware. Thus,
+this page does not contain much about testing</p>
+<p>Webware pages but concentrates on testing the model.</p>
+<p>I've tried to automate the retrieval of Webware pages using cURL. This
+works quite good, but I don't yet have much experience with it. Please
+complement this page with your experiences.</p>
+<p><em>Define test classes</em></p>
+<p>Each class to be tested is accompanied by a test class (usually,</p>
+<p>I use the name &quot;Test&quot; + class name for it). This class has</p>
+<ul class="simple">
+<li><p>a method called setUp (not always)</p></li>
+<li><p>for each aspect to be tested a method called testAspect</p></li>
+<li><p>a method called tearDown (not always)</p></li>
+</ul>
+<p>The setUp method prepares data structures necessary for testing, the
+tearDown method disposes any open file handles and so on.</p>
+<p><em>Define a function returning the test suite</em></p>
+<p>Each module contains a function called suite(). This function creates
+and returns a test suite containing all testcases for the module:</p>
+<pre class="literal-block">def suite():
+    suite = unittest.TestSuite_()
+    for test in [TestWorkList,
+                 TestPersistentWorkList]:
+        suite.addTest(unittest.makeSuite(test, &quot;test&quot;))
+    return suite</pre>
+<p><em>Create a test driver module</em></p>
+<p>In order to run all tests, I have a module test.py which looks like
+this:</p>
+<pre class="literal-block">import file
+import work
+import piece
+
+# etc...
+
+def main():
+    suite = unittest.TestSuite_()
+    for module in [file, work, piece]: # etc
+        suite.addTest(module.suite())
+    unittest.TextTestRunner_(verbosity=0).run(suite)
+
+if __name__ == &quot;__main__&quot;:
+    main()</pre>
+<p>This module is rather low-tech; it would be easy to enhance it to load
+all available modules (maybe in a directory tree) and create the
+respective test suite.</p>
+<p><em>Call this module from every class that should be tested</em></p>
+<p>The last statement in every module is:</p>
+<pre class="literal-block">if __name__ == &quot;__main__&quot;:
+    import test
+    test.main()</pre>
+<p><em>Run the tests whenever you changed something</em></p>
+<p>This is very simple when using Emacs with Python mode. Just press
+Control-C twice, and watch the tests running by. You might want to
+tweak unittest.py so that it does not report successful tests - in
+this case Emacs just reports &quot;no output&quot; in the status line when all
+tests have run successfully - this is as unobstrusive as it gets ;-)</p>
+<p>If you do not use emacs, you have several options:
+* use the graphical client (GuiTestRunner) of unittest
+* open a console and run the tests with python test.py
+* use your editor's capabilities to start external programs</p>
+<p>When you use the console, you don't need to include the test module
+into each module, of course.</p>
+<p><em>Testing the interface with cURL</em></p>
+<p>If you want to test the pages as they are presented by Webware, you
+have to use a program which automates the retrieval of HTML
+pages. cURL (<a class="reference external" href="http://curl.haxx.se">http://curl.haxx.se</a>) does a good job. It can save and
+send cookies and has a good (command line) interface.</p>
+<p>You can e.g. request a page with:</p>
+<pre class="literal-block">curl http://www.python.org</pre>
+<p>With the following line you can submit a query to search.python.org:</p>
+<pre class="literal-block">curl -d &quot;qt=html&amp;submit=Webware&quot; http://search.python.org/query.html</pre>
+<p>The extraction and forwarding of cookies follows a similar pattern.</p>
+<p>You can use curl either from shell scripts - request a page, compare
+it with a &quot;known good source&quot; and report any differences - or you can
+integrate it into your testsuite using pycurl
+(<a class="reference external" href="http://pycurl.sourceforge.net">http://pycurl.sourceforge.net</a>). This module provides Curl objects
+that can be configured to retrieve webpages. Unfortunately, its
+documentation is rather poor.</p>
+<p>-- AlbertBrandl - 14 Mar 2002</p>
+<p>It is also very useful to be able to automatically setup and tear down
+the WebKit environment + Servlets that will be used as part of a test
+suite.  The regression testing framework that comes as part of
+<a class="reference external" href="webwareexprefactoring.html">WebwareExpRefactoring</a> is very handy for this.  It uses the builtin
+HTTPServer and thus can be run out of the box without requiring an
+external webserver to be installed and configured.</p>
+<p>This framework uses Steve Purcell's HTTPSession class to do the same
+thing you're doing with curl directly from Python.  It's trivial to
+write new test cases using this approach.</p>
+<p>-- TavisRudd - 14 Mar 2002</p>
+<p>What's the best way of dealing with highly stateful applications?  For
+instance, websites with database backends, where most actions involve
+querying or modifying the database.  Or sites you can't easily get to
+some functionality without going through a long path -- login,
+interactive feedback (even as simple as providing a list of options),
+etc.?  I haven't done the testing I'd like, because it seems so
+difficult to set up tests in these environments... hints on doing it
+better? &lt;br&gt;</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 14 Mar 2002</p>
+<p>If possible you should enclose the state information. I use classes
+for the interaction with the database, another class for workflow
+information (which workpiece will be sent to which author after which
+action) and so on. A controller cooperates with the workflow manager
+in order to determine the next person responsible to update a
+document.</p>
+<p>Since these classes only use a tiny subset of the webware framework
+(mostly response objects, sometimes transaction objects), it's very
+easy to write stubs for these. Python does not care if the signature
+of an object conforms to a certain interface ==&gt; it happily accepts
+those stub objects in place of the real objects, as long as they
+provide the methods that are actually used.</p>
+<p>The final acceptance tests are done by hand. But
+<a class="reference external" href="webwareexprefactoring.html">WebwareExpRefactoring</a> looks rather promising to me - I'll certainly
+have a look at it before I start testing the next release.</p>
+<p>-- AlbertBrandl - 15 Mar 2002</p>
+<p>The combination of PyUnit and HTTPSession in <a class="reference external" href="webwareexprefactoring.html">WebwareExpRefactoring</a>
+is a good fit for this sort of stuff.  HTTPSession allows you to model
+a sequence of HTTP requests (including header and cookie management)
+and maintain state throughout.  You can push cookies, manipulate GET
+and POST vars, and do practically everything else you can do with a
+web browser.  If you're working with a database you could setup and
+tear down a test database as part of your unittests. The beauty of
+this framework is that you can control and manipulate everything from
+a single Python test module. There's no need to muck around with
+external POST files, etc.  Have a look at
+<a class="reference external" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/expwebware/Webware/">http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/expwebware/Webware/</a><a class="reference external" href="webkit.html">WebKit</a>/Test/</p>
+<p>-- TavisRudd - 14 Mar 2002</p>
+<p>Just an idea: Would it be possible to capture a real interaction with
+the webserver and use this for setting up acceptance tests that are
+then run with the above combination? I'm in search of a simple means
+to get the users create their acceptance tests.</p>
+<p>-- AlbertBrandl - 15 Mar 2002</p>
+<p>Intriguing... I'm thinking it would be easiest to hack WebKit.cgi, so
+that it recorded all the requests and response (maybe in
+serially-named files, which would be easy to inspect).  Then you could
+put together a very simple little adapter that would work off those
+files, resubmitting the requests and either comparing, or simply
+recording the new responses.</p>
+<p>A page-comparer would be a seperate development, hopefully robust
+against mere style changing.  But even if it wasn't, it could check
+easily that no exceptions occurred, and maybe check that pages that
+shouldn't have changed didn't (for instance, if you have 50 pages,
+maybe a single change would only effect the output on a couple of
+them).</p>
+<p>Growing your testing suite would be difficult in this case -- you'd
+have to add something to this adapter that would replay all the
+beginning events, then let you append more.  Also, you'd have to deal
+with changes to the interface -- for instance, where you change the
+structure of a form -- so that you would replay only X events (up to
+where the interface has changed) and then manually continue.</p>
+<p>But I really like this idea... it would make testing <em>so</em> much easier,
+even as a developer.  I'm going to start on it right away.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 15 Mar 2002</p>
+<p><a class="reference external" href="http://puffin.sourceforge.net/">Puffin</a> is a very cool Python web app testing framework, actively
+developed by Keyton Weissinger. Would be nice to have a look at it.</p>
+<p>-- KendallClark - 27 Apr 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Web Server Integration</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="web-server-integration">
+<h1 class="title">Web Server Integration</h1>
+
+<p>The AppServer in Webware is not a web server, but instead sits behind a web server, managing your Python servlets, server pages and other resources. The AppServer waits for connections from Adapters, which shuttle requests and responses between the web server and AppServer.  Those Adapters allow Webware to be used with any web server, including Apache which is the most popular choice.</p>
+<p>Adapters come in different flavors including <a class="reference external" href="oneshot.html">OneShot</a>.cgi, WebKit.cgi,
+ModWebKit, ModPython and ModSnake. <a class="reference external" href="oneshot.html">OneShot</a>.cgi is the most
+convenient for development, because it loads everything from
+scratch. ModWebKit is the fastest and hence, the most popular choice
+for deployment.</p>
+<p>The WebKit Install Guide already contains the information you need to
+connect your web server and AppServer. You should read the one in your
+distribution located in Webware/WebKit/Docs/InstallGuide.html, or you
+can read the <a class="reference external" href="http://webware.sourceforge.net/Webware/WebKit/Docs/InstallGuide.html">on-line copy from the last release</a>.</p>
+<p>If you are using an adapter, you may often want to clean up the URL,
+which might look like <a class="reference external" href="http://somewhere/WK/ShowItem?item=5">http://somewhere/WK/ShowItem?item=5</a>, but could
+be made to look like <a class="reference external" href="http://somwhere/item/5">http://somwhere/item/5</a> using mod_rewrite.  See
+<a class="reference external" href="modrewriterecipes.html">ModRewriteRecipes</a> for examples.</p>
+<p>Some specific web servers that you might want to look at include:
+* Apache: <a class="reference external" href="http://httpd.apache.org/">http://httpd.apache.org/</a>
+* OpenSA: <a class="reference external" href="http://www.opensa.org/">http://www.opensa.org/</a>
+* Xitami: <a class="reference external" href="http://www.xitami.com/">http://www.xitami.com/</a></p>
+<p>-- (overhauled) <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 30 Oct 2001</p>
+<hr class="docutils" />
+<p>How about some more documentation about setting up the Web servers?
+This information could change frequently, but it would be helpful to
+people who are just starting out with Web application development.</p>
+<p>For example, with Apache one might set up the following entry (from
+memory) in <span class="docutils literal">srm.conf</span> to get the WebKit.cgi program deployed at its
+own location:</p>
+<pre class="literal-block">ScriptAlias_  /webkit  /home/httpd/cgi-bin/WebKit.cgi</pre>
+<p>Then, it would be possible to visit the following URL to see the
+default page:</p>
+<pre class="literal-block">http://localhost/webkit</pre>
+<p>And the <span class="docutils literal">Examples</span> context would be accessible at...</p>
+<pre class="literal-block">http://localhost/webkit/Examples</pre>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 08 Nov 2001</p>
+<p>A lot of that is covered in <a class="reference external" href="modrewriterecipes.html">ModRewriteRecipes</a>, but maybe that should
+be more clear -- <a class="reference external" href="ianbicking.html">IanBicking</a> - 08 Nov 2001</p>
+<hr class="docutils" />
+<p>Xitami: Do the following, one time, to setup and configure the Xitami
+web server for use with Webware. Install as instructed by Xitami. Then
+create a cgi-bin directory, such as C:Xitamicgi-bin. Copy the
+WebKit.cgi file into the cgi-bin directory you just created. Change
+the line in WebKit.cgi to point back to your Webware directory. For
+example: <span class="docutils literal">WebwareDir = <span class="pre">'C:/Code/Webware'</span></span></p>
+<p>Do the following every time you want to start running
+Xitami/Webware. Start Xitami. Start the Webware AppServer. To test
+whether everything is working as it should, open up a browser and go
+to <a class="reference external" href="http://localhost/cgi-bin/WebKit.cgi/">http://localhost/cgi-bin/WebKit.cgi/</a>. Make sure you include the
+final slash ( / ) as Xitami does not appear to handle / redirection
+the same way as Apache.</p>
+<p>These instructions are based on Windows 98, but should apply to the
+other platforms supported by Xitami, of which there are many.</p>
+<p>-- PatrickOBrien - 15 Dec 2001</p>
+<p>Xitami also has a LRWP module for interfacing with the likes of
+webware, but the interface is backwards -- webware needs to connect as
+a client, rather than listening as a server -- which means that
+requests need to be serialized (very bad for performance). I played
+with it a bit, but it did not seem to be worth the effort.</p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 10 Apr 2002</p>
+<p>If you have a public web site, and just want it to work, the simplest
+solution is to get a host that already specifically supports webware:
+e.g. <a class="reference external" href="http://python-hosting.us/">Python-Hosting.US</a> or <a class="reference external" href="http://python-hosting.com/">Python-Hosting.com</a>.</p>
+<p>If you have your own dedicated server, I'll share my hosting scripts
+if you ask me: <a class="reference external" href="mailto:projects-zhost&#64;jdiworks.net">projects-zhost&#64;jdiworks.net</a></p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 10 Jul 2004</p>
+<hr class="docutils" />
+<p>See <a class="reference external" href="webwarebenchmarks.html">WebwareBenchmarks</a> for some recent benchmarks comparing the different Apache Adapters for Webware.</p>
+<p>-- <a class="reference external" href="chriszwerschke.html">ChrisZwerschke</a> - 18 Apr 2010</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 18 Apr 2010</p>
+
+</div>
+</body>
+</html>

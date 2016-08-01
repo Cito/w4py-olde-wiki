@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>ZODB</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="zodb">
+<h1 class="title">ZODB</h1>
+
+<p>Pro:</p>
+<ul class="simple">
+<li><p>Pythonic.  You just do a few extra opens and suddenly your Python
+data structure is persistent and automatically fetches itself from
+disk as necessary, and uncaches itself after a period of non-use.
+The &quot;root object&quot; is a dictionary containing any pickleable objects,
+which can themselves be lists or dictionaries, etc.</p></li>
+<li><p>Supports versioning and transactions. -- <a class="reference external" href="edmundlian.html">Edmund Lian</a> 31 Dec 2001</p></li>
+<li><p>Seems to be able to support heavy, primarily read-oriented loads
+since many Zope sites rely entirely on it. -- <a class="reference external" href="edmundlian.html">Edmund Lian</a> 31 Dec 2001</p></li>
+</ul>
+<p>Con:</p>
+<ul class="simple">
+<li><p>No central daemon to manage multiple unrelated connections.</p></li>
+<li><p>ZODB is a modify-by-appending database.  Rather than updating
+records in place, ZODB adds a new record and &quot;forgets&quot; the old one.
+This is good for safety, journal record and undoing, but it's bad
+for fields that update frequently, especially counter values (e.g.,
+how many times a web page has been visited).</p></li>
+<li><p>Back up your database frequently.  The default store puts everything
+in one file.</p></li>
+<li><p>Python specific. One needs to use Python to query or otherwise
+manipulate ZODB. There are a myriad of ways that one can manipulate
+data in a SQL database. -- CliffordIlkay - 18 Feb 2004</p></li>
+</ul>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 31 Dec 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

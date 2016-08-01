@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Redirect Fails</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="redirect-fails">
+<h1 class="title">Redirect Fails</h1>
+
+<p>Your servlet might do this:</p>
+<pre class="literal-block">response.setHeader('Location', 'Home/')</pre>
+<p>Which works fine with CGI-based adapters, but fails with others. This
+is not a bug. CGI goes the extra mile by setting the HTTP status for
+you. In practice, redirects are supposed to also be accompanied by the
+status. Also, you should provide a small bit of HTML to describe the
+redirection, in case the user's browser fails to follow it. Finally,
+it might not hurt to check that the WebKit response object has not
+already been committed.</p>
+<p>So use the sendRedirect() method instead, which does all of this for
+you:</p>
+<pre class="literal-block">response.sendRedirect('Home/')</pre>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 07 Dec 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

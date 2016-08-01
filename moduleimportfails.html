@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Moduleimportfails</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="moduleimportfails">
+<h1 class="title">Moduleimportfails</h1>
+
+<p>The WebKit application server uses a custom import mechanism, which is needed for the auto-reload (a highly welcome feature in development, to be sure). However, I had a case with a module from the BioPython library that tripped this mechanism up.</p>
+<p>Solution: A hack. I imported this module directly into the AppServer, which apparently caused it to be exempt from the custom import mechanism.</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 30 Nov 2004</p>
+
+</div>
+</body>
+</html>

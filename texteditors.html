@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Text Editors</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="text-editors">
+<h1 class="title">Text Editors</h1>
+
+<div class="section" id="ultraedit">
+<h1>UltraEdit</h1>
+<dl class="simple">
+<dt>Home:</dt>
+<dd><p><a class="reference external" href="http://www.ultraedit.com/">http://www.ultraedit.com/</a></p>
+</dd>
+<dt>License:</dt>
+<dd><p>shareware</p>
+</dd>
+<dt>Platform:</dt>
+<dd><p>Windows</p>
+</dd>
+<dt>Pros and cons:</dt>
+<dd><dl class="simple">
+<dt>A text editor with:</dt>
+<dd><ul class="simple">
+<li><p>enough preferences to make it act the way you want</p></li>
+<li><p>the usual features: auto-indentation, syntax highlighting, autosave, etc.</p></li>
+<li><p>excellent tech support</p></li>
+<li><p>ability to re-open previously opened docs upon launch -- great for continuity of work</p></li>
+<li><p>ability to open files over FTP</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Contributed by:</dt>
+<dd><p><a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Oct 2001</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="gvim">
+<h1>gvim</h1>
+<dl>
+<dt>Home:</dt>
+<dd><p><a class="reference external" href="http://www.vim.org/">http://www.vim.org/</a></p>
+</dd>
+<dt>License:</dt>
+<dd><p>charityware</p>
+</dd>
+<dt>Platform:</dt>
+<dd><p>Various</p>
+</dd>
+<dt>Pros and cons:</dt>
+<dd><dl class="simple">
+<dt>If you need a graphical <span class="docutils literal">vi</span>, especially for Windows, consider gvim!</dt>
+<dd><ul class="simple">
+<li><p>PSP syntax hilighting available.  See: <a class="reference external" href="http://vim.sourceforge.net/scripts/script.php?script_id=576">http://vim.sourceforge.net/scripts/script.php?script_id=576</a></p></li>
+<li><p>Unpack the <span class="docutils literal">gvim60.zip</span> and <span class="docutils literal">vim60rt.zip</span> files into the same
+directory and then run <span class="docutils literal">install.exe</span>.</p></li>
+<li><p>Don't have bad text editing experiences on Windows ever
+again! :-)</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Hints:</dt>
+<dd><p>Setting indentation to use 4 space indents can be done by
+adding the following lines into your <span class="docutils literal">.vimrc</span> (or <span class="docutils literal">_vimrc</span> on
+Windows):</p>
+<pre class="literal-block">set expandtab
+set ts=4
+set shiftwidth=4</pre>
+<p>Or put this line in your files:</p>
+<pre class="literal-block"># vim: shiftwidth=4 tabstop=4 expandtab</pre>
+</dd>
+</dl>
+<p>Contributed by:
+<a class="reference external" href="paulboddie.html">PaulBoddie</a> - 01 Nov 2001
+(modified 21 Nov 2001, 04 Dec 2001)
+<a class="reference external" href="mikeorr.html">MikeOrr</a> - 20 Jun 2002</p>
+</div>
+<div class="section" id="emacs">
+<h1>Emacs</h1>
+<dl>
+<dt>Home:</dt>
+<dd><p><a class="reference external" href="http://www.gnu.org/software/emacs">http://www.gnu.org/software/emacs</a> or <a class="reference external" href="http://www.xemacs.org">http://www.xemacs.org</a></p>
+</dd>
+<dt>License:</dt>
+<dd><p>The original GPL app</p>
+</dd>
+<dt>Platform:</dt>
+<dd><p>Various</p>
+</dd>
+<dt>Pros and cons:</dt>
+<dd><p>Unfortunately, it is difficult to deal with the Webware style of
+using tabs for indentation instead of spaces.  You can set
+Options&gt;Advanced&gt;Emacs&gt;Editing&gt;Basics&gt;Indent Tabs Mode...  (turn it
+on).  Unfortunately when you edit code from <em>any other source of
+Python code</em> it will insert tabs instead of spaces, causing great
+harm, since <em>everyone else uses spaces</em>, not tabs.</p>
+<p>Note: I've found that if you don't set the tab width to 4 (i.e.,
+leave it at 8) it will auto-detect tabs vs. spaces correctly.</p>
+<p>One of the nice features is editing files on your server over FTP,
+by opening <span class="docutils literal"><span class="pre">/username&#64;servername.com:/path/to/files/servlet.py</span></span>,
+or even over SSH using TRAMP</p>
+</dd>
+<dt>Contributed by:</dt>
+<dd><p><a class="reference external" href="ianbicking.html">IanBicking</a> - 02 Nov 2001</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="kate">
+<h1>Kate</h1>
+<dl class="simple">
+<dt>Home:</dt>
+<dd><p><a class="reference external" href="http://kate.sf.net/">http://kate.sf.net/</a></p>
+</dd>
+<dt>License:</dt>
+<dd><p>open source</p>
+</dd>
+<dt>Platform:</dt>
+<dd><p>KDE/X-windows</p>
+</dd>
+<dt>Pros and cons:</dt>
+<dd><dl class="simple">
+<dt>A friendly text editor with:</dt>
+<dd><ul class="simple">
+<li><p>a &quot;Python Class Parser&quot; plugin is available. See <a class="reference external" href="http://www.kde.org/kate/3rdparty.html">http://www.kde.org/kate/3rdparty.html</a></p></li>
+<li><p>lots of preferences</p></li>
+<li><p>the usual features: auto-indentation, syntax highlighting, etc.</p></li>
+<li><p>excellent tech support</p></li>
+<li><p>ability to re-open previously opened docs upon launch -- great for continuity of work</p></li>
+<li><p>a filesystem-browsing side-panel with one click access to files</p></li>
+<li><p>if you are coming from UltraEdit for Windows, then you will probably like Kate</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Contributed by:</dt>
+<dd><p><a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 10 Nov 2001</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="scite">
+<h1>SciTE</h1>
+<dl class="simple">
+<dt>Home:</dt>
+<dd><p><a class="reference external" href="http://www.scintilla.org/SciTE.html">http://www.scintilla.org/SciTE.html</a></p>
+</dd>
+<dt>License:</dt>
+<dd><p>open source</p>
+</dd>
+<dt>Platform:</dt>
+<dd><p>Windows and Linux/GTK</p>
+</dd>
+<dt>Pros and cons:</dt>
+<dd><dl class="simple">
+<dt>A nice text editor with:</dt>
+<dd><ul class="simple">
+<li><p>nice syntax highlighting, including a good Python mode as well as an ASP mode that works pretty well for PSP files (many more modes available too)</p></li>
+<li><p>multiple documents open in tabbed windows</p></li>
+<li><p>lots of preferences configurable through text files</p></li>
+<li><p>Can run scripts as a mini-IDE with the output showing up in another panel</p></li>
+<li><p>Launches very quickly (at least on Windows) compared to most other text editors</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Contributed by:</dt>
+<dd><p><a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 20 Jun 2002</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 01 Oct 2004</p>
+
+</div>
+</body>
+</html>

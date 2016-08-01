@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Directory Structure</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="directory-structure">
+<h1 class="title">Directory Structure</h1>
+
+<p>There are two aspects to DirectoryStructure: client-side (URI) and
+server-side (file-system, database, etc.).</p>
+<p>This article by Tim Berners-Lee
+<a class="reference external" href="http://www.w3.org/Provider/Style/URI.html">http://www.w3.org/Provider/Style/URI.html</a> is a great start if you're
+trying to decide on a URI directory structure for your site (thanks to
+<a class="reference external" href="ianbicking.html">IanBicking</a> and KendallClark for posting about it)!</p>
+<p>-- TavisRudd - 16 Nov 2001</p>
+<pre class="literal-block">At 10:39 AM 10/27/2001 +0200, Georg Balmer wrote:
+&gt;I have 2 basic questions
+&gt;
+&gt;--[1]--------------------------------------------
+&gt;
+&gt;How do you layout the directory structure ?
+[snip]
+&gt;or case B:
+&gt;
+&gt;someDirectory/Webware/WebKit/
+&gt;                   ...
+&gt;
+&gt;someOtherDirectory/appOne/pages/
+&gt;someOtherDirectory/appOne/lib/</pre>
+<p>Case B. Mingling your projects with Webware is a bad idea. It makes it
+harder to upgrade Webware and confuses people into thinking they have
+to modify Webware to make Webware apps.</p>
+<p>One notable exception is when you bake your own plug-ins. Those can be
+convenient to drop into Webware/ because then they get picked up
+automatically. However, there are 2 settings related to this in
+<span class="docutils literal">WebKit/Configs/AppServer.config</span> which allows you to put your
+plug-ins outside of Webware.</p>
+<p>Just for clarification: If you are building a Webware site, you are
+probably NOT creating a plug-in.</p>
+<p>---</p>
+<p>I recommend using <span class="docutils literal">MakeAppWorkDir.py</span> to create a working directory
+for your application separate from your Webware directory.</p>
+<p>-- <a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 29 Oct 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

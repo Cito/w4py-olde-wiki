@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Python Version Conflicts</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="python-version-conflicts">
+<h1 class="title">Python Version Conflicts</h1>
+
+<p>Oops! I just noticed that <a class="reference external" href="paulboddie.html">PaulBoddie</a> had documented this problem
+under <a class="reference external" href="pythonissues.html">PythonIssues</a>, but without the added chatter here. Not sure if I
+should just delete this, or try to merge the entries...</p>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 02 Dec 2001</p>
+<div class="section" id="problem">
+<h1>Problem</h1>
+<p>Pretty much all the Webware and 3rd party plug-ins invoke the Python
+interpreter by calling &quot;#!/usr/bin/env python&quot; in their scripts. The
+trouble with this is that this call brings up Python 1.5.2 in the
+current version of Debian.</p>
+<p>The only ways I can think of to get Python 2 invoked instead are to
+(1) use the Debian alternatives system, or else (2) search through all
+Webware + plug-in code to change &quot;#!/usr/bin/env python&quot; to
+&quot;#!/usr/bin/env python2&quot;.</p>
+<p>Neither option seems good. Messing with the Webware code means that I
+can't keep current easily. Using the alternatives system to point
+/usr/bin/python at python2 will break some Debian packages that depend
+on 1.5.2, and which rely on /usr/bin/python to point to Python 1.5.2.</p>
+<p>Indeed, there is quite a <a class="reference external" href="http://groups.google.com/groups?hl=en&amp;th=d8b5f0e26b68ff35&amp;seekm=87itdf28b3.fsf%40marant.org#link1">raging debate</a> going on now amongst Debian
+developers about about how to deal with this kind of problem (and
+others). So, if you use Debian, Webware and Python2, how did you
+manage to keep the balls in the air at once?</p>
+</div>
+<div class="section" id="solution">
+<h1>Solution</h1>
+<p><a class="reference external" href="ianbicking.html">IanBicking</a> wrote:</p>
+<p>Well, I switched &quot;python&quot; to 2.0 some time ago on Debian, and I've had
+very few problems (pysol is the only one I can remember).</p>
+<p>Of course, I'm sure there are packages I don't use that do cause these
+problems.</p>
+<p>A general &quot;change the first line of everything&quot; script would probably
+be useful anyway -- some systems have broken /usr/bin/env's anyway.
+It could be something like:</p>
+<pre class="literal-block">import os, sys, string
+
+def changeAll(dir, replaceFirst):
+    for filename in os.listdir(dir):
+         filename = os.path.join(dir, filename)
+         if filename[-3:] == &quot;.py&quot;:
+             l = open(filename).readline()
+             if l[:2] == &quot;#!&quot; and string.find(l, &quot;python&quot;) != -1:
+                 fixup(filename, replaceFirst)
+         if os.path.isdir(filename):
+             changeAll(filename)
+
+def fixup(filename, replaceFirst):
+    f = open(filename)
+    l = f.readline()
+    rest = f.read()
+    f.close()
+    assert l[:2] == &quot;#!&quot;
+    newl = &quot;#!&quot; + replaceFirst
+    os.unlink(filename)
+    f = open(filename, &quot;w&quot;)
+    f.write(newl)
+    f.write(rest)
+    f.close()
+    print &quot;updated %s&quot; % filename
+
+if __name__ == &quot;__main__&quot;:
+    if not sys.argv[1:]:
+        print &quot;Usage: fixup '/path/to/python' [directories]&quot;
+        sys.exit()
+    replacer = sys.argv[1]
+    rootDirs = sys.argv[2:] or [&quot;.&quot;]
+    for dir in rootDir:
+        changeAll(dir)</pre>
+<p><a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> notes:</p>
+<p>I'd like to point out that scripts that are touchy about their Python
+version should specify it:</p>
+<pre class="literal-block">#!/usr/bin/python1.5</pre>
+<p>In a sense, you could say they are the source of the problem. It also
+doesn't help that Debian is so far behind the current version of Python.</p>
+<p>But most importantly, I wanted to say that there are only 2 places in
+Webware you should have to worry about this. One is the appserver and
+the other is any CGI adapter (OneShot.cgi and WebKit.cgi).</p>
+<p>You have to modify the CGI adapters anyway, so you might as well set
+them to #!/usr/bin/python2.1 while you're at it. For the AppServer,
+you can either modify Launch.py one time, which isn't so bad, or you
+can specify on the command line:</p>
+<pre class="literal-block">$ python2.1 Launch.py ThreadedAppServer</pre>
+<p>I suppose if you use MiddleKit Generate.py you will have a similar
+situation. But that's about it.</p>
+<p>Regarding keeping current, if you were to have a CVS workspace and you
+made these mods, I think all your &quot;cvs updates&quot; would go smoothly. I
+typically have some mods myself, usually in the configuration files.</p>
+<p>Before anyone gets confused, Webware only requires Python 1.5.2,
+however some packages like MiddleKit and UserKit require 2.0 and will
+gracefully exit with a message saying so when the app server launches
+(under 1.5.2). Of course, since Python 2.x has complete garbage
+collection and more features, I recommend it.</p>
+<p><a class="reference external" href="paulboddie.html">PaulBoddie</a> writes:</p>
+<p>Only if you have the path to Python 1.5.2 before the path to other
+Python versions, or you have done a &quot;make altinstall&quot; with those
+versions, so that Python 2.0 (for example) is installed as python20.</p>
+<blockquote>
+<p>The only ways I can think of to get Python 2 invoked instead is to
+use the Debian alternatives system, or else search through all
+Webware + plug-in code to change &quot;#!/usr/bin/env python&quot; --&gt;
+&quot;#!/usr/bin/env python2&quot;.</p>
+</blockquote>
+<p>What I have done is to have Python 2.0 installed in /usr/local, thus
+retaining the Red Hat default of Python 1.5.2 (or whatever it is) in
+/usr. Then, I change my environment to find Python 2.0 first - this
+usually involves changing one's .bashrc file on Linux:</p>
+<pre class="literal-block">export PATH=/usr/local/bin:${PATH}</pre>
+<p>Or something like that. All &quot;#!/usr/bin/env python&quot; at the top of a
+script does is force the operating system to find the python program
+as if you had typed &quot;python&quot; at the shell prompt. Otherwise, one would
+have to hard code the path to python in instead - I have seen numerous
+Perl scripts with &quot;#!/usr/bin/perl&quot; at the top, for example.</p>
+<blockquote>
+<p>Neither option seems good. Messing with the Webware code means
+that I can't keep current easily. Using the alternatives system to
+point /usr/bin/python at python2 will break some Debian packages
+that depend on 1.5.2, and which rely on /usr/bin/python to point
+to Python 1.5.2.</p>
+</blockquote>
+<p>Don't change any code - just change your environment! If you need to
+run any special Debian programs alongside Webware then I'd suggest
+creating a new user just for Webware. After all, you're using a
+multi-user operating system. ;-)</p>
+<p>Another option is to create a start-up script which wraps up
+AppServer. In this, you could put your environment changes:</p>
+<pre class="literal-block">#!/bin/sh
+
+PATH=/usr/local/bin:${PATH} ./AppServer</pre>
+<p>So, if you use Debian, Webware and Python2, how did you manage to keep
+the balls in the air at once?</p>
+<p>I use Red Hat, as I noted above, but the issue is pretty much the
+same. Well, apart from the assertion that Debian's package system
+sucks less than Red Hat's, but then I'd rather build from source
+anyway - it doesn't take me long to find that the configuration of a
+packaged version of some software doesn't suit me, thus demanding a
+reconfigure and a recompile.</p>
+<p>MikeOrr notes:</p>
+<p>On Wed, Oct 31, 2001 at 02:04:05AM -0800, Chuck Esterbrook wrote:</p>
+<blockquote>
+<p>It also doesn't help that Debian is so far behind the current
+version of Python.</p>
+</blockquote>
+<p>It's not behind.  python2 was forked into a separate package for
+political reasons.  Namely, the former GPL-compatibility brou-ha-ha.
+Python 1.5.2 remained the default version because Python 2's licence
+wasn't acceptable enough.  Now the license thing has been straightened
+out, but they're stuck with the current version of Python in a side
+package.  (And now there is a python2.2 package for the beta...)</p>
+<p>I made /usr/bin/python a symlink to
+/local/opt/Python-2.2b1/bin/python2.2 and have not had any problems
+yet. I do install my own extensions rather than Debian's (MySQLdb,
+PIL, egenix-mx, Cheetah).</p>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 02 Dec 2001</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

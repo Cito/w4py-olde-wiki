@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Ajaxservlet</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="ajaxservlet">
+<h1 class="title">Ajaxservlet</h1>
+
+<p>OpenRico is a Javascript for Rich Application library including ajax, drag&amp;drop and many visual effects.
+Here explains ajax servlet with OpenRico.</p>
+<p>The Ajax Servlet library AjaxServlet.py:</p>
+<pre class="literal-block">from WebKit.RPCServlet import RPCServlet
+
+class AjaxServlet(RPCServlet):
+    def awake(self, transaction):
+        RPCServlet.awake(self, transaction)
+        self._response = transaction.response()
+        self._request = transaction.request()
+
+        self._session = transaction.session()
+        self._resp = []
+    def sleep(self, transaction):
+        RPCServlet.sleep(self, transaction)
+        self._response = None
+        self._request = None
+        self._session = None
+        self._resp = None
+
+    def respondToGet(self, trans):
+        try:
+            # ajax servlet don't need cache
+            resp = self.response()
+            resp.setHeader('Cache-Control', 'no-cache')
+            resp.setHeader('Pragma', 'no-cache');
+
+            self.writeln('&lt;ajax-response&gt;')
+            self._respond()
+            self.writeln('&lt;/response&gt;&lt;/ajax-response&gt;')
+
+            self.sendOK('text/xml', ''.join(self._resp), trans)
+        finally:
+            pass # do error handling or database release
+
+    def request(self): return self._request
+    def response(self): return self._response
+    def transaction(self): return self._transaction
+
+    def _respond(self):
+        &quot;&quot;&quot; Here goes the response
+        self.write('&lt;span&gt;Here is ajax response!!&lt;/span&gt;')
+
+        NOTE: You must call responseToElement() or responseToObject() before write something
+        &quot;&quot;&quot;
+        raise NotImplementedError
+
+
+    def responseToElement(self, elementId):
+        self.write('&lt;response type=&quot;element&quot; id=&quot;%s&quot;&gt;' % elementId)
+
+    def responseToObject(self, objectId):
+        self.write('&lt;response type=&quot;object&quot; id=&quot;%s&quot;&gt;' % objectId)
+
+    def write(self, *args):
+        for arg in args:
+            self._resp.append(self.encode(str(arg)))
+
+    def writeln(self, *args):
+        self.write(*args)
+        self.write(&quot;\n&quot;)
+
+    def decode(self, str, encoding='euc-kr'):
+        &quot;&quot;&quot; Decode JavaScript quoted string to native string &quot;&quot;&quot;
+        ret = []
+
+        while s:
+            if s[:2].lower() == '%u':   # 유니코드 인코딩
+                char = s[:6]
+                unicode_chr = int( char[2:], 16)
+                try: ret.append( unichr(unicode_chr).encode(encoding) )
+                except UnicodeEncodeError: ret.append( '&amp;#%s;' % unicode_chr )
+                s = s[6:]
+            else:
+                ret.append( s[0] )
+                s = s[1:]
+
+        return ''.join(ret)
+
+
+    def encode(self, str, encoding='euc-kr'):
+        &quot;&quot;&quot; Encode string to HTML unicode representation &quot;&quot;&quot;
+        p = string.printable
+        ret = []
+        for c in unicode(str, encoding):
+            if c in p: ret.append(c)
+            else: ret.append( '&amp;#%d;' % ord(c) )
+        return ''.join(ret)</pre>
+<p>search zipcode servlet example::</p>
+<pre class="literal-block">from AjaxServlet import *
+from Zipcode import *
+
+class ajax_search_zipcode(AjaxServlet):
+    def _respond(self):
+        self.responseToElement('search_result')
+        zipcode_list = Zipcode.search(self.decode(self.request().field('dong')))
+
+        self.write(&quot;&quot;&quot;&lt;table cellspacing=&quot;1&quot; cellpadding=&quot;1&quot; width=&quot;100%&quot; bgcolor=&quot;black&quot; bordercolordark=&quot;#DDDDDD&quot; bordercolorlight=&quot;#666666&quot;&gt;
+   &lt;tr align=&quot;center&quot; bgcolor=&quot;#DDDDDD&quot; height=&quot;22&quot;&gt;
+       &lt;td bgcolor=&quot;#DDDDDD&quot;&gt;우편번호&lt;/td&gt;
+       &lt;td bgcolor=&quot;#DDDDDD&quot;&gt;주 소&lt;/td&gt;
+       &lt;td bgcolor=&quot;#DDDDDD&quot;&gt;선택&lt;/td&gt;
+   &lt;/tr&gt;\n&quot;&quot;&quot;)
+
+        for z in zipcode_list:
+            self.write( &quot;&quot;&quot;&lt;tr bgcolor=&quot;#DDDDDD&quot;&gt;
+    &lt;td bgcolor=&quot;#FFFFFF&quot; style=&quot;white-space: nowrap;&quot;&gt;%s&lt;/td&gt;
+    &lt;td bgcolor=&quot;#FFFFFF&quot; style=&quot;white-space: nowrap;&quot;&gt;%s %s %s %s&lt;/td&gt;
+    &lt;td bgcolor=&quot;#FFFFFF&quot;&gt;&lt;input type=&quot;button&quot; value=&quot;선택&quot; onClick=&quot;postaddr('%s', '%s');&quot;/&gt;&lt;/td&gt;
+&lt;/tr&gt;\n&quot;&quot;&quot; % ( z[0], z[1], z[2], z[3], z[4], z[0], z[1] + z[2] + z[3] ) )
+        self.write('&lt;/table&gt;')</pre>
+<p>for real working example:</p>
+<ol class="arabic simple">
+<li><p>goto <a class="reference external" href="http://www.bodd.co.kr/member_register">http://www.bodd.co.kr/member_register</a> (only korean site)</p></li>
+<li><p>click <img alt="image" src="http://www.bodd.co.kr/image/btn_zipcodesearch.jpg" /> button.</p></li>
+<li><p>input &quot;신림9&quot; and click first button</p></li>
+</ol>
+<p>-- <a class="reference external" href="whitekid.html">whitekid</a></p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 07 Sep 2005</p>
+
+</div>
+</body>
+</html>

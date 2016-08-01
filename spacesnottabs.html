@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Spaces Not Tabs</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="spaces-not-tabs">
+<h1 class="title">Spaces Not Tabs</h1>
+
+<p>(from <a class="reference external" href="wishlist.html">WishList</a>)</p>
+<p>Using tabs for indentation is inconsistent with 99% of current Python
+code on the net.  It causes specific problems in Emacs, and leads to
+common mistakes when spaces are mixed in (especially when tab width is
+set to 4).</p>
+<p><a class="reference external" href="cheetah.html">Cheetah</a> and <a class="reference external" href="funformkit.html">FunFormKit</a> already use spaces.  Webware should do the same!</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 02 Nov 2001</p>
+<p>I agree completely.  Tabs suck!!</p>
+<p>-- TavisRudd - 02 Nov 2001</p>
+<p>I disagree completely. Spaces suck! They suck up space. They suck up
+time cursoring through them.</p>
+<p>They are another example of the &quot;15%&quot; bloat that technologists
+incorporate into their source code, their standards (XHTML), etc.</p>
+<p>Good editors like UltraEdit and SciTE have NO problems dealing with
+TABs which have been around for <em>decades</em>.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 03 Nov 2001</p>
+<p>Chuck, are you seriously concerned about the bytes taken up by
+spaces??  Tabs have their uses, and sure they're minimally more
+storage efficient, but in this case they cause real problems for
+developers.  Also, with most good editors you don't have to cursor
+through spaces!  In Emacs, or vi, you just hit the [TAB] key and it
+will put you in the right place and deal with all the spaces for you.
+If spaces suck, why does most existing Python code use them and not
+Tabs?  Tabs also go against Guido's informal style guidelines for
+Python code.</p>
+<p>Furthermore, why do the Webware style guidelines suggest using a tab
+for the first indent and spaces thereafter?  That's a recipe for
+confusion.</p>
+<p>-- TavisRudd - 03 Nov 2001</p>
+<p>I have this book from when I was a kid -- how to program Adventure
+Games in TRS-80 Basic.  The author proposes saving valuable memory by
+eliminating all possible spaces, with code like SETX=10:SETY=20 (line
+numbers take up space too -- and the Basic tokenizer apparently knew
+that SET was a keyword and split SET from X).  It was a noble goal,
+because I believe the target machine had 16K of available memory (at
+least for the Basic program).  As you can imagine, it did sacrifice
+legibility.</p>
+<p>At some point that stopped being a problem.  I think it was when
+people weren't writing in basic on 16K machines.  I really don't know
+what everyone's systems look like -- some people are programing on
+Windows, some on Linux, some on FreeBSD.  Perhaps Chuck is trying to
+get Webware to run on a TRS-80?  An interesting hack.</p>
+<p>If we are concerned with the compactness of the code with respect to
+editing, it should be noted that there is a large amount of space
+devoted to excessively long variable and method names.  For instance,
+<span class="docutils literal">defaultConfig</span> could certainly be <span class="docutils literal">defConf</span>,
+<span class="docutils literal">configFilename</span> could be <span class="docutils literal">confFN</span>, etc.  Why not?</p>
+<p>And why, indeed, would I write all this on an issue as small as tabs
+vs. spaces?  Because it's <em>really annoying</em>.  When I'm editing normal
+Python code I turn off &quot;insert tabs&quot; in Emacs.  Whenever I edit
+anything in Webware I have to either turn that on (which will break
+the other files I might edit), or hit C-Q tab for every indent,
+usually forgetting some and causing SyntaxErrors.</p>
+<p>Some people are indifferent to this.  However, I have yet to hear
+anyone other than Chuck who actually likes tabs.  And you can take
+Emacs from me when you pry it from my cold, dead hands, so arguments
+as to what &quot;good&quot; editors do don't hold much weight.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 05 Nov 2001</p>
+<p>When you gzip a file, the spaces get compacted anyway.</p>
+<p>Tabs appeal to my aesthetic sense.  However, they tend to be more
+trouble than they're worth in distributed programs.  Mixing tabs and
+spaces in the same line (e.g., comment continuation lines) is
+especially problematic as Tavis said.</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 05 Nov 2001</p>
+<p>I use &quot;hard tabs&quot; in my source code, but if it ever gets to the state
+where other people are going to be modifying it, and if they aren't up
+to dealing with tabs, I suppose I'll have to run it through one of the
+conversion programs and have it as &quot;all spaces&quot;.</p>
+<p>I don't think arguing about editor support for either adherence is
+worthwhile - it's the lazy or uninterested developer who doesn't set
+up editor features who is most likely to mess things up. If I use
+&quot;hard tabs&quot;, someone may well come along and indent manually with
+spaces, and if I use &quot;all spaces&quot; then someone may then start to put
+tabs into the code.</p>
+<p>Perhaps it's just a case of better procedures around submitting and
+committing code - have a program (like tabnanny) which processes the
+code and rejects it if it doesn't come up to scratch.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> 07 Oct 2001</p>
+<p>I don't think 'messing things up' is the issue here.  Rather, it's
+that tabs are a pain in the ass.  Most Python code out there on the
+net uses spaces and it requires effort (and notes to self) to switch
+back and forth when working with code that use tabs.</p>
+<p>-- TavisRudd - 07 Nov 2001</p>
+<p>I have run into this issue often when editing Webware code, and it's
+needlessly annoying.  The Python libraries use 4 spaces.  Let's go
+with Guido on this one.</p>
+<p>-- KenLalonde - 09 Nov 2001</p>
+<p>Tavis wrote: &quot;Furthermore, why do the Webware style guidelines suggest
+using a tab for the first indent and spaces thereafter?  That's a
+recipe for confusion.&quot;</p>
+<p>What are you talking about? The Webware style guidelines don't say
+anything like that. <em>You're</em> creating confusion.</p>
+<p>The guidelines say tabs are not used past initial indentation. eg,
+&lt;tab&gt;&lt;tab&gt;'x':&lt;tab&gt;5 is bad. Here the coder is trying to line up his
+dictionary values, but that won't work because people have different
+tab widths.</p>
+<p>Regarding &quot;no one else but Chuck likes tabs&quot;, I think Geoff expressed
+a preference for tabs over spaces on the mailing list (but that's from
+memory and a while ago).</p>
+<p>Regarding &quot;why not <span class="docutils literal">confFN</span> instead of <span class="docutils literal">configFilename</span>,
+readability comes before compactness. Does <span class="docutils literal">FN</span> mean &quot;function&quot; or
+&quot;filename&quot;?</p>
+<p>Regarding trouble editing code, the only trouble I have ever
+experienced with Python modules is when users mix tabs and spaces for
+indentation. Something everyone agrees is bad.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 10 Nov 2001</p>
+<p>Chuck, that's what I thought you meant by &quot;The guidelines say tabs are
+not used past initial indentation.&quot; I assumed you meant
+&lt;tab&gt;&lt;space&gt;&lt;space&gt;&lt;space&gt;&lt;space&gt;, etc. I happy you didn't!  But, the
+issue remains. I'm not just nit-picking over this, it's a BIG issue
+for me as it DOES cause major headaches when I work with (or even try
+to read) the webware code.  Like it or not, Emacs is used by alot of
+the people who might read/work with the webware code so this issue
+isn't going to go away.  Unlike tabs, spaces don't cause problems for
+anyone so let's make switch over to them?  I'm even volunteering to go
+through the source code and do it.</p>
+<p>-- TavisRudd - 10 Nov 2001</p>
+<p>Aesthetically, I have a very mild preference for tabs.  But I really
+don't care much -- the editors I use are smart enough to handle either
+one just fine.  Chuck, I assume the editor you prefer also handles
+spaces acceptably?  If so, why not switch Webware to spaces -- it will
+reduce pain considerably for some people, without adding much if any
+pain for you.  And it will match the preference expressed in the
+Python style guidelines (yes I know they don't <em>require</em> spaces...).
+<a class="reference external" href="http://www.python.org/peps/pep-0008.html">http://www.python.org/peps/pep-0008.html</a></p>
+<p>-- <a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 13 Nov 2001</p>
+<p>Mixing tabs and spaces is generally agreed to be a bad idea. Beyond
+that, I believe the choice of tabs or spaces is secondary to the need
+for a universal convention, whatever that is. Though I am sympathetic
+to the case that tabs should have been universally adopted throughout
+Python land, the fact is that spaces have become (with Guido's
+informal blessing) the overwhelmingly prevailing convention. I feel
+that conformance to this Python-wide convention greatly outweighs any
+technical merits that tabs may have.</p>
+<p>-- HamishLawson - 16 Nov 2001</p>
+<p>There seems to be near universal agreement that the mixing of tabs and
+spaces is dysfunctional.  While I happen to prefer using tabs for
+indentation over spaces, my personal policy is to preserve the style
+that the original author has chosen.  What really bites is the editor
+centric view of the world.  If you use an editor that dysfunctionally
+mixes spaces and tabs by default, fine.  But, don't blindly expect
+that others will use the same editor to read or edit the code.  Most
+editors in widespread use have the facility to do bulk mappings or
+translations.  Avail yourself of that capability to change leading
+tabs to 4 spaces or groups of 4 spaces to tabs when you fire up your
+editor.  Then, when you're done, reverse the mapping.  It's a mistake
+to cater to the whims of folks who happen to use one particular editor
+whose default behavior screws things up for folks who use something
+else.  With that said, as the original author of Webware began using
+tabs, I'm in favor of keeping tabs as the indenting scheme.</p>
+<p>-- KipLehman - 17 Nov 2001&lt;br/&gt;</p>
+<p>Of course, one must note: if now or any time in the future Webware was
+to convert to spaces for indentation, this discussion would become
+moot and no one would raise the <a class="reference external" href="tabsnotspaces.html">TabsNotSpaces</a> argument.  We could end
+this petty argument over style forever.  I think that indicates
+something.  I am not one to raise long, tedious, pedantic debates... I
+recognize this debates for what it is... and yet I <em>still</em> will say
+that I think tabs are annoying, yet again!  That is the level of my
+passion!  I avoid petty things, but this petty thing refuses to avoid
+me.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 17 Nov 2001</p>
+<p>Regardless of whether we keep tabs or move to spaces, we really need
+to have strict enforcement of that convention, especially when it
+comes to CVS. Otherwise, there are likely to be some misleading
+reports made by <span class="docutils literal">cvs diff</span> and other commands. And there should be
+conventions around text formats too: enforce UNIX text throughout, if
+this isn't done already. I can't stand it when people check files into
+revision control systems in the wrong format and the &quot;diff&quot; command
+tells you that the whole file has changed, especially when they have
+just changed one line or something.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 19 Nov 2001</p>
+<p>Long ago, Jim Fulton beat the notion into me that everything should
+fit in eighty columns.  This makes lots of sense in that viewing code
+in any system is easy - particularly when having to jump into
+character mode Emacs or VI on a terminal.  It means that there's no
+weird wrapping going on, depending on the editor being used.  To fully
+make this work, you have to use spaces since tab sizes can vary.  And
+we all know that mixing tabs and spaces is in very bad taste.</p>
+<p>Maybe I've just been spoiled by all my years of working with Zope, but
+I've found its code to generally be more readable at a glance due to
+their enforcement of &quot;indent by four spaces&quot; and &quot;keep those lines
+less then eighty chars&quot;.  This is very useful when using 'less' or
+just opening up another buffer quickly to see what a certain module
+does.</p>
+<p>-- JeffreyShell - 12 Feb 2002</p>
+<p>I have no issues using spaces or tabs in vim, but tabs do require more
+careful editing, and usually don't copy and paste for terminal windows
+correctly. I'm personally opposed to using tabs because it does make trading
+code difficult.</p>
+<p>-- <a class="reference external" href="ericradman.html">EricRadman</a> - 20 Apr 2004</p>
+<p>I will throw my hat in the spaces-only, 4-per-indent-level camp.  This seems to be the prevailing indentation method used in the Python community.  As a public project, going along with the crowd on this point will only gain more support for Webware.  I, personally, was going to look into fixing some things in the codebase, but find it very difficult to deal with the mixed tab/space codebase.  4-spaces is the common ground that will gain the most support and likely grow the list of willing contriubutors.</p>
+<p>-- <a class="reference external" href="kylevanderbeek.html">KyleVanderBeek</a> - 28 Sep 2004</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 28 Sep 2004</p>
+
+</div>
+</body>
+</html>

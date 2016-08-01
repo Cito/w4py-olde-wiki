@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Coping with Tabs</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="coping-with-tabs">
+<h1 class="title">Coping with Tabs</h1>
+
+<p>Since tabs (at least at the moment) are a reality in Webware, perhaps
+we can collect some practical tips for coping with them.  It probably
+makes sense to collect these by editor.</p>
+<p>-- JasonHildebrand - 27 Sep 2002</p>
+<hr class="docutils" />
+<p>?? why can't we use spaces? I use spaces for my Python coding using
+Vim, and I use WebKit. I don't seem to have any
+trouble.. -JamesBecker</p>
+<hr class="docutils" />
+<p>You can use spaces in your own Webware-based application -- no problem.
+But if you need to modify Webware itself, you'll run into trouble if you
+mix tabs and spaces.</p>
+<p>-- JasonHildebrand - 15 Apr 2004</p>
+<div class="section" id="vim">
+<h1>Vim</h1>
+<p>To teach Vim to switch to &quot;noexpandtabs&quot; mode when editing a file in
+any subdirectory of &quot;Webware&quot;, add these lines to your ~/.vimrc</p>
+<pre class="literal-block">autocmd BufEnter */Webware/* set noexpandtab
+autocmd BufLeave */Webware/* set expandtab</pre>
+</div>
+<div class="section" id="sed">
+<h1>sed</h1>
+<p>Converting python files from tabs to spaces is a snap.</p>
+<pre class="literal-block">&gt; cd ~/dev/Webware
+&gt; for file in `find . -name &quot;*.py&quot;`
+do
+    sed -e &quot;s/^V&lt;tab&gt;/    /g&quot; $file &gt; $file.new     # hit ctrl-v and the tab key after the first slash
+    mv $file.new $file
+done</pre>
+<p>--VictorNg April 15, 2004</p>
+</div>
+<div class="section" id="un-expand">
+<h1>(un)expand</h1>
+<p>The GNU Coreutils contains the utilties <cite>expand</cite> and <cite>unexpand</cite> convert tabs to spaces and vice-versa. A tab is considered to align at specific columns, by default every eight columns or four columns with option <cite>-t4</cite>, so the specific number of spaces that correspond to a tab depends on where those spaces or tab occur. Unless you specify the <cite>-a</cite> option, unexpand will only entab the initial whitespace (which goes along with the Webware styleguides).</p>
+<p>--<a class="reference external" href="chriszwerschke.html">ChrisZwerschke</a> July 26, 2005</p>
+</div>
+<div class="section" id="drpython">
+<h1>DrPython</h1>
+<p>The Editor/Mini-IDE &quot;DrPython&quot; supports converting from tabs to spaces and vice versa via the menu entries &quot;Edit - Whitespace - Set indentation to tabs...&quot; and  &quot;Edit - Whitespace - Set indentation to spaces...&quot;</p>
+<p>--<a class="reference external" href="chriszwerschke.html">ChrisZwerschke</a> July 26, 2005</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 26 Jul 2005</p>
+
+</div>
+</body>
+</html>

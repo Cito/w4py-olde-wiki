@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>SitePage</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="sitepage">
+<h1 class="title">SitePage</h1>
+
+<p>When building a <a class="reference external" href="webkit.html">WebKit</a> application, you should always create an
+abstract <a class="reference external" href="sitepage.html">SitePage</a> class from which all your other Page classes
+inherit. This allows you to build site-specific conveniences,
+utilities, etc. that will be accessible to all pages.</p>
+<p>Create a file named <a class="reference external" href="sitepage.html">SitePage</a>.py with these contents:</p>
+<pre class="literal-block">from WebKit.Page import Page
+
+class SitePage(Page):
+    pass</pre>
+<p>In your concrete page classes, inherit <a class="reference external" href="sitepage.html">SitePage</a>:</p>
+<pre class="literal-block">from SitePage import SitePage
+
+class MyPage(SitePage):
+
+    def writeContent(self):
+        self.writeln('Hello')</pre>
+<p>As you develop your website you will think of utility methods that you
+commonly want access to. For example, I often have a utility method
+called <span class="docutils literal">fragment()</span> which given a name, loads an HTML fragment file
+from disk for my use. Here is a simple example:</p>
+<pre class="literal-block">def fragment(self, name):
+    filename = '%s/../Fragments/%s.htmlf' % (__file__, name)
+    return open(filename).read()</pre>
+<p>Now all your pages can pull in fragments such as:
+<span class="docutils literal"><span class="pre">self.fragment('Header')</span></span></p>
+<p>See FragmentsRecipe for more information on that particular technique.</p>
+<p>Also, you shouldn't put files that are abstract or private in your
+public context where they could be susceptible to hacking. That means
+your SitePage will go into a directory often named Lib and your
+imports will look like this:</p>
+<pre class="literal-block">from Lib.SitePage import SitePage</pre>
+<p>See <a class="reference external" href="directorystructure.html">DirectoryStructure</a> for details.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 27 Oct 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 27 Aug 2004</p>
+
+</div>
+</body>
+</html>

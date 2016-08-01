@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware Security</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-security">
+<h1 class="title">Webware Security</h1>
+
+<p>This page is for notes and discussion on how to secure all aspects of
+your Webware application.  If you have links to other pages related to
+web-server and OS security issues please add them below.</p>
+<div class="section" id="securing-your-server-the-machine-and-os">
+<h1>Securing your server (the machine and OS)</h1>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.enteract.com/~lspitz/pubs.html">http://www.enteract.com/~lspitz/pubs.html</a> (several papers on securing your OS --StephanDiehl)</p></li>
+<li><p><a class="reference external" href="whichoperatingsystem.html">WhichOperatingSystem</a></p></li>
+</ul>
+</div>
+<div class="section" id="securing-your-web-server-apache-iis-etc">
+<h1>Securing your web server (Apache, IIS, etc.)</h1>
+<ul class="simple">
+<li><p><a class="reference external" href="http://httpd.apache.org/docs/misc/security_tips.html">http://httpd.apache.org/docs/misc/security_tips.html</a></p></li>
+<li><p><a class="reference external" href="http://www.bignosebird.com/apache/a11.shtml">http://www.bignosebird.com/apache/a11.shtml</a></p></li>
+</ul>
+</div>
+<div class="section" id="securing-your-installation-of-webware">
+<h1>Securing your installation of Webware</h1>
+<ul class="simple">
+<li><p>Open Webware/<a class="reference external" href="webkit.html">WebKit</a>/Application.config with a text editor and change the 'AdminPassword'. (or remove the Admin context completely.)</p></li>
+</ul>
+</div>
+<div class="section" id="securing-your-webware-application">
+<h1>Securing your Webware application</h1>
+<ul class="simple">
+<li><p>If your app requires client authentication, read <a class="reference external" href="http://cookies.lcs.mit.edu/pubs/webauth:tr.pdf">Dos and Don’ts of Client Authentication on the Web</a> to avoid many common web authentication pitfalls.</p></li>
+</ul>
+<p>The two things I love most about this system are: 1) it's simple, and 2) it doesn't require sessions (server state). -- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 10 July 2004</p>
+<p>You might also consider:</p>
+<blockquote>
+<ul class="simple">
+<li><p>periodically reseeding python's random number generator from a strong source (such as /dev/random or EGD),</p></li>
+<li><p>binding session Ids to client IP addresses (though this may annoy mobile DHCP sessions),</p></li>
+<li><p>after successful name+password authentication in an SSL session, drop the old session and generate a new one.  Set the &quot;secure&quot; flag  in the associated _SID_ cookie sent to the client, to reduce the risk of eavesdropping. -- KenLalonde - 28 Nov 2001</p></li>
+<li><dl class="simple">
+<dt><a class="reference external" href="urlsessionidsecurity.html">URLSessionIDSecurity</a> -- security concerns if you put the</dt>
+<dd><p>session ID in the URL (via GET variable or path)</p>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="general-notes-and-links">
+<h1>General notes and links</h1>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Security/">http://www.w3.org/Security/</a></p></li>
+<li><p><a class="reference external" href="http://www.w3.org/Security/Faq/">http://www.w3.org/Security/Faq/</a></p></li>
+<li><p><a class="reference external" href="http://www.yourwindow.to/information-security/">http://www.yourwindow.to/information-security/</a> (security glossary)</p></li>
+<li><p><a class="reference external" href="http://www.counterpane.com/crypto-gram.html">http://www.counterpane.com/crypto-gram.html</a> (monthly security newsletter by Bruce Schneier --StephanDiehl)</p></li>
+</ul>
+<p>-- TavisRudd - 22 Nov 2001
+-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 10 Dec 2001</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 11 Jul 2004</p>
+
+</div>
+</body>
+</html>

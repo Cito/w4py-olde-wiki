@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Verbose Output</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="verbose-output">
+<h1 class="title">Verbose Output</h1>
+
+<p class="subtitle" id="verbose-output-in-the-server-log">Verbose Output in the Server Log</p>
+<p>If you set <span class="docutils literal">Verbose = True</span> in AppServer.config, then the starting time and duration of every request will be logged in the server output.</p>
+<p>If you like this output, but want to tweak it or have it only for certain servlet types, then you can disable it and instead create a custom base servlet class for printing such infos, like this:</p>
+<pre class="literal-block">from time import time, localtime
+from WebKit.Page import Page
+
+class VerbosePage(Page):
+
+    def awake(self, transaction):
+        Page.awake(self, transaction)
+        request = self.request()
+        requestTime = localtime(request.time())[:6]
+        print '%5d  %4d-%02d-%02d %02d:%02d:%02d  %s' % (
+            (request.requestID(),) + requestTime + (request.uri(),))
+
+    def sleep(self, transaction):
+        request = self.request()
+        duration = round((time() - request.time())*1000)
+        print '%5d  %14.0f msec  %s\n' % (
+            request.requestID(), duration, request.uri())
+        Page.sleep(self, transaction)</pre>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 09 Apr 2010</p>
+
+</div>
+</body>
+</html>

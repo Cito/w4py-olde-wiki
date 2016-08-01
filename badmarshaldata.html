@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Bad Marshal Data</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="bad-marshal-data">
+<h1 class="title">Bad Marshal Data</h1>
+
+<p>From the 0.6 Install Guide:</p>
+<blockquote>
+<p>The most common installation problem is a Python exception
+appearing in your browser that says &quot;bad marshal data&quot;. This is
+always caused by pointing the web browser to the app server:</p>
+<p><a class="reference external" href="http://localhost:8086/WebKit.cgi/">http://localhost:8086/WebKit.cgi/</a></p>
+<p>But the app server hides behind a web server so the correct URL
+would be:</p>
+<p><a class="reference external" href="http://localhost/WebKit.cgi/">http://localhost/WebKit.cgi/</a></p>
+<p>That requires that web server and app server are set up to talk to
+each other.</p>
+</blockquote>
+<p>See InstallGuide.html in <span class="docutils literal">Webware/WebKit/Docs</span> for full details, or
+you can read the one for the last production release at:</p>
+<p><a class="reference external" href="http://webware.sourceforge.net/Webware/WebKit/Docs/InstallGuide.html">http://webware.sourceforge.net/Webware/WebKit/Docs/InstallGuide.html</a></p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 30 Nov 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

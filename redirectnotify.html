@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Redirect Notify</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="redirect-notify">
+<h1 class="title">Redirect Notify</h1>
+
+<p>This describes a pattern for navigation among web pages.</p>
+<p>Problem: when people perform an action that modifies the server-side
+state (such as deleting an item from a table), the action should only
+be performed once.  Having users reload pages that result from such
+actions can lead to confusing error messages and invalid data.</p>
+<p>Also, having boring pages with minimal content (such as a page consisting only of &quot;mail sent&quot;) is annoying for the user.</p>
+<p>You can alleviate these problems by immediately redirecting to another
+-- likely more interesting -- page after every such action.  This
+should be done in the HTTP headers (via <span class="docutils literal">self.sendRedirect()</span> ) so
+that it is transparent to the user (and doesn't break their back
+button).</p>
+<p>The user still needs to receive some confirmation that the action was
+performed.  I generally add a session variable, which is a list of
+messages to be displayed.  At the top of every page, I check if
+there's anything in that session variable, and if there is I display
+it (usually offset by a different background color), and then clear
+the variable.  When an action is performed, it will add any messages
+to that variable.</p>
+<p>This provides a very pleasing UI, and saves a lot of tedious
+navigation.</p>
+<p>Unfortunately, it would be nice if the status messages worked even
+when you weren't doing a redirect.  However, because there's no good
+way to buffer the written output of a servlet, you won't know if later
+portions of the page are going to produce a status message when you
+write the top of the page.  If you place status-message-producing
+actions in the <span class="docutils literal">awake</span> method of the servlet, you won't have this
+problem.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 20 Nov 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

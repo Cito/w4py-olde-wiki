@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Managing the URI Space</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="managing-the-uri-space">
+<h1 class="title">Managing the URI Space</h1>
+
+<p class="subtitle" id="best-practices">Best Practices</p>
+<p>a URI is not a file, and the process of dereferencing uris into source
+resources shouldn't make assumptions about origin server filesystems</p>
+<p>some common assumptions to watch out for:</p>
+<ul class="simple">
+<li><p>the filesystem is writable</p></li>
+<li><p>directory names are valid python package names</p></li>
+<li><p>MVC: controller servlet manages its own subspace</p></li>
+<li><p>search engines and query strings</p></li>
+<li><p>WebDAV and Web Folders</p></li>
+<li><p>preserve semantics of HTTP</p></li>
+<li><p>GET and HEAD must be &quot;safe&quot;</p></li>
+</ul>
+<div class="section" id="resources">
+<h1>Resources</h1>
+<ul class="simple">
+<li><p><a class="reference external" href="http://conveyor.com/RESTwiki/moin.cgi">http://conveyor.com/RESTwiki/moin.cgi</a></p></li>
+<li><p><a class="reference external" href="http://jaguar.sourceforge.net/webware/urldecode.html">http://jaguar.sourceforge.net/webware/urldecode.html</a></p></li>
+<li><p><a class="reference external" href="http://jaguar.sourceforge.net/webware/catalina/">http://jaguar.sourceforge.net/webware/catalina/</a></p></li>
+<li><p><a class="reference external" href="http://www.ietf.org/rfc/rfc2396.txt">http://www.ietf.org/rfc/rfc2396.txt</a></p></li>
+<li><p><a class="reference external" href="http://www.namesys.com/">http://www.namesys.com/</a></p></li>
+</ul>
+</div>
+<div class="section" id="software">
+<h1>Software</h1>
+<p><a class="reference external" href="urimapping.html">UriMapping</a> -- &quot;next generation&quot; URI decoding for Webware</p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 26 Apr 2002</p>
+<p>Why not just have some kind of simple Python-based resource-finding
+plug-in function/method which parses paths (URIs or whatever) as they
+come in? I can see some advantages in having a function or object
+method which takes the raw string and scans it for keywords, for
+example. Perhaps everyone considered this in the discussions on the
+mailing list which I obviously wasn't following closely enough.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 29 Apr 2002</p>
+<p>That is what <a class="reference external" href="urimapping.html">UriMapping</a> is about: the goal is to refactor
+Application.serverSidePathForRequest into a separate class with
+pluggable behaviors (PPR:StrategyPattern).  URLDecode is one way to do
+it.  UriMapping explores many different strategy implementations, none
+of which should be considered &quot;cannonical&quot; (current behavior would be
+the &quot;default&quot; strategy).</p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 29 Apr 2002</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 24 Oct 2004</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Transaction Anatomy</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="transaction-anatomy">
+<h1 class="title">Transaction Anatomy</h1>
+
+<div class="section" id="incoming">
+<h1>Incoming</h1>
+<p>This documents the process that occurs when an HTTP request is
+made to Webware.  Most of this process is internal to Webware, but
+knowing it can help you understand what's going on even if you
+don't modify any of that code.</p>
+<div class="section" id="the-first-connection">
+<h2>The First Connection</h2>
+<p>The process begins when a browser requests the web server to for a
+page.  The browser tells the server what page it wants to receive, and
+passes any cookies that are marked for the server and any form
+variables (GET or POST).</p>
+<p>Because different web servers are supported, and under each server
+there several ways to interact with Webware, there are a variety of
+adapters that will handle the request at this point.  With the
+exception of OneShot, they will generally package up the request and
+send it over a socket to the AppServer.  The AppServer has been
+started ahead of time, and is waiting to respond.</p>
+</div>
+<div class="section" id="appserver">
+<h2>AppServer</h2>
+<p>The AppServer is generally the subclass AsyncThreadedAppServer,
+however I will refer to it simply as AppServer.</p>
+<p>The AppServer listens for requests from an Adapter <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.  When it
+receives a request, it puts it in a queue and the next available
+thread will handle the request.  A fixed number of threads are started
+on launch, and if that pool of threads is exausted the request will
+block until another request has been finished. <em>(&#64;&#64; Correct?)</em></p>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p><a class="reference internal" href="#note-address-text">note_address_text</a></p>
+</dd>
+</dl>
+<p>The thread (which is an instance of the RequestHandler class) will
+wait until it has read all the data (in
+<span class="docutils literal">RequestHandler.handle_read</span>), placing the data in
+<span class="docutils literal">RequestHandler.reqdata</span>.  Then the <span class="docutils literal">RequestHandler.handleRequest</span>
+method is called.  The request that was passed over the socket is then
+unmarshalled <a class="footnote-reference brackets" href="#id4" id="id3">2</a> (if the request was not properly packaged, you will
+get a marshalling error here -- that is what happens when you try to
+connect directly to the AppServer from your browser)</p>
+<dl class="footnote brackets">
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id3">2</a></span></dt>
+<dd><p><a class="reference internal" href="#note-marshal">note_marshal</a></p>
+</dd>
+</dl>
+<p>RequestHandler handles STATUS and QUIT methods directly.  <em>(&#64;&#64; how
+would these requests be made?)</em> All other requests are handled by
+Application.  AppServer keeps an instance of Application, and
+<span class="docutils literal">Application.dispatchRawRequest</span> is called with the unmarshalled
+request <a class="footnote-reference brackets" href="#id6" id="id5">3</a>.</p>
+<dl class="footnote brackets">
+<dt class="label" id="id6"><span class="brackets"><a class="fn-backref" href="#id5">3</a></span></dt>
+<dd><p><a class="reference internal" href="#note-request">note_request</a></p>
+</dd>
+</dl>
+<div class="section" id="oneshot">
+<h3>OneShot</h3>
+<p>When you connect through OneShot.cgi you go through largely the same
+process, except that there is no persistance.  The OneShot adapter
+starts a new AppServer (OneShotAppServer) for each request.  This is
+inefficient but at times convenient.</p>
+</div>
+</div>
+<div class="section" id="application">
+<h2>Application</h2>
+<div class="section" id="creating-a-request">
+<h3>Creating a Request</h3>
+<p>Application.dispatchRawRequest takes the dictionary that was passed
+over the socket, and creates an HTTPRequest.  <span class="docutils literal">HTTPRequest.__init__</span>
+parses the dictionary.  It parses fields, cookies, and some internal
+values that are used by Application.  (For instance, the fields are
+passed in as a raw, URL-encoded string, but are converted to a
+dictionary-like object)</p>
+</div>
+<div class="section" id="creating-a-transaction">
+<h3>Creating a Transaction</h3>
+<p>After the HTTPRequest is created, it is passed to
+<span class="docutils literal">Application.dispatchRequest</span>.  This creates a Transaction with
+<span class="docutils literal">Application.createTransactionForRequest</span>.  Transaction simply acts
+a container for these various pieces of a transaction (request,
+response, session, servlet, and application), and passes messages to
+them (through methods).  Transaction is otherwise stateless and has no
+logic.  It is not the parent of these objects -- in particular, the
+session, servlet, and application will typically outlive the
+transaction.</p>
+</div>
+<div class="section" id="creating-a-response">
+<h3>Creating a Response</h3>
+<p>A response is created with
+<span class="docutils literal">Application.createResponseInTransaction</span>.  An HTTPResponse is
+created, and again Transaction acts as a container.</p>
+</div>
+<div class="section" id="finding-the-servlet-file">
+<h3>Finding the Servlet file</h3>
+<p>The Application asks for <span class="docutils literal">HTTPRequest.serverSidePath</span>, which in turn
+calls <span class="docutils literal">Application.serverSidePathForRequest</span>.  This then tries to
+find the Servlet that corresponds to the URI asked for.</p>
+<p>Consider an example URI:</p>
+<pre class="literal-block">http://www.server.com/cgi-bin/OneShot_.cgi/Welcome</pre>
+<ul class="simple">
+<li><p>Application keeps a cache of URLs and their matching files.  If a
+cached filename matches, we use that.  Otherwise:</p></li>
+<li><p>Remove the portion that relates to the adapter
+(<span class="docutils literal"><span class="pre">/cgi-bin/OneShot.cgi</span></span>).</p></li>
+<li><p>Inspect the first portion of the path (<span class="docutils literal">/Welcome</span>):</p>
+<ul>
+<li><p>Does it match a Context?  (Contexts are listed in
+<span class="docutils literal">WebKit/Configs/Application.config</span>)</p></li>
+<li><p>If so, look in this context.  If not, consider it to be in the
+<span class="docutils literal">default</span> context (the default is defined in
+<span class="docutils literal">Application.conf</span>).  In our example it wouldn't match a
+context, and so we'd treat it as though it was in the default
+context (<span class="docutils literal">Examples</span>).</p></li>
+</ul>
+</li>
+<li><p>Look in the directory that matches the value of the context entry in
+<span class="docutils literal">Application.config</span>.  This directory is considered relative to the
+location of <span class="docutils literal">Application.py</span>, i.e., the <span class="docutils literal">Webware/WebKit</span>
+directory.  In our example, <span class="docutils literal">Webware/WebKit/Examples</span></p></li>
+<li><p>Follow the path until you find a file.  In our simple example, all
+that's left of the path is <span class="docutils literal">/Welcome</span>.</p></li>
+<li><p>The file can have any extension <em>(&#64;&#64; I'm not really sure how this
+works)</em></p></li>
+<li><p>If you have ExtraPathInfo set to 1 in <span class="docutils literal">Application.config</span>, then
+anything that is left of the path will be available to your servlet
+through the method request.extraURLPath() (&#64;&#64; oh, I can't remember
+where -- there also appears to be some sort of attempt to match this
+remaining path information to a file)</p></li>
+</ul>
+<p>With the filename of the servlet, Application continues.</p>
+</div>
+</div>
+<div class="section" id="dispatching-on-the-result-of-serversidepath">
+<h2>Dispatching on the Result of serverSidePath</h2>
+<p>When <span class="docutils literal">Application.dispatchRequest</span> gets the resultant
+serverSidePath, it calls one of a couple methods:</p>
+<ul class="simple">
+<li><p>If the result is None, then the page was not found:
+<span class="docutils literal">Application.handleBadURL</span>, which gives a 404 message.</p></li>
+<li><p>If the result is a directory, but the request didn't end in a slash:
+<span class="docutils literal">Application.handleDeficientDirectoryURL</span>, which gives a redirect
+to the same location with a &quot;/&quot; appended to the URL.</p></li>
+<li><p>If the session ID is invalid (doesn't exist or has timed out,
+<span class="docutils literal">Application.isSessionIdProblematic</span>):
+<span class="docutils literal">Application.handleInvalidSession</span>, which creates a new session
+ID, sets the cookie, and passes to <span class="docutils literal">Application.handleGoodURL</span></p></li>
+<li><p>Otherwise (all good): <span class="docutils literal">Application.handleGoodURL</span></p></li>
+</ul>
+</div>
+<div class="section" id="creating-a-servlet">
+<h2>Creating a Servlet</h2>
+<p><span class="docutils literal">Application.handleGoodURL</span> calls
+<span class="docutils literal">Application.createServletInTransaction</span>.  Like the path lookup,
+this method first looks for a cached Servlet.  If it's found, it
+checks the timestamp on the cache and the source file, invalidating
+the cache if necessary.</p>
+<p>If a cached Servlet wasn't found, or the cache was invalidated, it
+creates a new cache entry for the Servlet <a class="footnote-reference brackets" href="#id8" id="id7">4</a>.</p>
+<dl class="footnote brackets">
+<dt class="label" id="id8"><span class="brackets"><a class="fn-backref" href="#id7">4</a></span></dt>
+<dd><p><a class="reference internal" href="#note-cachedservlet">note_cachedServlet</a></p>
+</dd>
+</dl>
+<p><span class="docutils literal">Application.getServlet</span> actually creates the Servlet.  The cache
+actually keeps a queue of available instances of the Servlet, which
+are reused when possible.  <em>(&#64;&#64; what's up with the factories here?  I
+know what they do, but not how they get called)</em></p>
+</div>
+<div class="section" id="waking-the-transaction">
+<h2>Waking the Transaction</h2>
+<p>Once the Transaction has a Servlet to work with, it calls
+<span class="docutils literal">Transaction.awake</span>, <span class="docutils literal">Transaction.respond</span>, and finally
+<span class="docutils literal">Transaction.sleep</span>.  Transaction in turns calls these methods on
+both the Session and the Servlet.</p>
+<p><span class="docutils literal">HTTPServlet.awake</span> doesn't do anything, unless you override it in a
+subclass -- typically you would override it to set up resources and
+instance variables for the servlet, or to do actions based on the
+request.</p>
+<p><span class="docutils literal">Session.awake</span> sets its list access time and number of accesses
+when awake is called.</p>
+</div>
+<div class="section" id="responding">
+<h2>Responding</h2>
+<p><span class="docutils literal">HTTPServlet.respond</span> is called with the transaction as its only
+argument.  It calls a method based on the request type: 'GET', 'POST',
+'PUT', 'DELETE', 'OPTIONS', 'TRACE'.  'GET' calls
+HTTPServlet.respondToGet, 'POST' respondToPost, etc., all with the
+transaction as an argument.  The actual Servlet must override these
+methods to give the desired behavior.</p>
+<p><span class="docutils literal">Session.respond</span> does nothing.</p>
+</div>
+<div class="section" id="page">
+<h2>Page</h2>
+<p>Page (a subclass of HTTPServlet) has more interesting behavior.  It is
+particularly directed towards generating HTML (HTTPServlet is entirely
+content-neutral), and consolidates a number of things.</p>
+<p><span class="docutils literal">Page.awake</span> initializes a number of variables that will not change for
+the entire transaction (but may change if the Page is reused for other
+transactions).</p>
+<p><span class="docutils literal">Page.respondToGet</span> and Page.respondToPost both call
+<span class="docutils literal">Page._respond</span>, which looks for a field named <span class="docutils literal">'_action_'</span> and
+dispatches based on that.  <span class="docutils literal">'_action_'</span> is translated by
+<span class="docutils literal">Page.methodNameForAction</span>, and the result must be among the list
+returned by <span class="docutils literal">Page.actions</span> (cached by <span class="docutils literal">Page._actionSet</span>).  If no
+<span class="docutils literal">'_action_'</span> field is given, <span class="docutils literal">Page.writeHTML</span> is run.</p>
+<p>Page can also generate the HEAD, TITLE, and other elements of the HTML
+page.  You can override <span class="docutils literal">Page.writeBody</span> or <span class="docutils literal">Page.writeContent</span> to
+generate content, and methods like <span class="docutils literal">Page.title</span> to generate other
+content.  It's easiest just to look at <span class="docutils literal">Page.py</span> to see these.</p>
+</div>
+<div class="section" id="writing-a-page">
+<h2>Writing a page</h2>
+<p><span class="docutils literal">Page.write</span> calls <span class="docutils literal">HTTPResponse.write</span> with its arguments.
+<span class="docutils literal">HTTPResponse.write</span> holds these strings in a list until you are
+finished with the transaction.  You can also stream the output by
+calling HTTPResponse.flush, which will start sending output directly
+-- once this has occurred, you can send no more headers (such as
+cookies, redirects, etc).</p>
+</div>
+</div>
+<div class="section" id="the-return-path">
+<h1>The Return Path</h1>
+<div class="section" id="id9">
+<h2>Application</h2>
+<p>After having set up the request, we need to back out all the way to
+the browser.</p>
+<p>After <span class="docutils literal">Application.dispatchRequest</span> has called
+<span class="docutils literal">Application.handleGoodURL</span> (which calls awake/respond/sleep), it
+will call <span class="docutils literal">HTTPResponse.deliver</span>, which basically marks the response
+as committed (i.e., nothing more can be added).  Then
+<span class="docutils literal">Application.returnInstance</span> is called, which returns the Servlet
+instance back to the pool of cached servlets (to be reused for a later
+request).</p>
+</div>
+<div class="section" id="response">
+<h2>Response</h2>
+<p><span class="docutils literal">RequestHandler.handleRequest</span> calls <span class="docutils literal">HTTPResponse.rawResponse</span>,
+which returns a dictionary containing the keys 'headers' and
+'contents'.  Headers is a list of header/value pairs.  For example:</p>
+<pre class="literal-block">[('Content-Type', 'text/html'),
+ ('Set-Cookie', 'foo=bar')
+]</pre>
+<p><span class="docutils literal">RequestHandler.handleRequest</span> then turns this into a normal
+CGI-style response, with <span class="docutils literal">header: value</span> at the top, a blank line,
+and then 'contents'.  It then deletes the transaction.</p>
+</div>
+<div class="section" id="adapter">
+<h2>Adapter</h2>
+<p>Having waited patiently, RequestHandler will finally send the string
+contructed from the Response to the Adapter over the socket.  The
+adapter will deal with it as appropriate.  E.g., the CGI adapter
+prints the result to stdout.</p>
+</div>
+</div>
+<div class="section" id="finished">
+<h1>Finished</h1>
+<p>The user sees the page, and it is good.</p>
+<hr class="docutils" />
+<p id="note-address-text">The AppServer writes the hostname and port to a file <span class="docutils literal">address.text</span>.
+The Adapter reads this file to determine where it can connect to the
+AppServer.</p>
+<p id="note-marshal">Marshalling takes simple Python values -- strings, lists, numbers,
+etc., and puts them into a string representation.</p>
+<p id="note-request">The request is a dictionary with the keys 'format', 'time', 'input',
+and 'environ':</p>
+<dl class="simple">
+<dt>'format':</dt>
+<dd><p>The only current allowed value for 'format' is 'CGI'.</p>
+</dd>
+<dt>'time':</dt>
+<dd><p>A timestamp (seconds from the Unix Epoch).</p>
+</dd>
+<dt>'environ':</dt>
+<dd><p>A dictionary that looks like what os.environ would look like were
+this actually a CGI call -- that is, with keys like REQUEST_METHOD,
+QUERY_STRING, etc.</p>
+</dd>
+<dt>'input':</dt>
+<dd><p>The request that the browser made.  This would be something like
+<span class="docutils literal">GET <span class="pre">/Examples/View?filename=Welcome.py</span></span> <em>(&#64;&#64; POST example too?)</em></p>
+</dd>
+</dl>
+<p id="note-cachedservlet">The cache for the Servlet is used both for the file path lookup, and
+for the Servlet cache (i.e., two caches keyed by URL/PATH_INFO and by
+serverSidePath, but pointing to the same cached data). <em>(&#64;&#64; maybe some
+information on how the cache is stored)</em></p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 29 Sep 2004</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Run WebKit As Apache Root</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="run-webkit-as-apache-root">
+<h1 class="title">Run WebKit As Apache Root</h1>
+
+<p>Thanks to a tip from Charles Cazabon, who noticed that this works if you give apache bogus Main Doc Root, here's the recipe.</p>
+<div class="section" id="making-webkit-the-document-root-in-apache">
+<h1>Making Webkit the Document Root in Apache</h1>
+<div class="section" id="changes-to-apache-s-httpd-conf">
+<h2>Changes to apache's httpd.conf</h2>
+<p>There are several changes to be made...</p>
+</div>
+<div class="section" id="in-section-2-main">
+<h2>In Section 2: Main</h2>
+<ul>
+<li><p>change DocumentRoot directive to a NON-existant directory. Mine is
+now /var/www/BOGUS</p></li>
+<li><p>change the corresponding Directory block header, like this:</p>
+<pre class="literal-block">&lt;Directory /var/www/BOGUS&gt;</pre>
+</li>
+<li><p>if you want to have it global (as opposed to Virtual Hosts) then remove the &lt;Directory /&gt; block and replace it with:</p>
+<pre class="literal-block">&lt;Location /&gt;
+    WKServer localhost 8086
+    SetHandler webkit-handler
+&lt;/Location&gt;</pre>
+</li>
+</ul>
+</div>
+<div class="section" id="in-section-3-virtual-hosts-optional">
+<h2>In Section 3: Virtual Hosts? (OPTIONAL)</h2>
+<p>The same location directive can be added to a VirtualHost block in
+Section 3. That's what I'm doing now:</p>
+<ul>
+<li><p>In Section 2 leave alone your <span class="docutils literal">&lt;Directory /var/www/BOGUS&gt;</span></p></li>
+<li><p>turn on virtual hosts like this:</p>
+<pre class="literal-block">NameVirtualHost *</pre>
+</li>
+<li><p>setup your Virtual Host something like this:</p>
+<pre class="literal-block">&lt;VirtualHost *&gt;
+    ServerName www.myserver.com
+    &lt;Location /&gt;
+        WKServer localhost 8087
+        SetHandler webkit-handler
+    &lt;/Location&gt;
+&lt;/VirtualHost&gt;</pre>
+</li>
+<li><p>if you want other virtual hosts (or a default host) just set up
+another virtual host block. They are in order of importance. This is
+all covered in the apache docs</p></li>
+</ul>
+<p>Good luck!</p>
+<p>-- MattFeifarek - 09 May 2002</p>
+<p>Run Webkit as Document root with Apache 2
+=========================================v</p>
+<p>As many of you may have noticed with Apache2 you can no longer use the
+bogus document root trick mentioned above.  To get around this, this
+is what has worked for my (at least on Windows with Apache2 and
+mod_webkit)</p>
+<ul>
+<li><p>Add your apache Document root as the default Webkit context</p></li>
+<li><p>Add your webkit location:</p>
+<pre class="literal-block">&lt;Location /WK&gt;
+WKServer localhost 8086
+SetHandler webkit-handler
+&lt;/Location&gt;</pre>
+</li>
+<li><p>Now make Apache associate py files with the /wk location:</p>
+<pre class="literal-block">Action py-serverpages /WK/
+AddType py-serverpages .py</pre>
+</li>
+</ul>
+<p>Virtual hosts are almost the same thing</p>
+<ul>
+<li><p>turn on virtual hosts as metioned above</p></li>
+<li><p>now add the virtual host directory to your webkit contexts</p></li>
+<li><p>within the virtual host declaration add a new webkit location:</p>
+<pre class="literal-block">&lt;VirtualHost *&gt;
+    ServerAdmin webadmin&#64;someplace.com
+    DocumentRoot &quot;/virhost&quot;
+    ServerName virhost.com
+    ErrorLog logs/virhost.com-error_log
+    CustomLog logs/virhost.com-access_log common
+
+    &lt;Location /WK/virhost&gt;
+        WKServer localhost 8086
+        SetHandler webkit-handler
+    &lt;/Location&gt;
+
+    Action py-serverpages /WK/virhost/
+    AddType py-serverpages .py
+&lt;/VirtualHost&gt;</pre>
+</li>
+</ul>
+<p>That should do it all without the use of rewrites</p>
+<p>-- JoseGalvez - 28 Dec 2002</p>
+<p><a class="reference external" href="modeltwoplusone.html">Model Two plus One</a> Has slightly different example of using doing
+this with Apache2</p>
+<p>-- LukeHolden - 07 Jan 2003</p>
+<p>Here's another trick for users of the cgi-wrapper, tested in
+apache1.3:</p>
+<pre class="literal-block">...
+ScriptAlias  /mywebware /path/to/webkit.cgi
+RewriteEngine On
+# Only rewrite &quot;/index.html&quot;, which also rewrites &quot;/&quot;
+# in the default apache configuration:
+RewriteRule ^/index.html /mywebware/ [L,PT]
+...</pre>
+<p>This is neat if you actually <em>want</em> to have all webware stuff below a
+certain directory (&quot;/mywebware&quot; in the example) but have the apache
+start page to be the webware start page as well. All webware stuff is
+in /mywebware now, all images in /images or css in /css get served
+statically, but still apache root is Webware powered.</p>
+<p>(I wanted to have it this way on <a class="reference external" href="http://normalmailorder.de">http://normalmailorder.de</a> where
+/index.html is routed to be <a class="reference external" href="http://normalmailorder.de/shop/">http://normalmailorder.de/shop/</a> )</p>
+<p>-- FrankBarknecht</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

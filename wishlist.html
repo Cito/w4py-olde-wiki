@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Wishlist</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="wishlist">
+<h1 class="title">Wishlist</h1>
+
+<p>This is informal wishlist of things people would like to see improved
+in Webware. It complements the <a class="reference external" href="todo.html">ToDo</a> list.  Items that are completed
+or moved onto the <a class="reference external" href="todo.html">ToDo</a> list should be removed from this list (copy
+and paste the text to the <a class="reference external" href="wishesgranted.html">WishesGranted</a> page).  Please sign and date
+your new <em>wishes</em> and comments on existing wishes.  Use horizontal
+rules to separate wishes.</p>
+<p>This page is for extensions to the Webware core.  Autonomous items
+like Kits belong on the <a class="reference external" href="appideas.html">AppIdeas</a> page.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#experimental-refactoring" id="id6">Experimental Refactoring</a></p></li>
+<li><p><a class="reference internal" href="#miscellaneous" id="id7">Miscellaneous</a></p></li>
+<li><p><a class="reference internal" href="#move-extrapathinfo-setting-into-servlets" id="id8">Move ExtraPathInfo setting into servlets</a></p></li>
+<li><p><a class="reference internal" href="#automatic-use-of-local-subclasses-of-major-components" id="id9">Automatic use of local subclasses of major components</a></p></li>
+<li><p><a class="reference internal" href="#single-vs-multiple-cgi-fields" id="id10">Single vs. multiple CGI fields</a></p></li>
+<li><p><a class="reference internal" href="#make-webkit-wingide-friendly" id="id11">Make WebKit WingIDE-friendly</a></p></li>
+<li><p><a class="reference internal" href="#roll-comkit-s-functionality-directly-into-the-appserver" id="id12">Roll COMKit's functionality directly into the AppServer</a></p></li>
+<li><p><a class="reference internal" href="#middlekit-support-for-postgresql-and-oracle" id="id13">MiddleKit support for PostgreSQL_ and Oracle</a></p></li>
+<li><p><a class="reference internal" href="#out-of-box-support-for-pooled-persistent-db-connections" id="id14">Out-of-box support for pooled, persistent DB connections</a></p></li>
+<li><p><a class="reference internal" href="#browserdetection" id="id15">BrowserDetection</a></p></li>
+<li><p><a class="reference internal" href="#spacesnottabs" id="id16">SpacesNotTabs</a></p></li>
+<li><p><a class="reference internal" href="#urldecoding" id="id17">UrlDecoding</a></p></li>
+<li><p><a class="reference internal" href="#ftp-serving" id="id18">FTP Serving</a></p></li>
+<li><p><a class="reference internal" href="#webdav" id="id19">WebDAV</a></p></li>
+<li><p><a class="reference internal" href="#seamlessuserhandling" id="id20">SeamlessUserHandling</a></p></li>
+<li><p><a class="reference internal" href="#outputcaching" id="id21">OutputCaching</a></p></li>
+<li><p><a class="reference internal" href="#gzipcompression" id="id22">GzipCompression</a></p></li>
+<li><p><a class="reference internal" href="#scalabilityenhancements" id="id23">ScalabilityEnhancements</a></p></li>
+<li><p><a class="reference internal" href="#persistant-connections-from-adapters" id="id24">Persistant Connections from adapters</a></p></li>
+<li><p><a class="reference internal" href="#roadmap" id="id25">RoadMap</a></p></li>
+<li><p><a class="reference internal" href="#add-browser-cancel-hooks" id="id26">Add Browser Cancel Hooks</a></p></li>
+<li><p><a class="reference internal" href="#faster-deletion-in-middlekit" id="id27">Faster Deletion in MiddleKit</a></p></li>
+<li><p><a class="reference internal" href="#define-multiple-methods-in-psp" id="id28">Define Multiple Methods in PSP</a></p></li>
+<li><p><a class="reference internal" href="#auto-generate-better-docs-with-pydoc" id="id29">Auto-Generate Better Docs With pydoc</a></p></li>
+<li><p><a class="reference internal" href="#serversidepath" id="id30">serverSidePath()</a></p></li>
+<li><p><a class="reference internal" href="#packaging-enhancements" id="id31">Packaging Enhancements</a></p>
+<ul>
+<li><p><a class="reference internal" href="#distutils-packaging" id="id32">distutils Packaging</a></p></li>
+<li><p><a class="reference internal" href="#deb-s-and-rpm-s" id="id33">.deb's and .rpm's</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- distutils doesn't like embedded markup, so the *LinkMe_* used to boldface and
+link titles wasn't working.  I changed each TODO into a section heading.  It
+might be useful to organize this list into subsections. -->
+<div class="section" id="experimental-refactoring">
+<h1><a class="toc-backref" href="#id6">Experimental Refactoring</a></h1>
+<p><em>Note</em>: I've been working on an experimental refactoring
+(<a class="reference external" href="webwareexprefactoring.html">WebwareExpRefactoring</a>) of the Webware code that addresses many of
+the issues/wishes listed below.  It is not a fork, but is also not
+'official' webware code yet. Help is needed testing it and assessing
+if it is ready for 'official' review by <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a>.  Please
+follow see WebwareExpRefactoring for information on how you can help
+out. -- TavisRudd - 14 Jan 2002</p>
+</div>
+<div class="section" id="miscellaneous">
+<h1><a class="toc-backref" href="#id7">Miscellaneous</a></h1>
+<p>These are a few objects/applications we should evaluate someday and see if they are worth porting to Webware.</p>
+<p><a class="reference external" href="http://www.horde.org/horde/">Horde</a> -- (PHP) contains classes for dealing with preferences,
+compression, browser detection, connection tracking, MIME handling,
+and more.&quot;</p>
+<p><a class="reference external" href="http://www.horde.org/imp/">IMP</a> -- Horde webmail client.  IMAP/POP.</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 04 Apr 2002</p>
+</div>
+<div class="section" id="move-extrapathinfo-setting-into-servlets">
+<h1><a class="toc-backref" href="#id8">Move ExtraPathInfo setting into servlets</a></h1>
+<p>Currently, <a class="reference external" href="extrapathinfo.html">ExtraPathInfo</a> is a site-wide setting in
+Configs/Application.py.  But it should really be set on a per-servlet
+basis.  The servlet knows best whether it was designed to use
+<a class="reference external" href="extrapathinfo.html">ExtraPathInfo</a>, and it's usually only a few servlets per application
+that do.  <a class="reference external" href="extrapathinfo.html">ExtraPathInfo</a> can cause unexpected behavior with servlets
+that are not specifically designed for it; e.g., see <a class="reference external" href="extrapathinfo.html">ExtraPathInfo</a>.</p>
+<p>I propose a new HTTPServlet method, .wantExtraPathInfo_(), returning
+false.  Servlets or intermediate classes can override it if they want
+to provide this feature.  Thus, the first servlet found determines the
+setting.  If it's false and there is extra path info, return a 404 Not
+Found error, because we've reached the wrong servlet (perhaps an
+index.py <a class="reference external" href="webkit.html">WebKit</a> implicitly inserted into the URL).</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 03 Jan 2002</p>
+</div>
+<div class="section" id="automatic-use-of-local-subclasses-of-major-components">
+<h1><a class="toc-backref" href="#id9">Automatic use of local subclasses of major components</a></h1>
+<p>It's been a planned feature of Webware for some time, but hasn't
+actually been there: for Webware to use locally-developed subclasses
+of major classes, like Application, HTTPRequest, etc.  Not only would
+this help make Webware easier to upgrade -- since any local
+enhancements would be clearly seperated -- but it would also make
+experimentation much easier.  Non-core-Webware-developers could easily
+make and distribute enhancements, and even core developers might
+appreciate being able to distrubute controversial enhancements.</p>
+<p>As these enhancements get wider use, we could see how they work in
+real situations with a greater variety of developers (and styles).
+Some will probably fall by the wayside, but others might show gretter
+than expected popularity.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 03 Dec 2001</p>
+<p>In the meantime:
+On Tuesday 11 December 2001 12:28, Geoffrey Talvola</p>
+<p>Chuck has written some nifty code to make it easy to replace class
+methods after the fact.  It's in <a class="reference external" href="miscutils.html">MiscUtils</a>/MixIn.py.
+You can put an __init__.py file into your context directory.  This
+gets imported when the appserver starts up, and is therefore a
+convenient place to put in code that needs to modify the core
+Webware classes.  Something like this should work as the contents
+of your __init__.py:</p>
+<pre class="literal-block">###############################################
+from MiscUtils.MixIn import MixIn
+from WebKit.Session import Session
+
+class SessionMixIn_:
+    def expiring(self):
+        # your implementation goes here
+
+# Now inject the methods from SessionMixIn into Session
+MixIn(Session, SessionMixin)
+###############################################</pre>
+<p>Until Webware has a better way to support custom classes, this is
+probably the cleanest way to get what you want.</p>
+<p>-- TavisRudd - 11 Dec 2001</p>
+</div>
+<div class="section" id="single-vs-multiple-cgi-fields">
+<h1><a class="toc-backref" href="#id10">Single vs. multiple CGI fields</a></h1>
+<p><span class="docutils literal"><span class="pre">self.request().field()</span></span> (in HTTPRequest.py) currently returns
+either a string or a list.  However, it causes major inconvenience.
+If there is only one value for the field, it's a string.  If there are
+multiple values, it's a list of strings.  This behavior is inherited
+from Python's cgi.py module.  However, it's inconvenient for servlet
+writers.  It requires the careful programmer to have to check the type
+of _every_ field, even those that should always be one or the other,
+or risk having the servlet crash if unexpected input is received.</p>
+<p>How about adding a .fieldMulti() method that always returns a list?  A
+single value would be coerced to <span class="docutils literal">[value]</span>, and a missing value to
+<span class="docutils literal">[]</span>.  This would allow servlet writers to skip the list test.</p>
+<p>Additionally, how about changing .field() and .fields() to never
+return a list.  Instead, choose one of the values arbitrarily and
+return it as a string.  This would also allow servlet writers to skip
+the list test, in cases where they want only one value and don't care
+which one it is.</p>
+<p>If changing .field/s() as above is too backwards-incompatable a
+change, how about leaving .field/s() alone and adding .fieldSingle()
+with this behavior?</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 30 Nov 2001</p>
+<p>Consider proposing improvements in multiple value handling to Andrew
+Kuchling for Python's <span class="docutils literal">cgi</span> module. Then other projects can get the
+benefit of such improvements. Of course, Webware will still have its
+own distinct approach for accessing field data, but we would at least
+be able to take advantage of common work done in this area.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 03 Dec 2001</p>
+<p>This isn't a substantial change, but rather a cleanup of semantics in
+the interface.  IMHO, the interface in <span class="docutils literal">cgi</span> doesn't have
+particularly clean semantics anyway, and tacking yet another thing
+onto it won't help, and will just introduce yet another backwards
+compatibility issue.</p>
+<p>Personally, while I always use a function to make multi-select-fields
+into lists, it's almost always a bug if I get a list when I didn't
+expect it, and I'd rather have it raise an error than throw values
+away.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 03 Dec 2001</p>
+</div>
+<div class="section" id="make-webkit-wingide-friendly">
+<h1>Make <a class="reference external" href="webkit.html">WebKit</a> <a class="reference external" href="http://wingware.com/products">WingIDE</a>-friendly</h1>
+<p>After making 2 enhancements to <a class="reference external" href="webkit.html">WebKit</a>, then we will probably be able
+to debug our persistent web apps in a graphic environment like
+<a class="reference external" href="http://wingware.com/products">WingIDE</a>.</p>
+<ul class="simple">
+<li><p>Provide a SequentialAppServer that is not multi-threaded.</p></li>
+<li><p>Provide for reloading of <em>any</em> modified modules prior to serving a request.</p></li>
+</ul>
+<p>In fact, this will be my highest priority after the 0.6 release, as it
+could faciliate faster development of both Webware and the sites built
+with it.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 03 Nov 2001</p>
+<ul class="simple">
+<li><p>This should be fairly straightforward using the
+<a class="reference external" href="webwareexprefactoring.html">WebwareExpRefactoring</a> code I've been working on.  I've already
+factored all the threaded stuff out of the AppServerClass so all
+that we would need to do is write a simple socket connection
+dispatch class that doesn't use threads.</p></li>
+<li><p>Is this even possible??  Are you thinking of this in terms of a
+non-persistent AppServer that works like OneShot?</p></li>
+</ul>
+<p>-- TavisRudd - 05 Nov 2001</p>
+<p>UPDATE: I've completed step 1 from above.  SessionStore still has a
+worker thread for managing session expiries, but I think it shouldn't
+be a problem.  I've done some more looking into step 2 and don't think
+it is possible without restarting the <a class="reference external" href="appserver.html">AppServer</a> completely.  Modules
+can be reloaded, but anything that has been imported from them will
+not be reloaded.  In terms of debugging, a complete restart would make
+sense any way.  -- TavisRudd - 23 Nov 2001</p>
+</div>
+<div class="section" id="roll-comkit-s-functionality-directly-into-the-appserver">
+<h1>Roll COMKit's functionality directly into the <a class="reference external" href="appserver.html">AppServer</a></h1>
+<p>N/C
+-- TavisRudd - 31 Oct 2001</p>
+</div>
+<div class="section" id="middlekit-support-for-postgresql-and-oracle">
+<h1><a class="reference external" href="middlekit.html">MiddleKit</a> support for <a class="reference external" href="http://www.postgresql.org">PostgreSQL_</a> and Oracle</h1>
+<p>Both databases are as close as one can get to Open Source/Proprietary
+twins. They feature multi-versioning concurrency control, which means
+that readers never block writers and writers never block
+readers. Performance under concurrent access to data is far superior
+to databases that use table or row level locking. That both support
+transactions with rollback, triggers, etc. and are fully ACID
+compliant means great safety and an easier sale into corporate IT
+shops. Refer to <a class="reference external" href="http://www.zend.com/zend/art/databases.php">http://www.zend.com/zend/art/databases.php</a> for example
+benchmarks.</p>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 31 Oct 2001</p>
+</div>
+<div class="section" id="out-of-box-support-for-pooled-persistent-db-connections">
+<h1><a class="toc-backref" href="#id14">Out-of-box support for pooled, persistent DB connections</a></h1>
+<p>Webware would be more immediately useful if it had out-of-box support
+for simultaneous access to established databases like Oracle, DB2,
+PostgreSQL, etc. using pooled, persistent connections. This would
+allow Webware to be used as a front-end to traditionally designed (as
+in non-object-oriented, non-MiddleKit-style) schema. I know there's a
+patch for this out there, but it does not seem to have made its way
+into the CVS, nor has it solidified into some kind of plug-in or kit.</p>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 1 Nov 2001</p>
+<p>(MiscUtils.DBPool provides something like this -- <a class="reference external" href="ianbicking.html">IanBicking</a> - 02 Nov
+2001)</p>
+<p>Sort of... to be truly useful, pooling needs to be part of
+Application.py as proposed by Ken LaLonde <a class="reference external" href="http://www.geocrawler.com/archives/3/3854/2001/10/150/6894323/">here</a>. Some prefer it to be
+a SitePage method, so we need to figure out how to accomodate both
+camps.  -- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 05 Nov 2001</p>
+<p>Would it be possible to integrate other database pooling systems into
+Webware? Here's <a class="reference external" href="http://www.vex.net/parnassus/apyllo.py/973100124.928187596">one</a> I found on Parnassus!  -- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 08 Nov
+2001</p>
+<p>Another system to consider for integration with Webware is SQL
+Relay. From the website: SQL Relay is a persistent database
+connection pooling, proxying and load balancing system for Unix and
+Linux supporting ODBC, Oracle, MySQL, mSQL, PostgreSQL, Sybase, MS SQL
+Server, IBM DB2, Interbase, Lago and SQLite with APIs for C, C++,
+Perl, Perl-DBD, Python, Python-DB, Zope, PHP, Ruby, Ruby-DBD and Java,
+command line clients, a GUI configuration tool and extensive
+documentation. The APIs support advanced database operations such as
+bind variables, multi-row fetches, client side result set caching and
+suspended transactions. It is ideal for speeding up database-driven
+web-based applications, accessing databases from unsupported
+platforms, migrating between databases, distributing access to
+replicated databases and throttling database access.</p>
+<p>-- DanielClark - 31 Jul 2002</p>
+</div>
+<div class="section" id="browserdetection">
+<h1><a class="reference internal" href="#browserdetection">BrowserDetection</a></h1>
+<p>There should be a standard module for doing browser detection.
+There's probably good PHP code to copy for this.  It should have
+facilities for adding your own semantic browser-capability tests (for
+instance, you should be able to ask, &quot;can the user's browser do X?&quot;
+instead of just &quot;what browser is it&quot;, and then you can add the test
+for what browser does what elsewhere (and grow that definition with
+increased testing)</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 06 Nov 2001</p>
+</div>
+<div class="section" id="spacesnottabs">
+<h1><a class="reference external" href="spacesnottabs.html">SpacesNotTabs</a></h1>
+<p>(a more extended discussion of this issue as it arises from the
+<a class="reference external" href="http://webware.sourceforge.net/Webware/Docs/StyleGuidelines.html">WebwareStyleGuidelines</a>.  In the meantime, check out <a class="reference external" href="copingwithtabs.html">CopingWithTabs</a>)</p>
+</div>
+<div class="section" id="urldecoding">
+<h1><a class="reference external" href="urldecoding.html">UrlDecoding</a></h1>
+<p>(extended ideas on enhancing Webware's URL decoding)</p>
+</div>
+<div class="section" id="ftp-serving">
+<h1><a class="toc-backref" href="#id18">FTP Serving</a></h1>
+<p>It would be nice if Webware could dynamically serve files over FTP,
+analagous to HTTP (i.e., fully dynamic).  More powerful with</p>
+<p><a class="reference external" href="urldecoding.html">UrlDecoding</a> (since FTP doesn't have GET variables).  <a class="reference external" href="http://www.nightmare.com/medusa/">Medusa</a>
+implements this protocol, so maybe some of the code can be ripped from
+there. -- <a class="reference external" href="ianbicking.html">IanBicking</a> - 06 Nov 2001</p>
+</div>
+<div class="section" id="webdav">
+<h1><a class="reference external" href="webdav.html">WebDAV</a></h1>
+<p>Interface should look like FTP, since the interface is fairly
+equivalent.  I think FTP is a better (simpler) place to start. --
+<a class="reference external" href="ianbicking.html">IanBicking</a> - 06 Nov 2001</p>
+</div>
+<div class="section" id="seamlessuserhandling">
+<h1><a class="reference internal" href="#seamlessuserhandling">SeamlessUserHandling</a></h1>
+<p>A flexible and seamless framework for handling authentication and
+authorization is essential for all the ideas listed on the <a class="reference external" href="appideas.html">AppIdeas</a>
+page. It will also benefit users creating their own applications and
+serve as the foundation for the <a class="reference external" href="webwareusermanager.html">WebwareUserManager</a> application.  See
+<a class="reference external" href="userhandlingproj.html">UserHandlingProj</a> for more discussion.</p>
+</div>
+<div class="section" id="outputcaching">
+<h1><a class="reference internal" href="#outputcaching">OutputCaching</a></h1>
+<p>It would be nice if you could cache servlet output.  This should also
+include caching by parameters -- for instance, cache pages that have
+identicle GET variables, or add on session ID, or add on browser type,
+etc.  Essentially the cache should be based on two items: the servlet
+URI and a key that would be generated by the Servlet (or
+ServletFactory?) -- that key could include whatever information is
+important.</p>
+<p>Of course, with customizable times and the potential to expire these
+caches prematurely.</p>
+<p>This is also a feature request for <a class="reference external" href="cheetah.html">Cheetah</a> , and for caching of
+parts of a page it would be essential.  However, caching the entire
+output should be well suited to Webware itself.  If this caching
+mechanism was generalized and exposed, servlets could cache portions
+in an ad hoc manner as well.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 27 Nov 2001</p>
+</div>
+<div class="section" id="gzipcompression">
+<h1><a class="reference internal" href="#gzipcompression">GzipCompression</a></h1>
+<p>Webware should compress non-streamed output (and maybe streamed
+output) with gzip when possible (which is at least 95% of the time
+with current browsers).  This shouldn't compress already-compressed
+formats, like most image files.  This is a large saving for most sites
+where bandwidth is at a greater premium than processing power.  The
+implementation of this should be quite easy.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 27 Nov 2001</p>
+<p>This result is easily achieved outside of WebWare by using Apache's mod_deflate
+module.  This is very quick to install, Google it to find directions.
+This presumes you're using Python Server Pages / an AppServer.
+-- Kevin J. Rice <a class="reference external" href="justanyone.html">justanyone</a> - 4 October 2006</p>
+</div>
+<div class="section" id="scalabilityenhancements">
+<h1><a class="reference internal" href="#scalabilityenhancements">ScalabilityEnhancements</a></h1>
+<p>My favorite proposal to improve Webware's scalability is:</p>
+<ul class="simple">
+<li><p>Allow multiple app servers to run on different machines.  Each of
+these app servers would be given a unique &quot;instance name&quot; specified
+in a config file.  Session IDs would have the instance name encoded
+into the session ID, for example an instance called Instance1 would
+create session IDs such as &quot;Instance1_433048934&quot;.</p></li>
+<li><p>Add options for the adapters to distribute requests to multiple
+appserver back-ends.  Requests without a session ID would be
+distributed randomly (or in round-robin fashion) to the different
+appservers.  Requests with a session ID would be directed to the
+particular appserver instance that originated the session, as
+determined by extracting the instance name from the session ID.
+This would be fairly easy to implement in the Python-based adapters
+-- i.e. the CGI adapter and the mod_python adapter.  If the strategy
+proves useful with those adapters, then it could be extended into
+the mod_webkit adapter which would require more work.</p></li>
+<li><p>The advantage of this strategy is that all session data is localized
+to a particular appserver.  This is potentially much more scalable
+than having to dedicate a central database server to store session
+data.</p></li>
+</ul>
+<p>Now you can have as many front-end web servers as you want,
+load-balanced using any off-the-shelf load balancing solution.  And
+you can have as many back-end Webware appservers as you need.</p>
+<p>-- <a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 03 Dec 2001</p>
+<p><em>UPDATE</em>: In release 0.7 I've implemented a setting <a class="reference external" href="sessionprefix.html">SessionPrefix</a>
+which can be used to add a machine-specific prefix to the session ID.
+This can potentially be combined with some mod_rewrite magic to
+achieve load balancing with session affinity in a slightly different
+way than I've described above, but so far it's just an idea; I haven't
+tried it.  When I have the time I'll actually test the technique and
+write up a description of how to do it.  If anyone's curious to try
+out the technique in the meantime, let me know and I'll try to
+describe what I had in mind.</p>
+<p>-- <a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 14 Mar 2002</p>
+</div>
+<div class="section" id="persistant-connections-from-adapters">
+<h1><a class="reference internal" href="#persistant-connections-from-adapters">Persistant Connections from adapters</a></h1>
+<p>CGI adapters capable of opening and pooling socket connections back to
+the application server should do so.  Currently the WebKit.cgi,
+WKCgi.exe, and the ISAPI version open a new socket for each
+connection.</p>
+<p>In the case where the webserver is outside of the firewall and the
+application server is inside this will give a measurable performance
+increase.</p>
+<p>-- AaronHeld - 12 Jan 2002</p>
+</div>
+<div class="section" id="roadmap">
+<h1><a class="reference internal" href="#roadmap">RoadMap</a></h1>
+<p>So I read about this WebWare thing.  Looks cool.  So I download the
+tarball, read the README, run the install.py, and expect magic to
+happen.  Hmm, nothing.  Okay, so I skim the online docs.  I don't see
+it until my second read of the Overview: <em>Most people start with
+WebKit, which is the Webware application server</em> A few clicks later
+and I finally land in the install guide for WebKit.</p>
+<p>My suggestion is that, coming into this in complete ignorance, you
+might want to provide a <a class="reference internal" href="#roadmap">RoadMap</a> straight up, front and center.  As
+in: install the thing, run the app server, which web server do you
+have? for web server foo, do this, and go!</p>
+<p>Just a little nag, and maybe it's just me.  I like to see the thing go
+before I decide it's worth spending my time delving into docs (which
+admittedly wasn't long, but I'm a fast reader), and as simple as it
+finally was for me to get the thing running, it should be in my face
+from the get-go.</p>
+<p>-- LesOrchard - 25 Jan 2002</p>
+</div>
+<div class="section" id="add-browser-cancel-hooks">
+<h1><a class="toc-backref" href="#id26">Add Browser Cancel Hooks</a></h1>
+<p>I want to be able to trap when a browser cancels a transaction,
+without having to dig into ThreadedAppServer.TASASStreamOut and
+otherwise hack around :)</p>
+<p>Basically, I have (potentially) long-running processes that acquire an
+RLock, but I need to release that RLock if the process cancels. Right
+now, I have no way to interrupt that process... the servlet continues
+chugging in the background, even though the browser's stopped
+listening.</p>
+<p>I've seen the issue addressed in a mailing list posting, but couldn't
+find anything more concrete than Geoff's suggestion about trapping the
+EPIPE exception in TASASStreamOut.flush.</p>
+<p>-- <a class="reference external" href="tripplilley.html">TrippLilley</a> - 01 Mar 2002</p>
+</div>
+<div class="section" id="faster-deletion-in-middlekit">
+<h1>Faster Deletion in <a class="reference external" href="middlekit.html">MiddleKit</a></h1>
+<p>MiddleKit's deletion code currently is very slow in the way that it
+checks for other objects that point to an object being deleted.
+Basically, it pulls in entire tables instead of doing smarter SQL
+SELECTs to bring in only rows that point to the object being deleted.</p>
+<p>-- <a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 04 Mar 2002</p>
+</div>
+<div class="section" id="define-multiple-methods-in-psp">
+<h1><a class="toc-backref" href="#id28">Define Multiple Methods in PSP</a></h1>
+<p>PSP currently only allows you to define a single method in a PSP file
+using PSP syntax.  If you need to define additional methods, you have
+to use the psp:method tag which only supports Python syntax.  It would
+be nice if you could define multiple methods using PSP syntax.</p>
+<p>There is a hackish way to do this using Python 2.1's nested scopes,
+but it is a bit limited.  See <a class="reference external" href="methodsinpspsyntax.html">MethodsInPSPSyntax</a> for details.</p>
+<p>-- <a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 14 Mar 2002</p>
+</div>
+<div class="section" id="auto-generate-better-docs-with-pydoc">
+<h1><a class="toc-backref" href="#id29">Auto-Generate Better Docs With pydoc</a></h1>
+<p>When you install Webware with &quot;python install.py&quot; it automatically
+generates some class hierarchy documentation and some summary
+documentation of all the classes.  But it doesn't include enough
+information to be truly useful -- most notably, it doesn't include
+docstrings.  We should improve this, perhaps by using pydoc in the
+install script.</p>
+<p>It was reported on the Webware mailing list that pydoc doesn't
+actually work on Webware's source files for some reason.</p>
+<p>-- <a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 10 Apr 2002</p>
+</div>
+<div class="section" id="serversidepath">
+<h1><a class="toc-backref" href="#id30">serverSidePath()</a></h1>
+<p>A serverSidePath_() function that works during servlet construction
+(i.e., in __init__).</p>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 12 Sep 2002</p>
+</div>
+<div class="section" id="packaging-enhancements">
+<h1><a class="toc-backref" href="#id31">Packaging Enhancements</a></h1>
+<p>Packaging enhancements would be very welcome, especially for those of us who
+would love to see a Debian package.</p>
+<p>-- <a class="reference external" href="chadwalstrom.html">ChadWalstrom</a> - 6 Jan 2005</p>
+<div class="section" id="distutils-packaging">
+<h2><a class="reference external" href="distutils.html">distutils</a> Packaging</h2>
+<p>There are numerous advantages to using distutils:</p>
+<ul class="simple">
+<li><p>users don't need to maintain a local copy of all the modules.</p></li>
+<li><p>the core modules can be used easily by other frameworks</p></li>
+<li><p>it can be packaged for Debian and other OS distros.</p></li>
+<li><p>installs on Windows now make use of the GUI installer.</p></li>
+<li><p>distutils offers many advanced packaging facilities!</p></li>
+<li><p>distutils is the Pythonic way to do installs.</p></li>
+</ul>
+<p>-- TavisRudd - 31 Oct 2001</p>
+</div>
+<div class="section" id="deb-s-and-rpm-s">
+<h2><a class="toc-backref" href="#id33">.deb's and .rpm's</a></h2>
+<p>How about .deb's and .rpm's?</p>
+<p>-- <a class="reference external" href="pauljimenez.html">PaulJimenez</a> - 02 Jul 2002</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 21 Nov 2006</p>
+
+</div>
+</body>
+</html>

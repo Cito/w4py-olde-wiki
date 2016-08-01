@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Running Webware as User Webware</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="running-webware-as-user-webware">
+<h1 class="title">Running Webware as User Webware</h1>
+
+<p><strong>How to make Webware run under its own user account ('webware')</strong></p>
+<p>Of course, you don't actually &quot;run Webware&quot;.  You run the AppServer.py
+daemon in WebKit.</p>
+<p>The following steps are for UNIX-like operating systems.  (Somebody
+else please add the steps for NT and other OSes.)</p>
+<ul>
+<li><p>Create the user (&quot;useradd webware&quot; or edit /etc/passwd, etc).  Since
+the user shouldn't log in, give them /bin/false for a login shell
+and no home directory.  Change the password in /etc/passwd or
+/etc/shadow to 'x' or precede it with '!' to prevent them from
+logging in.  The user can be in group 'nogroup', or you can create a
+'webware' group if your OS normally has a separate group for each
+user.</p></li>
+<li><p>Set the permissions of your Webware/ files according to which files
+the AppServer must read and/or write while running.  The stricter
+the better (e.g., it must write log files, but it should not write
+to config files or AppServer.py).  Add write permission to any
+directory it must create files in.</p></li>
+<li><p>In your startup script, you can use &lt;pre&gt; su -c COMMAND webware
+&lt;/pre&gt; to run a command as the webware user. The WebKit/webkit init
+script already has the appropriate line for this. Uncomment it and
+comment out the line above it, which runs the app server as
+root. Both lines are clearly labeled with a preceding comment:</p>
+<pre class="literal-block"># run as root:
+$LAUNCH &gt;&gt; $LOG 2&gt;&amp;1 &amp;
+# run as a user named 'webware':
+#su -c &quot;$LAUNCH&quot; webware &gt;&gt; $LOG 2&gt;&amp;1 &amp;;</pre>
+</li>
+</ul>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 02 Nov 2001
+-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 08 Nov 2001</p>
+<p>Is it really wise to run AppServer as <span class="docutils literal">root</span>?</p>
+<p>The advice about disabling login shells and home directories is quite
+important, but how does one set up the <span class="docutils literal">webware</span> user's environment?
+I have seen nasty cases of shell resource files and moving home
+directories, which would be avoided here, but how and where should the
+environment be set up?</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 08 Nov 2001</p>
+<p>Don't forget to make sure that the user you are going to run it as
+owns all of the webware files and can write new files in the webware
+directory.</p>
+<p>so do a:</p>
+<pre class="literal-block">chown 'webwareuser':'webwaregroup' * -R</pre>
+<p>in the Webware directory</p>
+<p>(Thanks to Jay Love)</p>
+<p>-- MattFeifarek - 14 Feb 2002</p>
+<p>That's a bit dangerous!  The user running WebKit should only have
+write access to those directories that it absolutely must be able to
+write to: Webware/WebKit/Cache, Webware/WebKit/Logs,
+Webware/WebKit/Sessions. It will also need write access to
+Webware/WebKit so that appserverpid.txt and address.txt can be written
+(this is really the wrong place for these, IMHO).  The webware user
+should NOT own those directories, but should be given write
+permission. -- TavisRudd - 01 Mar 2002</p>
+<p>And if you use the highly-recommended <a class="reference external" href="makeappworkdir.html">MakeAppWorkDir</a>, you don't need
+to write anything into the Webware directories.  You will have to make
+some of the directories in your working dir writeable though.  --
+<a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 04 Mar 2002</p>
+<p>The trick with <span class="docutils literal">/bin/false</span> as the user's login shell didn't seem to
+work for me on a recent Red Hat Linux. Doing an <span class="docutils literal">su <span class="pre">-c</span></span> didn't cause
+the command to be executed. -- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 25 Mar 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 03 Jul 2004</p>
+
+</div>
+</body>
+</html>

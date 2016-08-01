@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>LoggingKit</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="loggingkit">
+<h1 class="title">LoggingKit</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#what-is-it" id="id1">What is it?</a></p></li>
+<li><p><a class="reference internal" href="#where-can-i-find-it" id="id2">Where can I find it?</a></p></li>
+<li><p><a class="reference internal" href="#how-do-i-use-it" id="id3">How do I use it?</a></p></li>
+</ul>
+</div>
+<div class="section" id="what-is-it">
+<h1><a class="toc-backref" href="#id1">What is it?</a></h1>
+<p>LoggingKit provides an flexible approach to include various kinds of
+log messages in your applications.</p>
+</div>
+<div class="section" id="where-can-i-find-it">
+<h1><a class="toc-backref" href="#id2">Where can I find it?</a></h1>
+<p>You can get the latest version of LoggingKit at: <a class="reference external" href="http://www.scourbase.com/LoggingKit/">http://www.scourbase.com/LoggingKit/</a></p>
+</div>
+<div class="section" id="how-do-i-use-it">
+<h1><a class="toc-backref" href="#id3">How do I use it?</a></h1>
+<ol class="arabic">
+<li><p>Include log messages in your application.  Example:</p>
+<pre class="literal-block">from LoggingKit import Logger
+
+class LogTest:
+    def __init__(self):
+        self.logHandler = Logger.logHandler(self.__class__, 'TestCategory')
+
+    def doSomething(self):
+        self.logHandler.info('The weather seems to be fine')
+        self.logHandler.trace('entered doSomething method')</pre>
+</li>
+</ol>
+<p>There are methods for every possible LogLevel (INFO, TRACE, WARN,
+ERROR, FATAL).</p>
+<ol class="arabic simple" start="2">
+<li><p>Capture those messages</p></li>
+</ol>
+<p>LoggingKit uses the concept of &lt;nop&gt;LogListeners with respond to
+incoming log messages.</p>
+<p>Say you want to save all messages which occur in the category
+'TestCategory' and are in the LogLevel INFO into the file
+/var/log/TestCategoryInfo.log and discard all TRACE messages.</p>
+<p>The following Logger.config will do it:</p>
+<pre class="literal-block">{'LogListener': [{'listenerName': 'InfoFile',
+                  'listenerType': 'LoggingKit.FileListener#DirectToFileListener',
+                  'listenerConfig': {'format': '%(date)s %(time)s - %(level)s - %(category)s    %(msg)s\n',
+                  'destination': '/var/log/TestCategoryInfo.log',
+                                    },
+                  'filter': [{'type': 'category',
+                              'criteria': ['TestCategory',]}]
+                             {'type': 'level',
+                              'criteria': ['INFO',]}]
+                 },
+                ]
+}</pre>
+<p>-- SaschaMatzke - 16 Nov 2001</p>
+<p>I realized that this package wasn't available a long time (I somehow
+f***ed up the URL). If anyone is still interested in this piece of
+software it can be found at: <a class="reference external" href="http://www.scourbase.com/LoggingKit/">http://www.scourbase.com/LoggingKit/</a></p>
+<p>-- SaschaMatzke - 03 Feb 2003 &lt;br /&gt;</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

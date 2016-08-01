@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Postgres OO Features</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="postgres-oo-features">
+<h1 class="title">Postgres OO Features</h1>
+
+<p>Postgres advertises &quot;object-oriented&quot; features which seem to include
+table inheritance and OIDs (eg, references to objects).</p>
+<p>AFAIK table inheritance seems to work fine and saves you some typing
+in that you can modify a super class rather than all the
+subclasses. (I'm not sure what the performance implications are
+compared to the horizontal mapping approach done by MiddleKit.)</p>
+<p>However, OIDs seem rather useless. Suppose you have a class hierarchy
+that includes Thing, Shape, Circle(Shape) and Rectangle(Shape). If
+Thing.shape were to hold an OID to a Shape, I know of no way for
+Postgres to return the correct shape. Instead, I believe you have to
+SELECT on all subclasses of Shape (in this case Circle and Rectangle)
+to find it. You also have to expand thoses SELECTs as new Shape
+subclasses are created.</p>
+<ul class="simple">
+<li><p>Not so!  Actually, PostgreSQL does <strong>exactly</strong> what you want: in
+PostgreSQL v7.1 and up, SELECT automatically includes all subclass
+tables unless the keyword ONLY is used to prevent inherited table
+access (see p. 145 of Bruce Momjian's book &quot;PostgreSQL&quot;).  Since I
+am a PostgreSQL newbie, I did a little experiment to verify this,
+and found that this even applies to OID's, which (although they are
+&quot;invisible&quot; in the sense of not being returned unless specifically
+asked for in a SELECT) can be included in a WHERE clause just like
+any other attribute.  Therefore, in your example above, if
+Thing.shape holds an OID to a Shape, you simply SELECT * from Shape
+WHERE OID = [Thing.shape.oid], and you'd automatically get the
+correct shape.  (OID's are unique within a PostgreSQL database.)  --
+<a class="reference external" href="stevewaterbury.html">SteveWaterbury</a> - 17 Apr 2002</p></li>
+</ul>
+<p>This ruins the idea of object references and pointing to base classes
+which is something I would consider fundamental to any
+&quot;object-oriented&quot; system.</p>
+<p>I also believe that Postgres does not provide lists and dictionaries
+in the same convenient matter as what OO developers (and especially
+Python developers) are accustomed to.</p>
+<p>I have scanned the docs and posed this question to Postgres users but
+not come up with a real answer.</p>
+<p>If you want real OO features in your database I think you either have
+to use a framework like MiddleKit to &quot;fake it&quot; in the RDBMS or use a
+bona fide OODB such as ZODB.</p>
+<p>(Note that even if the OO features turn out to be fairly useless, that
+makes Postgres no worse than any other SQL database. eg, I wouldn't
+suggest that someone refrain from Postgres given the issues I raise.)</p>
+<p>See also: <a class="reference external" href="middlekit.html">MiddleKit</a>, <a class="reference external" href="postgresql.html">PostgreSQL</a>, <a class="reference external" href="databaseintegration.html">DatabaseIntegration</a></p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p>
+<hr class="docutils" />
+<p>I think the OO features in PostgreSQL aren't quite &quot;there&quot; yet. There
+is a discussion about this <a class="reference external" href="http://openacs.org/bboard/q-and-a-fetch-msg.tcl?msg_id=0000jD&amp;topic_id=12&amp;topic=OpenACS%204%2e0%20Design">here</a> and <a class="reference external" href="http://openacs.org/bboard/q-and-a-fetch-msg.tcl?msg_id=00012g&amp;topic_id=12&amp;topic=OpenACS%204%2e0%20Design">more</a>.</p>
+<p>I think the use of any RDBMS-specific feature (e.g., PostgreSQL's OO,
+if it actually worked well) might not be a good idea since it would
+effectively tie something like MiddleKit to the RDBMS.</p>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> 31 Dec 2001</p>
+<hr class="docutils" />
+<p>No, MiddleKit uses specific classes for the different types of
+databases, eg, MySQLObjectStore, MSSQLObjectStore, etc. which all
+inherit from SQLObjectStore (which has most of what is needed). Each
+specific class is free to take advantage of proprietary features to
+optimize the underlying schema while still keeping the Python API the
+same.</p>
+<p>Although, these specific classes <em>could</em> also provide proprietary
+features. Of course, if a user takes advantage of them, then yes, they
+would be tied to the RDBMS. But I think that should be their choice in
+the same way Python allows you to write platform specific or
+independent code as you see fit.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p>
+<hr class="docutils" />
+<p><em>MiddleKit uses specific classes for the different types of databases,
+eg, MySQLObjectStore, MSSQLObjectStore, etc.</em></p>
+<p>Oh yes, I forgot about this... I was thinking of the OpenACS
+situation, where there a different level of abstraction used.</p>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 31 Dec 2001</p>
+<hr class="docutils" />
+<p>I don't think there's any concensus on what OO features in a database
+should look like -- unlike relational calculous, there isn't a
+formalism for OO -- there isn't even anything close to concensus about
+what OO is or what it should look like in programming languages, and
+databases are a step removed.</p>
+<p>Dictionaries and lists are really fundamental parts of the database --
+each table is a dictionary, and rows themselves are sometimes referred
+to as &quot;tuples&quot; -- vaguely list like, though the table is more often
+used for a list (though I always find ordering rows to be awkward).
+Providing them as types in the database would be a classic non-normal
+feature (though convenient at times).  In the cases when the type is
+opaque and it's not necessary for the database to understand the
+list/dictionary, you can generally find a way -- Pickle, multiple
+columns, SET type, etc.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 08 Mar 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

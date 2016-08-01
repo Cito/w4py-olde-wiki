@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Subversion Repository Access</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="subversion-repository-access">
+<h1 class="title">Subversion Repository Access</h1>
+
+<p>As of March 2005, Webware source code is stored in Subversion at
+<span class="docutils literal">svn.w4py.org</span>, instead of at SourceForge.net</p>
+<p>The Subversion repository can be viewed online with your web browser:</p>
+<p><a class="reference external" href="http://svn.w4py.org/">http://svn.w4py.org/</a></p>
+<p>Anonymous SVN access is available to anyone. The repository can be
+accessed at svn.w4py.org or svn.webwareforpython.org, and it's set up
+for both native SVN and WebDAV access:</p>
+<pre class="literal-block">% svn checkout svn://svn.w4py.org/Webware/trunk Webware
+
+% svn checkout http://svn.w4py.org/Webware/trunk Webware</pre>
+<p>...but the password file for write access via <span class="docutils literal"><span class="pre">svn://</span></span> is not the
+same as <span class="docutils literal"><span class="pre">http://</span></span> access so unless you request otherwise, you're
+username will be entered in the WebDAV password file.</p>
+<p><strong>Note:</strong> the subversion repository is large and will become larger;
+it is best to check out just a portion of the repository.  To see what
+projects are in the server do:</p>
+<pre class="literal-block">% svn ls http://svn.w4py.org</pre>
+<p>Or deeper trees, like:</p>
+<pre class="literal-block">% svn ls http://svn.w4py.org/Webware/tags</pre>
+<p>And then check out a single tree.</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 11 Sep 2005</p>
+
+</div>
+</body>
+</html>

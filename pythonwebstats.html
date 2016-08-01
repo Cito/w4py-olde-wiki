@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Python Web Stats</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="python-web-stats">
+<h1 class="title">Python Web Stats</h1>
+
+<p>See also Sisynala: <a class="reference external" href="http://mithrandr.moria.org/code/sisynala/">http://mithrandr.moria.org/code/sisynala/</a> , written in Python.</p>
+<p>I've been trying to find a good OpenSource web log analysis tool. Here
+are tools I found so far:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://awstats.sourceforge.net/">AWStats</a> -- written in Perl</p></li>
+<li><p><a class="reference external" href="http://www.statslab.cam.ac.uk/~sret1/analog/">Analog</a> -- written in C</p></li>
+<li><p><a class="reference external" href="http://www.mrunix.net/webalizer/">Webalizer</a> -- written in C</p></li>
+</ul>
+<p>IMO, all of them are very inflexible and completely tied to their web
+interfaces (which suck for the most part). None of them provide a
+programer's interface, which is what I want.</p>
+<p>Here's the details of what I'm looking for:</p>
+<ul class="simple">
+<li><p>must be OpenSource, preferably with a Python / BSD or LGPL style
+license rather than GPL &lt;BR&gt; (well, not everyone necessarily agrees
+with that: I consider The GPL a good thing -- Main.IanBicking &lt;BR&gt;I
+agree for applications, but I'm thinking about something that can be
+used as a library without dictating the license terms of the
+applications that use it. --TavisRudd</p></li>
+</ul>
+<p>Of course, the GPL only affects proprietary programs that are
+distributed, so I don't see a big problem...? I wouldn't be happy with
+people making my work proprietary when I gave it to them in good
+faith, and that's exactly what the GPL prevents --<a class="reference external" href="ianbicking.html">IanBicking</a>)</p>
+<ul class="simple">
+<li><p>must provide a programmer's interface, not just a web interface</p></li>
+<li><p>must be completely portable</p></li>
+<li><p>must be easy to install and configure</p></li>
+<li><p>must work with Apache combined log format + IIS format</p>
+<ul>
+<li><p>Actually, IIS uses the W3C logfile format (<a class="reference external" href="http://www.w3.org/TR/WD-logfile.html">http://www.w3.org/TR/WD-logfile.html</a>), so W3C compliance would do. --ChristianPackmann</p></li>
+</ul>
+</li>
+<li><p>should be able to work with the Common Log Format</p></li>
+<li><p>should be possible to write new parser modules for new log formats</p></li>
+<li><p>fast parsing of the log-files</p></li>
+<li><p>preferably written in Python, or providing a Python interface</p></li>
+<li><p>provides reverse DNS lookup</p></li>
+<li><p>process log files split by load balancing mechanisms or log rotation</p></li>
+<li><p>reports:</p>
+<ul>
+<li><p>pages views</p></li>
+<li><p>unique visits</p></li>
+<li><p>unique human visits</p></li>
+<li><p>referrers</p></li>
+<li><p>authentificated users</p></li>
+<li><p>robots (+ can filter them out)</p></li>
+<li><p>file mime types</p></li>
+<li><p>browsers</p></li>
+<li><p>os</p></li>
+<li><p>http errors</p></li>
+<li><p>404 errors,</p></li>
+<li><p>kewords/phrases from search engines</p></li>
+<li><p>entry pages</p></li>
+<li><p>exit pages</p></li>
+<li><p>domains/countries,</p></li>
+</ul>
+</li>
+<li><p>allows filtering by anything: IP address, mime type, domain, whatever</p></li>
+<li><p>can provide the following summaries:</p>
+<ul>
+<li><p>hourly, daily, weekly, monthly, yearly summary of all logged variables</p></li>
+<li><p>ranked (highest-to-lowest + vice versa) listings of all logged variables</p></li>
+<li><p>event-based summary periods -- e.g., you'd want to reset logs
+after doing a lot of search engine submittal, which may not be
+aligned with a weekly or monthly summary, but you'd like grouped
+together in a larger unit than daily.</p></li>
+</ul>
+</li>
+<li><p>can use cookie vars to trace and summarize traffic flows (i.e. userid cookies) [see mod_session]</p></li>
+</ul>
+<p>Flexibility and extensibility matter more to me than raw performance.</p>
+<p>Unless a package that meets these requirements exists, I'm proposing
+that we start a project to build one.</p>
+<p>-- TavisRudd - 03 Nov 2001</p>
+<hr class="docutils" />
+<p><em>Implemention thoughts</em></p>
+<ul class="simple">
+<li><p>the parsing and log reading classes should be completely separate from the rest of the classes</p></li>
+<li><p>some (configurable) manager to see (a) where you left off parsing last time and (b) where all possible logfiles are.  This should deal both with a logfile growing since the last parsing, and with logfile rotation.</p></li>
+<li><p>the raw log data should be parsed and then stored in a simple DBM style database (there may be faster formats, depending on how the data is queried -- usually I imagine it would be sequentially based on a start/stop time)</p></li>
+<li><p>all derived data should calculated from the DBM store and in turn stored in a DBM format</p></li>
+<li><p>the dates should be handled using mx.DateTime</p></li>
+<li><p>all config settings should be managed using the SettingsManager API used in Cheetah</p></li>
+</ul>
+<p>Rough Class layout:</p>
+<ul class="simple">
+<li><p>SettingsManager</p></li>
+<li><p>Parser &amp; associated classes for getting raw data out of the logs</p></li>
+<li><p>Storage classes for getting data in and out of the internal data store</p></li>
+<li><p>Classes for calculating all the basic derived data (reverse dns lookup, etc.)</p></li>
+<li><p>Classes for calculating the advanced derived data and summaries --
+with some sort of caching mechanism for storing the results.</p></li>
+<li><p>Interface classes for putting it all together</p></li>
+</ul>
+<p>-- TavisRudd - 03 Nov 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 05 Jul 2008</p>
+
+</div>
+</body>
+</html>

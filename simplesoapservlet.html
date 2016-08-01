@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Simple SOAP Servlet</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="simple-soap-servlet">
+<h1 class="title">Simple SOAP Servlet</h1>
+
+<p>Simple SOAP Servlet</p>
+<pre class="literal-block">from WebKit.RPCServlet import RPCServlet
+import SOAPpy
+
+class SOAPServlet(RPCServlet):
+    def __init__(self):
+        RPCServlet.__init__(self)
+        self.encoding = 'UTF-8'
+
+    def respondToPost(self, transaction):
+        rawData = transaction.request().rawInput(rewind=True).read()
+        p, header, body, attrs = SOAPpy.parseSOAPRPC(rawData, 1, 1, 1)
+        methodName, args, kwargs, ns = p._name, p._aslist, p._asdict, p._ns
+
+        result = self.call(methodName, *args())
+
+        result = {&quot;Result&quot;: result}
+        resp = SOAPpy.buildSOAP(kw={'%sResponse' % methodName: result}, encoding=self.encoding)
+
+        self.sendOK('text/xml', resp, transaction, self.encoding)</pre>
+<p>Servlet Example</p>
+<pre class="literal-block">class soap(SOAPServlet):
+    def exposedMethods(self): return ['hello']
+
+    def hello(self, name):
+        return &quot;Hello %s&quot; % name</pre>
+<p>Working example</p>
+<pre class="literal-block">&gt;&gt;&gt; import SOAPpy
+&gt;&gt;&gt; server = SOAPpy.SOAPProxy(&quot;http://localhost/soap&quot;)
+&gt;&gt;&gt; print server.hello('whitekid')
+Hello whitekid
+&gt;&gt;&gt;</pre>
+<p>-- <a class="reference external" href="whitekid.html">whitekid</a></p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 04 May 2006</p>
+
+</div>
+</body>
+</html>

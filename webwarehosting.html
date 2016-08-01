@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware Hosting</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-hosting">
+<h1 class="title">Webware Hosting</h1>
+
+<p><em>What you need in a Host:</em></p>
+<p>You need Python installed, but you can do that yourself as long as you
+have a C compiler available.</p>
+<p>The real issue is being able to have long-running processes.  Most
+commercial hosts don't allow, or otherwise hinder long-running
+processes -- in Webware's case, the <a class="reference external" href="appserver.html">AppServer</a>.  Some hosts kill
+processes that run too long, so you'll want to ask about that.</p>
+<p>You also want mod_rewrite installed, as that's fairly important for
+cleaning up the URL and if you wanted to serve the root page from
+Webware (see <a class="reference external" href="modrewriterecipes.html">ModRewriteRecipes</a>).  You can control mod_rewrite from an
+.htaccess file.</p>
+<p>You'll be able to use the C-based CGI adapter, since you probably
+can't install mod_webkit.  But that should be fine.</p>
+<p>That pretty much covers it.  There isn't a list of hosts that support
+this.  Most do not, but I imagine there's a healthy minority who
+probably would.  If you find some, please post them here.  Some of the
+places that host Zope (but not necessarily as their primary business)
+may very well support Webware, as they are similar (from the host's
+perspective).</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 15 Dec 2001</p>
+<hr class="docutils" />
+<p><em>Hosts:</em></p>
+<p>Please list any hosts you have used Webware on, and any experiences
+you may have had.  Prices are also useful.</p>
+<p>Superb.net: I've used their SPS server, ~$80/mo for a virtual private
+server (looks like a dedicated server, but is actually shared).
+Reliability isn't as good as I'd like, but I have complete control
+over the environment.  Installing Webware is easy. -- <a class="reference external" href="ianbicking.html">IanBicking</a> - 15
+Dec 2001</p>
+<p>fionet.com: A german hoster. I am working regularly on their servers. They have Debian
+Linux and you can get python cgi and your own WebWare tree preinstalled as well as
+ssh access and mySQL. Its fine for complex projects and hosting prices
+that include a WebWare installation start at €25. They have no real home
+page but can be reached via mail to service[AT]fionet.com. --
+WikiGuest - 04 Dec 2004</p>
+<p>cornerhost.com: hosts zunzun.com, excellent personal support, very
+Python-friendly, mod_webkit installed for Apache which gives
+zunzun.com quite snappy response times, several different hosting
+plans, $500/yr is the one I use as it is literally unlimited in
+bandwidth, CPU usage, or disk space.  HIGHLY recommended.  -- James
+Phillips 16 March 2003</p>
+<p><a class="reference external" href="http://www.etria.com">Etria.com</a>: My company (along with Brian Skahan).  We offer Webware
+hosting via mod_webkit and Apache2.  Things are not setup yet, but if
+someone wants the service we will juggle our priorities to get it
+done.  See website for rates. -- TomVonSchwerdtner - 02 Apr 2003</p>
+<p><a class="reference external" href="http://python-hosting.com/">Python-Hosting.com</a>: One of the only hosts I've run across that
+explicitly offer <a class="reference external" href="http://python-hosting.com/webware">Webware hosting.</a></p>
+<p><a class="reference external" href="http://www.linode.com">linode.com</a> : Uses User Mode Linux. Root Access $20/mo gets you 1GB
+Disk Space, 64MB RAM, 25GB monthly transfer. Very nice setup.  --
+Randall Smith - 19 July 2003</p>
+<p><a class="reference external" href="http://python-hosting.us/">Python-Hosting.us</a>: For the latest and greatest python support.
+A turnkey python and <a class="reference external" href="http://python-hosting.us/webware/">webware-specific</a> solution -- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> -
+02 Jan 2004</p>
+<p><a class="reference external" href="http://www.web-hosting-url.com/virtual-dedicated-server-hosting.html">web-hosting-url.com</a>: Sphera Virtual Dedicated Server (VDS). Roll-your-own setup, very reliable... and the price is right!  -- Luc Chase - 1 July 2004</p>
+<p>Quantact.com: <a class="reference external" href="http://www.quantact.com/">http://www.quantact.com/</a>
+User Mode Linux VPS 3G Disk 64M Ram 20G Bandwidth $14.99 very configurable. Discounts for Open Source Developers. -- Tim Doyle - October 2004</p>
+<p><a class="reference external" href="http://openhosting.com">openhosting.com</a>: VPS for $27/month.  Run by the author of mod_python.  I haven't been using it very long, but so far so good.  -- Donovan Eastman - March 2005</p>
+<p><a class="reference external" href="http://www.anchor.net.au">http://www.anchor.net.au</a>: 10MB account on shared Linux server for $A198/year.  Good connectivity for Australian users.  I was able to set up a cut down WebKit 0.8.1 in 3MB of its space.   Allows CRON and ssh w/Python 2.2.  -- OliverBock - August 2005</p>
+<p><a class="reference external" href="http://www.grokthis.net/">GrokThis.net</a>: Not a VDS, its better.  Supporting CGI, FastCGI, and mod_python at reasonable rates.  Faster and more affordable than a VDS, with access to your own dedicated web service process and all of its configuration files.</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 02 Dec 2005</p>
+
+</div>
+</body>
+</html>

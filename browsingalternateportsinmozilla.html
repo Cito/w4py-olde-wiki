@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Browsing Alternate Ports in Mozilla</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="browsing-alternate-ports-in-mozilla">
+<h1 class="title">Browsing Alternate Ports in Mozilla</h1>
+
+<p>(This not exactly a Webware issue, but you may experience this in the
+course of using Webware.)</p>
+<p>On a LAN machine, I set my HTTP server to run on port 79. I could
+browse it with <a class="reference external" href="http://foo:79/">http://foo:79/</a> using the lynx, konqueror and opera
+browsers, but mozilla and galeon gave me this mysterious message:</p>
+<blockquote>
+<p>Access to the port number given has been disabled for security
+reason.</p>
+</blockquote>
+<p>I posted this to netscape.public.mozilla.general and found out that
+this behavior is in response to the &quot;cross-protocol scripting&quot;
+vulnerability described at <a class="reference external" href="http://www.kb.cert.org/vuls/id/476267">http://www.kb.cert.org/vuls/id/476267</a>.</p>
+<p>I also learned that you can override the banned ports by putting a
+preference in the <span class="docutils literal">all.js</span> script of your mozilla site installation:</p>
+<pre class="literal-block">pref(&quot;network.security.ports.banned.override&quot;, &quot;79&quot;);</pre>
+<p>My all.js was found at /usr/lib/mozilla/defaults/pref/all.js. I
+located it with <span class="docutils literal">rpm <span class="pre">-q</span> mozilla <span class="pre">-l</span> | grep all.js</span>.</p>
+<p><em>Credit:</em> Thanks to the folks at netscape.public.mozilla.general for
+their help. For details, see the thread starting on 2001-12-26,
+&quot;Access to the port number given has been disabled for security
+reasons&quot;.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 27 Dec 2001</p>
+<p>Which ports are banned? All below 1024 except 80?</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

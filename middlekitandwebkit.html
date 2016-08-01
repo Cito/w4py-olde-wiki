@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>MiddleKit and WebKit</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="middlekit-and-webkit">
+<h1 class="title">MiddleKit and WebKit</h1>
+
+<p class="subtitle" id="id1">MiddleKit and WebKit</p>
+<div class="section" id="getting-set-up">
+<h1>Getting Set up</h1>
+<p>Unfortunately, the MiddleKit docs don't do a good job of describing
+the use of MiddleKit from WebKit. This page will be a place to grow
+such documentation.</p>
+<p>The most commonly asked question is about getting a store going for
+the WebKit application. Here is a reply I made to that question:</p>
+<pre class="literal-block">In my own projects, I put the store in a module so it
+becomes a singleton. Something along these lines:
+
+Store.py
+-----------------------------------------------
+import os
+from MiddleKit.Run.MySQLObjectStore import MySQLObjectStore
+
+# set user and password, maybe from config file
+
+# Create the store
+store = MySQLObjectStore(user, password)
+
+# Read the model
+dn = os.path.dirname
+_filename = os.path.join(dn(dn(dn(__file__))), 'Core/UsedCars.mkmodel')
+assert os.path.exists(_filename)
+store.readModelFileNamed(_filename)
+-----------------------------------------------
+
+Then in SitePage.py:
+
+from Store import store
+
+class SitePage(Page):
+    def __init__(self):
+        self.store = store
+
+So that my page subclasses can conveniently say &quot;self.store&quot;
+when they need it.
+
+Since module level code is executed only once, regardless of
+the number of imports, you get one store for the whole
+application.
+
+You can use this same &quot;module&quot; technique for any other
+application-wide singletons you like.
+
+
+BTW You now have to consider the implications of using these
+objects from multiple threads. Something you'd have to think
+about even if you weren't using MK.
+
+One alternative to the above approach is to create one store
+per user. That works well if your users don't share objects
+and you take care to remove the reference to the store when
+a user's session expires.
+
+I'm using the first approach, but plan on moving to the
+second at some point in the future.
+
+Another approach might be to put locks around certain
+operations.</pre>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 29 Mar 2002</p>
+</div>
+<div class="section" id="saving-middle-objects-in-the-session">
+<h1>Saving Middle Objects in the session</h1>
+<p>It makes sense to want to store Middle objects in the session, so that
+these objects can be retrieved easily.  There are a few issues to
+consider with this:</p>
+<ul class="simple">
+<li><p>since Middle objects contain database connections, they cannot be
+pickled (stored to disk) in a straightforward fashion</p></li>
+<li><p>you wouldn't want the data fields pickled anyways, due to
+concurrency issues.  For example, if an object is pickled on disk in
+one user's session, and then gets modified (in-memory) by another
+user, you now have two copies of the object with different field
+values.  How do you resolve this?</p></li>
+</ul>
+<p>My solution to this problem is to implement an alternate
+encoder/decoder for WebKit.SessionStore which recognizes Middle
+objects, and simply pickles a reference to the object.  When reading
+in sessions from disk, the decoder finds the references and fetches
+the full Middle objects from the store.</p>
+<p>This is transparent to user code -- you can simply put the Middle objects in the session, and it will work.</p>
+<p>Note that this implementation assumes you have a single global store for your application.</p>
+<p>Also, if you're using Webware 0.7 or older, you'll need to apply &lt;a href=&quot;<a class="reference external" href="http://www.opensky.ca/~jdhildeb/webware.session.patch">http://www.opensky.ca/~jdhildeb/webware.session.patch</a>&quot;&gt;this small patch&lt;/a&gt; so that calling setEncoderDecoder will work properly when using the Dynamic session store.</p>
+<p><strong>MiddlePickle.py</strong>:</p>
+<pre class="literal-block">from pickle import Pickler as _Pickler
+from pickle import Unpickler as _Unpickler
+from MiddleKit.Run.MiddleObject import MiddleObject
+_store = None
+
+class Pickler(_Pickler):
+    def persistent_id( self, object ):
+        if isinstance( object, MiddleObject ) and object.isInStore():
+            return object.sqlObjRef()
+        else:
+            return None
+
+class Unpickler( _Unpickler ):
+    def __init__(self,file,store=None):
+        _Unpickler.__init__(self,file)
+        if not store:
+            store = _store
+        assert store
+        self._store = store
+
+    def persistent_load( self, pid ):
+        return self._store.fetchObjRef(long(pid))
+
+    def setStore(store):
+        global _store
+        _store = store
+
+    def dump(object, file, bin = 0):
+        Pickler(file, bin).dump(object)
+
+    def load(file,store=None):
+        return Unpickler(file,store).load()</pre>
+</div>
+<div class="section" id="setting-it-up">
+<h1>Setting it up</h1>
+<p>You'll have to tell the session handler to use this new implementation
+for encoding/decoding objects.  Use the contextInitialize() function
+for this, which Webware will invoke to initialize your application.
+For example, put the following in your MyContext/__init__.py file:</p>
+<pre class="literal-block">def contextInitialize(application, path):
+    # I have a &quot;Global&quot; module in which I store
+    # a ref to my global store in this module
+    import Global
+
+    # initialize your store
+    from MiddleKit.Run.MySQLObjectStore import MySQLObjectStore
+    Global.store = MySQLObjectStore(user=os.environ['DBUSER'])
+    modeldir = os.path.join( os.environ['APPDIR'], 'Lib/Middle' , os.environ['MIDDLEMODEL'])
+    Global.store.readModelFileNamed(modeldir)
+
+    # now that you have your global store, set the new encoder/decoder
+    import MiddlePickle
+    MiddlePickle.setStore(store)
+    application.sessions().setEncoderDecoder(MiddlePickle.dump,
+                                             MiddlePickle.load)</pre>
+<p>-- JasonHildebrand - 18 Feb 2003</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Config Schema</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="config-schema">
+<h1 class="title">Config Schema</h1>
+
+<pre class="literal-block">On Thu, 2002-04-25 at 07:47, Geoffrey Talvola wrote:
+&gt; Already partially done.  Look at WebKit/Docs/Application.configlist and
+&gt; WebKit/Docs/AppServer.configlist.  These files are used to auto-generate the
+&gt; documentation sections of the user's guide using
+&gt; WebKit/DocSupport/config.py.</pre>
+<p>OnceAndOnlyOnce suggests that the <span class="docutils literal">foo.configlist</span> should come from
+the same place as <span class="docutils literal">defaultConfig</span>.</p>
+<div class="section" id="wep-configuration-schema">
+<h1>WEP: Configuration Schema</h1>
+<div class="section" id="rough-sketch-of-implementation">
+<h2>rough sketch of implementation</h2>
+<pre class="literal-block">class ConfigurationOption:
+    def __init__(self,name,default,help):
+        ...
+
+class ConfigurationSchema:
+    def __init__(self,namespace,version,options):
+        ...
+
+    def default(self,key):
+        return self._optionMap[key].default
+
+    def defaults(self):
+        config = {}
+        for opt in self._options:
+            config[opt.name] = opt.default
+    ...
+
+class Configureable:
+    #configSchema() supercedes defaultConfig()
+    #config() uses the schema
+    #setting() can (optionally) warn if a key is requested that
+    #is not in the schema
+
+    def loadConfig(self,file): # factor out from userConfig
+        &quot;&quot;&quot;
+        can (optionally) warn if there are keys present in the
+        file that are not in the schema (e.g. a setting gets
+        refactored or removed, user upgrades and cannot figure
+        out why his setting is now ignored.)
+        &quot;&quot;&quot;</pre>
+</div>
+<div class="section" id="usage">
+<h2>Usage</h2>
+<pre class="literal-block"># Application.py
+
+class Application(...):
+
+    _configSchema = ConfigSchema( &quot;Application&quot;, &quot;0.7&quot;,
+        [
+         ConfigOption(&quot;PrintConfigAtStartup&quot;, 1, &quot;does what it says&quot;),
+         ConfigOption(&quot;AdminPassword&quot;,&quot;webware&quot;, &quot;blah blah blah&quot;),
+         ...])
+
+    def configSchema(self):
+        return self._configSchema</pre>
+</div>
+<div class="section" id="benefits">
+<h2>Benefits</h2>
+<ul class="simple">
+<li><p>documentation and code are less likely to get out of sync</p></li>
+<li><p>developers are more likely to provide documentation consistently</p></li>
+<li><p>when schema changes, things are less likely to break without giving a clue as to what the problem is</p></li>
+<li><p>config files can be upgraded automatically (if versioning is implemented)</p></li>
+<li><p>an introspective tool <em>can</em> be written for configuring webware components/applications</p></li>
+<li><p>if setting names or default values change, they change in one place.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="issues">
+<h1>Issues</h1>
+<p>future proofing:</p>
+<div class="section" id="namespaces">
+<h2>Namespaces</h2>
+<p>In Application, there are a dozen settings that deal with error
+handling, half of a dozen that deal with sessions, and a few that are
+already dictionaries with only an informal internal structure.</p>
+<p>It would be nice to be able to group these into their own schema with
+a separate namespace.</p>
+<p>&quot;AdminPassword&quot; is in <span class="docutils literal">Application.config</span>.  If the current Admin
+context were to get replaced (or if the &quot;ErrorEmail&quot; stuff were to get
+refactored), it would be nice to be able to break these out into
+another config file.</p>
+</div>
+<div class="section" id="versioning">
+<h2>Versioning</h2>
+<p>it would be nice to be able to automatically upgrade .config files,
+either in an =upgrade.py= script, or as the file is read into
+memmory. This could accommodate name changes, namespace changes,</p>
+<p>an option could be deprecated by adding a deprecated attribute to the
+<span class="docutils literal">ConfigOption</span>.</p>
+<p>an option could be marked as experimental in the same way.</p>
+</div>
+<div class="section" id="suggestion">
+<h2>Suggestion</h2>
+<p>a reserved &quot;ConfigSchema&quot; key/namespace to be included in all
+configuration files:</p>
+<pre class="literal-block"># foo.config
+{
+    &quot;ConfigSchema&quot;: {
+        &quot;Namespace&quot;: &quot;Foo&quot;,
+        &quot;Version&quot;: &quot;0.0.1&quot;,
+        &quot;Owner&quot;: &quot;FooKit&quot;,
+    }
+
+    ...
+
+}</pre>
+<p>this could also extend to &quot;inline&quot; namespaces such as &quot;ErrorControl&quot;
+or &quot;SessionControl&quot;: if a dictionary has a &quot;ConfigSchema&quot; key, it can
+be versioned and handled by the config tool and treated as a
+&quot;namespace&quot;.</p>
+<p>If a config file does not have a &quot;ConfigSchema&quot; key, it is treated as
+a legacy config with a mild suggestion that the user update the file
+to match current conventions.</p>
+</div>
+<div class="section" id="how-to-handle-namespaces">
+<h2>How to handle namespaces?</h2>
+<p>e.g. current code does:
+<span class="docutils literal"><span class="pre">application.setting(&quot;Debug&quot;)[&quot;Sessions&quot;]</span></span>. New code might say
+<span class="docutils literal"><span class="pre">application.setting(&quot;ErrorControl&quot;)[&quot;EmailHost&quot;]</span></span> ... but this
+would get out of control quickly. Maybe <span class="docutils literal">Configurable</span> could be made
+to handle &quot;Debug.Sessions&quot; or &quot;ErrorControl.EmailHost&quot;</p>
+<p>Maybe <span class="docutils literal">Configurable</span> should become a delegate instead of a
+superclass, then a refactored <span class="docutils literal">ErrorManager</span>, could look up
+<span class="docutils literal"><span class="pre">setting(&quot;EmailHost&quot;)</span></span> which might delegate to
+<span class="docutils literal"><span class="pre">application.setting(&quot;EmailHost&quot;,namespace=&quot;ErrorControl&quot;)</span></span> or
+even:</p>
+<pre class="literal-block">import config
+host = config.setting(&quot;EmailHost&quot;,namespace=(&quot;Application&quot;,&quot;ErrorControl&quot;))
+...</pre>
+<p>OK. Lets calm down and take it one step at a time.</p>
+<p>---++ Blue Sky</p>
+<p>if <span class="docutils literal">ConfigOption</span> could be related somehow to <span class="docutils literal">optik.Option</span>,
+settings could be overridden on the startup command
+line. (OnceAndOnlyOnce again)</p>
+<p>A simple type system could eliminate the need to look at the name for
+&quot;Filename&quot; or &quot;Dir&quot; in <span class="docutils literal">ConfigurableForServerSidePath</span>. Use
+<span class="docutils literal">option.type == TYPE_SERVER_PATH</span> as the predicate.</p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 25 Apr 2002</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

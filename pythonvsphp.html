@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Python vs. PHP</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="python-vs-php">
+<h1 class="title">Python vs. PHP</h1>
+
+<div class="section" id="introduction">
+<h1>Introduction</h1>
+<p>Every month or so someone posts to comp.lang.python asking how Python
+compares to PHP.  Python's 'language comparisons' page doesn't have an
+entry for PHP so here's a first draft.  This work-in-progress compares
+PHP and Python and evaluates their relative strengths for web
+development.</p>
+<p>Please contribute! Once there's some flesh on this skeleton, I'll tidy
+it up and submit it to: <a class="reference external" href="http://python.org/doc/Comparisons.html">http://python.org/doc/Comparisons.html</a></p>
+<p>-- TavisRudd - 23 Nov 2001
+-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 15 Dec 2001
+-- DiogoResende - 21 Jun 2007 :)
+-- SamuelCochran - 6 Jan 2008
+-- Pomax - 23 Jan 2010</p>
+</div>
+<div class="section" id="common-ground">
+<h1>Common Ground</h1>
+<p>Both PHP and Python:</p>
+<ul class="simple">
+<li><p>are interpreted, high level languages with dynamic typing</p></li>
+<li><p>are full programming languages, rather than specifically &quot;for the web&quot; languages.</p></li>
+<li><p>are OpenSource (except PHP's ZEND engine?)</p></li>
+<li><p>are supported by large developer communities</p></li>
+<li><p>are easy to learn (compared to Java, and even Perl)</p></li>
+<li><p>are easy to extend in C, C++ and Java</p></li>
+<li><p>are extremely portable. They run on almost all platforms in
+existence without recompilation.</p></li>
+<li><p>support for variable number of function arguments.</p></li>
+<li><p>have the ability to freeze live objects in a string representation
+(for storing arbitrary objects on disk, moving them over the
+network, etc); they can then be converted back to identical objects
+with data intact.  PHP's serialize function; Python's pickle and
+marshal modules.  Note that PHP, handling of serialized objects and
+classes is much weakier and error prone than Python's due to PHP's
+lack of modules.  When an object is serialized, only its attributes
+are stored, not its methods.  Thus, the object's class must be
+present (with the exact same name) in the script that unserializes
+it.  In Python this is handled automatically via the module/import
+framework. <em>(this COULD be handled with PHP 5's __autoload(), but is not done automatically)</em></p></li>
+<li><p>lack strict boolean conditionals (strings and numerals are considered valid conditional statements)</p></li>
+</ul>
+</div>
+<div class="section" id="compared-as-languages">
+<h1>Compared as Languages</h1>
+<div class="section" id="what-does-php-have-that-python-doesn-t">
+<h2>What does PHP have that Python doesn't?</h2>
+<ul class="simple">
+<li><p>syntactic scoping (using curly braces)</p></li>
+<li><p>variable syntax (dollar signs indiciate variables)</p></li>
+<li><p>'switch/case' statement and 'do ... while' construct</p></li>
+<li><p>increment and decrement and assignment operators (assignment is a statement only in Python)</p></li>
+<li><p>the ternary conditional operator (... ? ... : ...)</p></li>
+<li><p>script-global variable protection (script-global variables must be imported by a function before they can be used)</p></li>
+<li><p>class-global variable protection (class-global variables must be indicated as $this-&gt;varname, $varname variables are local scope)</p></li>
+<li><p>primitive variable declaration-on-initialisation: a primitive variable (including array) does not need to be explicitly declared. when an assignment involved a variable that does not exist, it is created on the fy.</p></li>
+<li><p>an expedient (commonly installed) environment</p></li>
+<li><p>references - in assignment such as '$a =&amp; $b', $a becomes an alias for $b (modifying the data via $a is functionally equivalent to modifying the data via $b).</p></li>
+<li><p>single primitive for arrays and maps - the 'array' primitive is actually a map which will can either map incremental numbers to data (acting as an array) or map explicit keys to data (action as a hash, dictionary, or whatever other name you know maps as)</p></li>
+<li><p>excellent on-line manual with registration-less user contributions to further explain functions and their use &quot;in the wild&quot;</p></li>
+<li><p>object level functions. Where in python all class-defined functions are class function, and must be passed a 'self' argument in order to operate on an instantiaed objects, in php all-class defined functions are object functions unless explicitly marked static.</p></li>
+</ul>
+</div>
+<div class="section" id="what-does-python-have-that-php-doesn-t">
+<h2>What does Python have that PHP doesn't?</h2>
+<ul class="simple">
+<li><p>scoping based on indentation level (rather than relying on curly braces to indicate scope)</p></li>
+<li><p>namespaces and modules</p></li>
+<li><p>supports self-documenting code (via docstrings and pydoc)</p></li>
+<li><p>keyword arguments to functions and methods</p></li>
+<li><p>everything is an object (there are no primitives)</p></li>
+<li><p>multiple inheritance</p></li>
+<li><p>object-oriented file handling</p></li>
+<li><p>built in reflection</p></li>
+<li><p>everything is pass-by-reference</p></li>
+<li><p>consistent case sensitivity (PHP is case-sensitive for variable names, but not for function names)</p></li>
+<li><p>true lambdas and other builtin functional programming constructs</p></li>
+<li><p>operator overloading</p></li>
+<li><p>SWIG integration</p></li>
+<li><p>threading</p></li>
+<li><p>many predefined common high-level data types (lists, tuples, dictionaries, datetimes, arrays, etc.)</p></li>
+<li><p>distinction between enumerated lists (arrays) and and maps (associative arrays)</p></li>
+<li><p>builtin concept of date that doesn't rely on computation involving the UNIX epoch (dates can go &lt;1970, &gt;2038)</p></li>
+<li><p>strong internationalization</p></li>
+<li><p>strings work with all unicode 5.1 characters (php only supports multi-byte strings via an extension, which does not offer all the operations that exist for normal strings)</p></li>
+<li><p>module importing (php relies on code inclusion instead)</p></li>
+<li><p>uniform function naming (PHP's built-in library does not stick to a single naming convention)</p></li>
+<li><p>(support for all major GUI frameworks -- a list is missing, so until someone specifies what they consider major, this is a moot point)</p></li>
+<li><p>(maturity, stability and upward-compatibility -- PHP is stable and mature [but not clean] and python 2.6 is not compatible with 3.x [and presumably every version after that], so this point is fairly useless)</p></li>
+<li><p>(a small core -- but small for what purpose? PHP's 5Mb is small if used on servers or workstations, but big if it needs to be embedded, so this again looks like a moot argument unless a context is stated)</p></li>
+</ul>
+</div>
+<div class="section" id="compared-as-web-development-frameworks">
+<h2>Compared as Web Development Frameworks</h2>
+<p>Unlike PHP, which has web development features built directly into the
+core language, Python's web development capabilites are provided by
+add-on modules.  Basic CGI capabilities are provided by the 'cgi'
+module which comes in Python's standard library.  There's also a wide
+range of third-party modules available for Python; some are
+complementary, others compete.  As a result, Python provides a more
+flexible base for web development.</p>
+<p>There are some adverse side effects of this flexibility. First, the
+range of choices can be bewildering. Unless you are working
+experienced Python web developers, PHP is easier to get started with.
+Second, support for PHP is more common with shared-hosting companies
+than support for the various Python options.</p>
+<p>Another difference is that PHP is embedded in the web server, whereas
+Python web applications can either be embedded in the web server like
+PHP or run in a separate process.  Here's a simple classification of
+Python web development platforms:</p>
+<ul class="simple">
+<li><p>emdedded in the web server process</p>
+<ul>
+<li><p>Apache modules <span class="docutils literal">mod_python</span> and <span class="docutils literal">mod_snake</span> embed the Python
+interpreter in Apache and allow other Apache modules to be written
+with Python.  This is the same idea as <span class="docutils literal">mod_perl</span>.</p></li>
+<li><p>PyWX is an extension to AOLServer that serves the same purpose as
+the Apache modules above.</p></li>
+<li><p>MS ASP scripts can be written using Python via <em>Active Scripting
+Host</em>.</p></li>
+</ul>
+</li>
+<li><p>running in a separate process</p>
+<ul>
+<li><p>non-persistent process (a new process is spawned for each request)</p>
+<ul>
+<li><p>custom CGI scripts</p></li>
+</ul>
+</li>
+<li><p>persistent process (all requests are sent from the web server to
+one persistent process, sometimes via a CGI wrapper)</p>
+<ul>
+<li><p>custom Fast-CGI scripts</p></li>
+<li><p>custom SCGI scripts</p></li>
+<li><p>custom WSGI modules</p></li>
+<li><p>'Application Servers'</p>
+<ul>
+<li><p><a class="reference external" href="zope.html">Zope</a> -- comes with its own web server
+but can also communicate with Apache via the CGI
+or Fast-CGI protocols.</p></li>
+<li><p>Webware -- works with any web server via CGI.  With Apache it
+can communicate via a custom Fast-CGI like protocol.</p></li>
+<li><p>SkunkWeb -- only works with Apache, communicates via a custom
+Fast-CGI like protocol.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- WSGI: http://www.python.org/dev/peps/pep-0333/ -->
+<p>(Note: PHP programs <em>can</em> be run standalone or as ordinary CGI
+scripts.  However, when called indirectly from the web (e.g., from a
+Perl CGI script), it requires unsetting an undocumented number of web
+environment variables so that PHP doesn't think it's running from the
+web and look in the wrong place for the script. Likewise, it's
+_possible_ to write a long-running server in PHP, but there are
+precious few examples of it.)</p>
+<p>The vast majority of Python web applications are run in a separate
+process. This has some important implications. ... to be continued ...</p>
+<p>... <em>please add your observations</em></p>
+</div>
+<div class="section" id="python-application-servers">
+<h2>Python Application Servers</h2>
+<p>...</p>
+</div>
+<div class="section" id="python-template-engines">
+<h2>Python Template Engines</h2>
+<p>...</p>
+<p>Here's some interesting notes on security in PHP: (Not true. The tutorial assumes default conf values that are not default anymore or don't even exist)
+<a class="reference external" href="http://www.securereality.com.au/studyinscarlet.txt">http://www.securereality.com.au/studyinscarlet.txt</a></p>
+</div>
+<div class="section" id="community-support">
+<h2>Community Support</h2>
+<p><em>PHP</em></p>
+<ul class="simple">
+<li><p>huge installed user base, but the figures are probably distorted by
+shared hosting (Not true. It has PEAR and PECL repository)</p></li>
+<li><p>low signal-to-noise ratio -- because PHP is so expedient, many of
+the users are not invested in the technology (or even their own
+code) or the community (Not true. IBM and Oracle invested in PHP)</p></li>
+</ul>
+<p><em>Python</em></p>
+<ul class="simple">
+<li><p>sizable, but not huge, installed user base</p></li>
+<li><p>Python Software Foundation</p></li>
+<li><p>lots of specialized interest groups</p></li>
+<li><p>very high signal-to-noise ratio</p></li>
+</ul>
+</div>
+<div class="section" id="commercial-support">
+<h2>Commercial Support</h2>
+<p><em>PHP</em></p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.zend.com">http://www.zend.com</a></p></li>
+<li><p><a class="reference external" href="http://www.activestate.com">http://www.activestate.com</a></p></li>
+<li><p><a class="reference external" href="http://www.maguma.com/">http://www.maguma.com/</a></p></li>
+<li><p><a class="reference external" href="http://www.ioncube.com/">http://www.ioncube.com/</a></p></li>
+</ul>
+<p><em>Python</em></p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.zope.com">http://www.zope.com</a></p></li>
+<li><p><a class="reference external" href="http://www.activestate.com">http://www.activestate.com</a></p></li>
+<li><p><a class="reference external" href="http://www.pythonware.com">http://www.pythonware.com</a></p></li>
+<li><p><a class="reference external" href="http://www.archaeopteryx.com">http://www.archaeopteryx.com</a></p></li>
+<li><p><a class="reference external" href="http://www.theKompany.com">http://www.theKompany.com</a></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="documentation">
+<h1>Documentation</h1>
+<div class="section" id="core-documentation">
+<h2>Core Documentation</h2>
+<p>Although both PHP and Python have excellent core documentation,
+Python's is more extensive and generally higher quality. PHP has a
+large number of translations available.  Python doesn't. For PHP see
+<a class="reference external" href="http://www.php.net/docs.php">http://www.php.net/docs.php</a> and for Python see <a class="reference external" href="http://python.org/doc/">http://python.org/doc/</a>
+Python allows documentation on modules, classes, and functions to be
+included in the program code. The documentation becomes an attribute
+of the module/class/function, accessible from inside of the language
+itself. <em>(This is so untrue. Python  docs are short and don't explain
+in detail how something can or should be used. PHP uses examples (L.B.E.).
+PHP has comments on every page so you can check for someone that tried
+to do the same thing you did. PHP can be documented just like many other
+languages like C for example; http://www.phpdoc.org/ )</em></p>
+</div>
+<div class="section" id="online-tutorials">
+<h2>Online Tutorials</h2>
+<p>For Python see <a class="reference external" href="http://python.org/doc/current/tut/tut.html">http://python.org/doc/current/tut/tut.html</a>,
+<a class="reference external" href="http://python.org/doc/Newbies.html">http://python.org/doc/Newbies.html</a></p>
+<p>For PHP see <a class="reference external" href="http://www.devshed.com/Server_Side/PHP/">http://www.devshed.com/Server_Side/PHP/</a>,
+<a class="reference external" href="http://phpbuilder.com">http://phpbuilder.com</a> and <a class="reference external" href="http://zend.com">http://zend.com</a>, <a class="reference external" href="http://www.devshed.com/c/b/PHP/">http://www.devshed.com/c/b/PHP/</a>, <a class="reference external" href="http://www.codewalkers.com/">http://www.codewalkers.com/</a> and the PHP Manual itself.</p>
+</div>
+<div class="section" id="books">
+<h2>Books</h2>
+<p>For books on PHP see <a class="reference external" href="http://www.amazon.com/gp/community-content-search/results/002-7542231-3949660?ie=UTF8&amp;search-alias=rp-listmania&amp;query=php">http://www.amazon.com/gp/community-content-search/results/002-7542231-3949660?ie=UTF8&amp;search-alias=rp-listmania&amp;query=php</a> . For
+Python, see
+<a class="reference external" href="http://www.amazon.com/exec/obidos/tg/listmania/list-browse/-/12QMUFII6951W">http://www.amazon.com/exec/obidos/tg/listmania/list-browse/-/12QMUFII6951W</a>
+and <a class="reference external" href="http://www.awaretek.com/book.html">http://www.awaretek.com/book.html</a></p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h1>Conclusion</h1>
+<p>it is not up to the rest of us to tell you which programming language to favour. Learn both, and learn which to use when. If you find out you end up using PHP or Python more than the other, then you know which programming language works best for you. If the job you need to get done relies on specific features that are available to one, but not the other, then there is no choice to make, go with the one that offers this feature.</p>
+</div>
+<div class="section" id="frequently-asked-questions">
+<h1>Frequently Asked Questions</h1>
+<p><em>Q1</em></p>
+<blockquote>
+<p>... what is the best way to build web-based database applications
+like accounting systems, on Python? i.e. what is the equivalent of
+ASP pages or PHP pages or JSP pages, for Python??  Shouldn't we be
+learning THAT instead of PHP???</p>
+</blockquote>
+<p><em>A1</em></p>
+<blockquote>
+<p>There is no simple answer to this question.  There are many tools
+available for doing this in Python.  So many that the choices can
+be bewildering.  You're best to think of the tools as falling into
+two complementary categories: Application Servers (there's
+probably a better term to use here) and Template Engines.</p>
+</blockquote>
+<p>Application Servers:</p>
+<ul class="simple">
+<li><p>plain old Python CGI scripts</p></li>
+<li><p>Zope (includes a Content Management System and a whole lot more)</p></li>
+<li><p>Webware</p></li>
+<li><p>SkunkWeb</p></li>
+<li><p>see <a class="reference external" href="http://www.boddie.org.uk/python/web_frameworks.html">http://www.boddie.org.uk/python/web_frameworks.html</a> for more</p></li>
+</ul>
+<p>Templating Engines:</p>
+<ul class="simple">
+<li><p>Zope's DTML</p></li>
+<li><p>Zope's Page Templates</p></li>
+<li><p>Webware's Python Server Pages</p></li>
+<li><p>Cheetah (integrates with Webware)</p></li>
+<li><p>Yaptu</p></li>
+<li><p>SkunkWeb's STML</p></li>
+<li><p>Mako Templates (<a class="reference external" href="http://www.makotemplates.org/">http://www.makotemplates.org/</a>)</p></li>
+<li><p>see <a class="reference external" href="http://webware.sourceforge.net/Papers/Templates/">http://webware.sourceforge.net/Papers/Templates/</a> for more.</p></li>
+</ul>
+<p>My personal preference is Apache/Webware/Cheetah. I'll write more
+about this later. -- TavisRudd - 23 Nov 2001</p>
+</div>
+<div class="section" id="general-discussion">
+<h1>General Discussion</h1>
+<p>(add your comments here, along with a signature and date)</p>
+<hr class="docutils" />
+<p>I haven't used PHP with XML, and I've only used Python with XML a
+little, but I get the impression Python is much better suited --
+specifically because it is strongly types, where PHP is rather weak in
+its typing (like C).  But I can't say from experience</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 26 Nov 2001</p>
+<hr class="docutils" />
+<p>To clarify, PHP's types are <em>more</em> dynamic than Python's.  All
+variables are automatically initialized to NULL.  It automatically
+converts between strings, numbers and NULL when a different type is
+needed for the operation, or with a type case.  It also &quot;does
+something&quot; to convert to/from array and object.  '123' -&gt; 123,
+'non-numeric' -&gt; 0, NULL -&gt; '', etc.  Sometimes all this is
+convenient, especially when a missing CGI param converts to NULL which
+converts to '' in the VALUE= attribute, but it also leads to wrong
+ouput rather than errors if you misspell a variable or key.</p>
+<p>PHP does not have first-class functions.  There are equivalents to
+Python's map, reduce, filter, and there's array_walk, but they all
+take the name of a function rather than the function itself.</p>
+<p>Examples of PHP's schizophrenic function naming: (string functions)
+stripslashes vs strip_tags; (array functions) array_keys vs asort vs
+count and shuffle; (variable functions etc) isset vs is_array.</p>
+<p>PHP has constants, which are initialized with a totally different
+syntax than variable assignment.  The advantage of constants is that
+they can be defined only once, allowing you to define sensitive
+constants in a secure include file, then prevent untrusted code from
+overriding them.  Constants are global: they bypass the scoping rules.
+One disadvantage is that a constant is a bare word: if you misspell
+it, you'll silently get a NULL value.</p>
+<p>Syntax errors show the file and line number, but not the character
+position.  Sometimes the error message is specific, sometimes just
+&quot;parse error&quot;.  This leads to staring at the code for a while until
+you realize you're missing '$' or ';', or you put something besides a
+semicolon on the END line matching &lt;&lt;&lt;END .</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 15 Dec 2001</p>
+<p>This document has become rather old. With PHP 5.2.x and Python 3.0 out,
+and almost 10 years after this document was first drafted, it has become
+clear that, from the perspective of a person who intends to use these
+languages, the choice between them is essentially arbitrary. For
+trivial tasks it is irrelevant which is being used (because then it's not
+a choice between PHP or Python, but between every programming language
+for which there are compilers and interpreters available), and for complex
+tasks more often than not someone has already done what you need in both
+PHP and Python, as well as typically in Perl and Ruby.</p>
+<p>Also, do not be taken in by trivial differences: Python's indented scoping
+vs. PHP's explicit scoping is only syntactic sugar: the transformation from
+one method of scoping to the other is the most basic of trivial
+transformations, and if you want you can set up your interpreter so that it
+always runs your script through that transformation before executing, so you
+can code PHP with indentation scoping, or Python with curly braces.</p>
+<p>Python's use of module imports rather than PHP's code inclusion is a strong
+argument to use Python in structured complex situations, but careful
+programming and using project-specific conventions (and sticking to them)
+will achieve the same in a PHP project (although you won't find a single
+experienced programmer out there who will not tell you that modules and
+packages are a cleaner, and easier to debug approach).</p>
+<p>With IDEs such as Eclipse offering plugins do PHP as well as Python development,
+the IDE availability argument is also moot. As ever, the conclusion must
+necessarily be: use the language that gets the job done best, in the least
+amount of time, with the least amount of debugging. Everything PHP can do,
+Python can do, and vice versa; you want to select your language based on how
+they behave when things  <em>don't</em> work. Is it easier to debug a PHP application
+or a Python application? No one knows, actually, because a well designed
+application doesn't break, and a poorly designed application is as poor as
+the programmer's oversight.</p>
+<p>-- Pomax - 2010/01/23</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 24 Jan 2010</p>
+
+</div>
+</body>
+</html>

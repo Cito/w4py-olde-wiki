@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>HTTP Authentication</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="http-authentication">
+<h1 class="title">HTTP Authentication</h1>
+
+<p>HTTP authentication is the standard way to authenticate access to
+resources.  It has a number of flaws, and it not the most common way
+to do authentication on the web -- using standard forms is more
+common.  However, in some circumstances it is the only possible way --
+in particular, using non-browser tools to access pages (like a DAV
+client, an XML-RPC client, etc.)</p>
+<p>HTTP authentication occurs when the server returns a 401 status (as in
+<span class="docutils literal"><span class="pre">self.response().setStatus(401,</span> 'Authorization Required')</span> ) The
+server also must set another header, <span class="docutils literal"><span class="pre">WWW-Authenticate:</span> Basic <span class="pre">realm=&quot;&lt;i&gt;realm</span> <span class="pre">name&lt;/i&gt;&quot;</span></span> The realm name is the only message the
+user will see explaining what they are logging into (though they
+should know what page they are trying to access).</p>
+<p>Clients will sent a header like Authorization: Basic xxx (where xxx is
+the authorization information)</p>
+<p>Clients generally do not send authentication information until they
+are asked to do so (by receiving a 401 error).  In typical usage, this
+back and forth will occur for every page access.  (Though I don't see
+any reason you can't use the session and cookies like you would with
+normal, form-based authentication).</p>
+<p>There is another style of authentication (this style is termed
+&quot;Basic&quot;), called &quot;Digest&quot; -- it sends a hash of the password, in a
+challenge-response style.  This is more secure, as you can't sniff
+passwords.  However, for reasons I cannot fathom, many major browsers
+&lt;i&gt;still&lt;/i&gt; do not support this kind of authentication.  Instead, you
+may use SSL to secure the password.</p>
+<div class="section" id="setting-up-apache">
+<h1>Setting up Apache</h1>
+<p>Apache does not normally send the Authorization header onto clients.
+To get around this you must use mod_rewrite (this is also typical with
+Zope, but I haven't gotten their technique to work for me)</p>
+<p>Put this rewrite rule in:</p>
+<pre class="literal-block">&lt;Location /WK&gt;
+RewriteEngine On
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule /WK(.*) /WK2$1?AUTH=%1 [QSA,L,PT]
+&lt;/Location&gt;</pre>
+<p><span class="docutils literal">/WK2</span> is the real location of the WebKit hander -- either a
+location set up for mod_webkit, or another adapter.  The
+<span class="docutils literal">RewriteCond</span> line will capture the Authorization: header, which can
+be referenced by %1.  The <span class="docutils literal">RewriteRule</span> line will add a variable
+<span class="docutils literal">AUTH</span> to the query string.</p>
+<p>(I'm not entirely sure about the security of this -- the
+authentication information doesn't show up in the log, though)</p>
+</div>
+<div class="section" id="in-your-servlet">
+<h1>In your servlet</h1>
+<p>In the servlet, you must both send the right information, and then
+receive that authorization.  To require authentication:</p>
+<pre class="literal-block">res = self.response()
+res.setStatus(401, 'Authorization Required')
+res.setHeader('WWW-Authenticate', 'Basic realm=&quot;%s&quot;' % realm)</pre>
+<p>To process it:</p>
+<pre class="literal-block">import base64
+
+def authorized(self):
+    req = self.request()
+    httpAuth = req.field('AUTH', None)
+    if not httpAuth: return 0
+    authType, auth = httpAuth.split(' ', 1)
+    assert authType.lower() == 'basic', 'Only basic HTTP authentication is supported'
+    name, password = base64.decodestring(auth.strip()).split(':', 1)
+    return self.authorizeUser(name, password)</pre>
+<p>(If you are using HTTPAdapter, you will receive the authentication
+information in <span class="docutils literal"><span class="pre">self.request().environ()['HTTP_AUTHORIZATION']</span></span> )</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 10 May 2002</p>
+</div>
+<div class="section" id="alternative-approach">
+<h1>Alternative Approach</h1>
+<p>You can compile Apache 1.3 with <a class="reference external" href="http://httpd.apache.org/dev/apidoc/apidoc_SECURITY_HOLE_PASS_AUTHORIZATION.html">SECURITY_HOLE_PASS_AUTHORIZATION</a>
+which will cause apache to pass the HTTP_AUTHORIZATION environment
+variable to your script. If you don't want to recompile apache, you
+can use a much simpler mod_rewrite setup to add an additional
+environment variable:</p>
+<pre class="literal-block">&lt;Location /WK&gt;
+    WKServer localhost 8086
+    SetHandler webkit-handler
+    RewriteEngine On
+    RewriteRule /WK(.*) - [E=X-HTTP_AUTHORIZATION:%{HTTP:Authorization},PT]
+&lt;/Location&gt;</pre>
+<p>With this you scan check
+<span class="docutils literal"><span class="pre">self.request().environ()['HTTP_AUTHORIZATION']</span></span> and
+<span class="docutils literal"><span class="pre">self.request().environ()['X-HTTP_AUTHORIZATION']</span></span> to find
+authorization Information.</p>
+<p>There is also a patch to mod_webkit implementing passing of
+Authorisation Info to the Application Server available at
+<a class="reference external" href="http://blogs.23.nu/c0re/stories/1410/">http://blogs.23.nu/c0re/stories/1410/</a></p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 13 Apr 2005</p>
+
+</div>
+</body>
+</html>

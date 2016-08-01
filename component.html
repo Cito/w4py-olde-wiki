@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Component</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="component">
+<h1 class="title">Component</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#downloads-and-websites" id="id3">Downloads and Websites</a></p></li>
+<li><p><a class="reference internal" href="#license-and-prerequesites" id="id4">License and Prerequesites</a></p></li>
+<li><p><a class="reference internal" href="#what-are-they" id="id5">What Are They?</a></p>
+<ul>
+<li><p><a class="reference internal" href="#what-s-a-component-good-for" id="id6">What's a Component Good For?</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#using-cpage" id="id7">Using CPage</a></p></li>
+<li><p><a class="reference internal" href="#using-components" id="id8">Using Components</a></p></li>
+<li><p><a class="reference internal" href="#writing-components" id="id9">Writing Components</a></p></li>
+</ul>
+</div>
+<div class="section" id="downloads-and-websites">
+<h1><a class="toc-backref" href="#id3">Downloads and Websites</a></h1>
+<ul class="simple">
+<li><p>Homepage: <a class="reference external" href="http://wiki.webwareforpython.org/component.html">http://wiki.webwareforpython.org/component.html</a></p></li>
+<li><p>Download: <a class="reference external" href="http://webwareforpython.org/downloads/Component/Component-0.2.tar.gz">http://webwareforpython.org/downloads/Component/Component-0.2.tar.gz</a></p></li>
+<li><p>Source repository: <a class="reference external" href="http://svn.webwareforpython.org/Component/trunk">http://svn.webwareforpython.org/Component/trunk</a></p></li>
+<li><p>Discussion: <a class="reference external" href="http://lists.sourceforge.net/lists/listinfo/webware-discuss">webware-discuss&#64;lists.sourceforge.net</a></p></li>
+</ul>
+<p>The repository is a <a class="reference external" href="http://subversion.tigris.org/">Subversion</a> repository.  To check out a copy:</p>
+<pre class="literal-block">$ svn co http://svn.webwareforpython.org/Component/trunk Component</pre>
+<ul>
+<li><p>FreeBSD ports</p>
+<p>cd /usr/ports/www/py-webware-component &amp;&amp; make install clean</p>
+</li>
+</ul>
+</div>
+<div class="section" id="license-and-prerequesites">
+<h1><a class="toc-backref" href="#id4">License and Prerequesites</a></h1>
+<p>Component is licensed under an <a class="reference external" href="http://www.opensource.org/licenses/mit-license.php">MIT-style license</a>.  This gives you
+permission to most anything you want with Component.</p>
+<p>Component is a toolkit for <a class="reference external" href="http://webwareforpython.org">Webware For Python</a>.  Webware is the only
+prerequisite.</p>
+</div>
+<div class="section" id="what-are-they">
+<h1><a class="toc-backref" href="#id5">What Are They?</a></h1>
+<p>Many enhancements in Webware require subclassing <span class="docutils literal">WebKit.Page</span>.  But
+each of these enhancements is incompatible with the others, because
+you have to choose an specific inheritance hierarchy to use them.  You
+can't subclass <span class="docutils literal">SecurePage</span> and <span class="docutils literal">SidebarPage</span> and <span class="docutils literal">MVCPage</span> all
+at once.</p>
+<p>One solution is Mixins, using multiple inheritance to add various
+functions.  This technique is available in Webware through
+<span class="docutils literal">MiscUtils.MixIn</span>.  However, there are many places where Mixins are
+mutually incompatible -- for instance, code often has to intercept the
+<span class="docutils literal">awake()</span> method, but delegating to each Mixin requires that they
+all know about each other.</p>
+<p>Components are essentially a way of creating Mixins that all know
+about each other.</p>
+<div class="section" id="what-s-a-component-good-for">
+<h2><a class="toc-backref" href="#id6">What's a Component Good For?</a></h2>
+<p>Components are useful if you have code that should know about the
+request and response, and possible intercept it.  If the code doesn't
+need to know about the request at all, you should just create a normal
+Python library, and call into it explicitly.  Components can also be a
+convenient way to add new convenience methods to your servlet.</p>
+</div>
+</div>
+<div class="section" id="using-cpage">
+<h1><a class="toc-backref" href="#id7">Using CPage</a></h1>
+<p>In order to use components, all your servlets must inherit from
+<span class="docutils literal">Component.CPage</span>.  This subclass of <span class="docutils literal">WebKit.Page</span> adds some new
+convenient methods, but mostly just adds component support.</p>
+<p>New methods:</p>
+<dl>
+<dt><span class="docutils literal">writeHeader()</span>:</dt>
+<dd><p>Called automatically in <span class="docutils literal">writeBodyParts</span>.  If you are not using
+a template, this can be used to write the HTML that goes at the
+top of every page (the text written goes just <em>after</em> <span class="docutils literal">&lt;body&gt;</span>).</p>
+</dd>
+<dt><span class="docutils literal">writeFooter()</span>:</dt>
+<dd><p><span class="docutils literal">writeHeader</span> compliment.</p>
+</dd>
+<dt><span class="docutils literal">setView(view_name)</span>:</dt>
+<dd><p><span class="docutils literal">CPage</span> adds the idea of <em>views</em>.  The default view is
+<span class="docutils literal">writeContent</span> -- that's the innermost method that is called.
+This can be used with actions so that the action method performs
+some work, then changes the view to display a different body.
+This way actions occur before content display, but can effect
+later display without losing the normal Python templating
+mechanism (<span class="docutils literal">writeHead</span>, etc).  Templating components (like
+<a class="reference external" href="zptkit.html">ZPTKit</a>) may use this concept of view to indicate a template to
+use.</p>
+</dd>
+<dt><span class="docutils literal">view()</span>:</dt>
+<dd><p>Returns the view, as a string.</p>
+</dd>
+<dt><span class="docutils literal">sendResponseAndEnd(status, <span class="pre">headers={},</span> body=None)</span>:</dt>
+<dd><p>For error responses.  This can be used like:</p>
+<pre class="literal-block">def awake(self, trans):
+    CPage.awake(self, trans)
+    try:
+        self.id = int(
+            self.request().extraURLPath().split('/')[1])
+    except (ValueError, IndexError):
+        self.sendResponseAndEnd(500)</pre>
+<p>A simple error body is created if you don't pass one in.</p>
+</dd>
+</dl>
+<p><span class="docutils literal">preAction</span> and <span class="docutils literal">postAction</span> are modified to do nothing (in
+<span class="docutils literal">WebKit.Page</span> they output a little HTML).</p>
+</div>
+<div class="section" id="using-components">
+<h1><a class="toc-backref" href="#id8">Using Components</a></h1>
+<p><span class="docutils literal">CPage</span> looks for any components you have in the <span class="docutils literal">.components</span>
+class variable (which should be a list).  One very simple component is
+included, <span class="docutils literal">NotifyComponent</span>.  As an example you can use this
+component like:</p>
+<pre class="literal-block">from Component import CPage
+from Component.notify import NotifyComponent
+
+class SitePage(CPage):
+
+    components = [NotifyComponent()]
+
+    def writeHeader(self):
+        self.writeMessages()</pre>
+<p>If the component was configured, it would probably take arguments to
+its constructor (this simple component has no configuration).  A
+component can add new methods to the servlet.  In this case it adds a
+<span class="docutils literal">.message(text)</span> method, which adds your message to the session, and
+a <span class="docutils literal">.writeMessages()</span> method which writes the messages and clears them
+from the session.  (Also a <span class="docutils literal">.messageText()</span> method if you don't want
+to write the messages immediately.)</p>
+<p>It's up to the component to add methods or attributes to the servlet.
+It can also respond to &quot;events&quot; -- one example (and one of the only
+current events) is the <span class="docutils literal">awake</span> event, where it could intercept the
+request.  An example of this is in <a class="reference external" href="loginkit.html">LoginKit</a>, where the component
+checks the servlet for permission settings, and may abort the
+transaction with a login screen (or a Forbidden response) during
+<span class="docutils literal">awake()</span>.</p>
+</div>
+<div class="section" id="writing-components">
+<h1><a class="toc-backref" href="#id9">Writing Components</a></h1>
+<p>Read the source -- there are many docstrings in <span class="docutils literal">Component.py</span>.</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 26 Sep 2006</p>
+
+</div>
+</body>
+</html>

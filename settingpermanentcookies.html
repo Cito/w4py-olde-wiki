@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Setting Permanent Cookies</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="setting-permanent-cookies">
+<h1 class="title">Setting Permanent Cookies</h1>
+
+<p>After some trial and error, I came up with this which seems to work:</p>
+<pre class="literal-block">from WebKit.Cookie import Cookie
+
+class SitePage:
+    # ...
+
+    def setPermanentCookie(self, key, value):
+        cookie = Cookie(key, value)
+        t = time.gmtime(time.time())
+        t = (t[0] + 10,) + t[1:]
+        t = time.strftime(&quot;%a, %d-%b-%Y %H:%M:%S GMT&quot;, t)
+        cookie.setExpires(t)
+        self.response().addCookie(cookie)
+
+    def deletePermanentCookie(self, key):
+        cookie = Cookie(key, '')
+        t = time.gmtime(time.time())
+        t = (t[0] - 10,) + t[1:]
+        t = time.strftime(&quot;%a, %d-%b-%Y %H:%M:%S GMT&quot;, t)
+        cookie.setExpires(t)
+        self.response().addCookie(cookie)&lt;/pre&gt;</pre>
+<p>Add this to your SitePage and you're all set.  The cookie will last
+for 10 years, which is close enough to &quot;forever&quot; :-)</p>
+<p>-- <a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 11 Dec 2001</p>
+<p>Of course, you'll also have to call setPermanentCookie() at least once
+after you've added this to SitePage:</p>
+<pre class="literal-block">if not trans.request().hasCookie(yourCookieKey):
+    self.setPermanentCookie(yourCookieKey, yourValue)</pre>
+<p>-- TavisRudd - 11 Dec 2001</p>
+<p>RFC 2109 recommends expiring cookies by setting the &quot;max-age&quot;
+attribute to zero.  Setting both &quot;expires&quot; and &quot;max-age&quot; is redundant,
+but apparently doesn't hurt and maintains compatibility.
+Add this as the second last line in deletePermanentCookie():</p>
+<pre class="literal-block">cookie.setMaxAge(0)</pre>
+<p>-- KenLalonde - 15 Jan 2002</p>
+<p>Also, make sure that the servlet setting the cookie is in the same
+directory as where you plan to retrieve the cookie.  So, if you set
+the cookie in <a class="reference external" href="http://myhost.com/webkit/users/">http://myhost.com/webkit/users/</a> a servlet sitting at
+<a class="reference external" href="http://myhost.com/webkit">http://myhost.com/webkit</a> will not be able to see the cookie.  To
+override this, use cookie.setPath(). E.g. to set a cookie for the
+entire host, do:</p>
+<blockquote>
+<p>cookie.setPath('/')</p>
+</blockquote>
+<p>-- CostasMalamas - 17 Jan 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

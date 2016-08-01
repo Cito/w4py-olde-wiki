@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>URI Mapping</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="uri-mapping">
+<h1 class="title">URI Mapping</h1>
+
+<p>This page is for discussion of the future of URI Mapping in Webware.
+Please feel free to edit inline, rather than in a discussion format.</p>
+<p>see also: <a class="reference external" href="managingtheurispace.html">ManagingTheURISpace</a></p>
+<p>The end product may or may not look like
+<a class="reference external" href="http://jaguar.sourceforge.net/webware/urldecode.html">http://jaguar.sourceforge.net/webware/urldecode.html</a></p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 26 Apr 2002</p>
+<div class="section" id="motivation">
+<h1>Motivation</h1>
+<p>There are several ways to &quot;interpret&quot; a REQUEST_URI to get at a piece
+of data that should be returned to the client. In Webware it amounts
+to finding a piece of code, called a Servlet, that knows what to do
+with whatever bits of data have been dumped into a Request object to
+create an appropriately formed Response object representing the
+Resource.  More than one Servlet is often involved in interpreting a
+request.</p>
+<p><strong>direct filesystem mapping</strong></p>
+<p><strong>with ExtraPathInfo</strong></p>
+<p><strong>regex mapping, like mod_rewrite</strong></p>
+<p><strong>Ant-style FileSets/FileMappers</strong></p>
+<p><a class="reference external" href="http://jakarta.apache.org/ant/manual/index.html">http://jakarta.apache.org/ant/manual/index.html</a></p>
+<p>This may be a filesytem-centric strategy, but it provides a very
+simple pattern language that is suitable for many purposes, including
+Webware's current default strategy.</p>
+<p>It could be also be used to replace &quot;ExtensionsToIgnore&quot; and friends
+with a richer selection language.</p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 29 Apr 2002</p>
+<p><strong>flat text file explicitly specifying a complete map</strong></p>
+<p><strong>XPath expressions</strong></p>
+<p><strong>XML file</strong></p>
+<p>XML instance is a tree-shaped hierarchy of typed containers, which we
+can use to represent a mapping of URI space onto Webware
+entities. URISpace has the same characterisitics; it's tree-shaped,
+hierarchical, and we can use the typing of containers to hold metadata
+about parts of URI space or bits of config/metadata that can be passed
+to the Webware entity controlling that part. See, as a really nice
+example, Mark Nottingham's URISpace 1.0 W3C Note:
+<a class="reference external" href="http://www.w3.org/TR/urispace">http://www.w3.org/TR/urispace</a></p>
+<p>URISpace can be used to model a great variety of types of config file,
+including web or web app servers. Mark's note includes the following
+example:</p>
+<pre class="literal-block">&lt;?xml version=&quot;1.0&quot; ?&gt;
+&lt;urispace xmlns='http://www.w3.org/2000/urispace'
+          xmlns:urispace='http://www.w3.org/2000/urispace'
+          xmlns:conf='http://www.example.org/server-config'
+          xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'&gt;
+    &lt;conf:docroot&gt;/usr/httpd/html&lt;/conf:docroot&gt;
+    &lt;!-- default doc root --&gt;
+    &lt;path match=&quot;images&quot;&gt;
+        &lt;conf:ttl&gt;3600&lt;/conf:ttl&gt;
+        &lt;!-- set a cache-control: max-age --&gt;
+        &lt;conf:auth&gt;basic&lt;/conf:auth&gt;
+        &lt;!-- authenticate users --&gt;
+        &lt;conf:authDB&gt;/usr/httpd/users.db&lt;/conf:authDB&gt;
+        &lt;scheme match=&quot;https&quot;&gt;
+            &lt;conf:authenticate&gt;off&lt;/conf:authenticate&gt;
+            &lt;!-- unless they're using SSL --&gt;
+        &lt;/scheme&gt;
+    &lt;/path&gt;
+    &lt;path match=&quot;cgi-bin&quot;&gt;
+        &lt;!-- cgi directory --&gt;
+        &lt;conf:docroot&gt;/usr/httpd/cgi-bin&lt;/conf:docroot&gt;
+        &lt;conf:execCGI /&gt;
+    &lt;/path&gt;
+    &lt;path match=&quot;local&quot;&gt;
+        &lt;!-- deny non-local address --&gt;
+        &lt;conf:denyAccess /&gt;
+        &lt;conf:match type=&quot;clientaddress&quot; value=&quot;#allowedList&quot;&gt;
+            &lt;!-- point to a container --&gt;
+            &lt;conf:denyAccess urispace:op=&quot;clear&quot; /&gt;
+        &lt;/conf:match&gt;
+    &lt;/path&gt;
+    &lt;rdf:Bag ID=&quot;allowedList&quot;&gt;
+        &lt;!-- define a Bag for access ctrl --&gt;
+        &lt;rdf:li&gt;192.168.1.0/24&lt;/rdf:li&gt;
+        &lt;rdf:li&gt;172.16.0.0/16&lt;/rdf:li&gt;
+        &lt;rdf:li&gt;10.0.0.0/12&lt;/rdf:li&gt;
+    &lt;/rdf:Bag&gt;
+&lt;/urispace&gt;</pre>
+<p>This approach has a few benefits: 1) XML aware editors and tools are
+growing in number and variety; 2) XML really does map nicely onto the
+problem domain (i.e,. mapping two hierarchical spaces to each other);
+3) the config parser is just another XML application, pretty trivial
+to code; 4) this vocabulary gives a lot of freedom and flexibility; 5)
+the concrete improvements to the actual URI dereferencing algorithm(s)
+is separable from the way we represent the mapping it instantiates; 6)
+URISpace vocabulary seems to fit nicely with the MVC
+container-controller principle in <a class="reference external" href="managingtheurispace.html">ManagingTheURISpace</a>.</p>
+</div>
+<div class="section" id="web-xml">
+<h1>Web.xml</h1>
+<p>The Java Servlet Spec uses a file $APP_HOME/__WEB_INF__/web.xml to
+configure a web application (Context in webware speak). Part of this
+file is dedicated to describing the servlets included in the app, and
+a mapping of which URI paths are handled by which servlet. (Again,
+very good MVC style.)</p>
+<p>An example:
+<a class="reference external" href="http://jakarta.apache.org/tomcat/tomcat-4.1-doc/appdev/web.xml.txt">http://jakarta.apache.org/tomcat/tomcat-4.1-doc/appdev/web.xml.txt</a></p>
+<p>The URISpace XML file described above is a much more general extension
+of this.</p>
+<p>(Sun seems pretty sticky about publishing the spec, but you can get it
+here: <a class="reference external" href="http://www.jcp.org/aboutJava/communityprocess/final/jsr053/">http://www.jcp.org/aboutJava/communityprocess/final/jsr053/</a> )</p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 29 Apr 2002</p>
+</div>
+<div class="section" id="requirements">
+<h1>Requirements</h1>
+<p>The main purpose of a URI Mapper is to make all of these strategies
+possible and interchangable without a lot of pain.  Furthermore,
+different strategies are appropriate for different paths in the URI
+space.</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 11 Aug 2004</p>
+
+</div>
+</body>
+</html>

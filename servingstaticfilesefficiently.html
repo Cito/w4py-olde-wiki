@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Serving static files efficiently</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="serving-static-files-efficiently">
+<h1 class="title">Serving static files efficiently</h1>
+
+<p>You can further speed up static file serving by exploiting client-side caching.
+The idea is to send the client a version-specific URL for static files, and
+tell the client that it may cache that data forever.
+When the underlying file changes, your Webware app generates a new URL.
+This reduces traffic to the server, but more importantly,
+it can result in noticeably faster response at the client end.</p>
+<p>This requires co-operation from Apache version 2.
+Here's the details:</p>
+<p>Configure apache-2 so that urls like <span class="docutils literal"><span class="pre">/&#64;X/...</span></span> are mapped to <span class="docutils literal"><span class="pre">/...</span></span>,
+and the client is told it may cache the result for a long time:</p>
+<pre class="literal-block">RewriteRule ^/&#64;[^/]+/(.+)$        /$1      [L,E=VERSIONED_FILE:1]
+Header add &quot;Expires&quot; &quot;Thu, 10 Nov 2016 23:30:00 GMT&quot; env=VERSIONED_FILE
+Header add &quot;Cache-Control&quot; &quot;max-age=315360000&quot; env=VERSIONED_FILE</pre>
+<p>Modify your webware app to prefix version info to your static URLs.
+For example, for data that almost never changes, like images,
+return URLs like <span class="docutils literal">/&#64;0/images/foo.gif</span>:</p>
+<pre class="literal-block"># Apache serves image data out of /images.
+# Put this in an app-wide config file:
+images_url = '/&#64;0/images'
+...
+self.write('&lt;img src=&quot;%s/foo.gif&quot; ... &gt;' % images_url)</pre>
+<p>If such an object really does change, change images_url to <span class="docutils literal">/&#64;1/images</span>
+and restart webkit.</p>
+<p>For files that occasionally do change, like CSS and javascript,
+set the version prefix to the underlying file's modification time.
+A function like this is useful:</p>
+<pre class="literal-block"># Let's assume the URL /static contains
+# static file data served by Apache 2.
+static_dir = '/var/www/myapp/static'  # filesystem path to /static
+
+def static_url(thing):
+    path = '%s/%s' % (static_dir, thing)
+    modtime = os.path.getmtime(path)
+    return '/&#64;%x/static/%s' % (modtime, thing)
+
+# Use it like so:
+self.write('&lt;script type=&quot;text/javascript&quot; src=&quot;%s&quot;&gt;&lt;/script&gt;' % static_url('foo.js'))</pre>
+<p>Thanks to <a class="reference external" href="http://www.thinkvitamin.com/features/webapps/serving-javascript-fast">Cal Henderson</a> for the original idea.</p>
+<p>-- KenLalonde - 20 November 2006</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 20 Nov 2006</p>
+
+</div>
+</body>
+</html>

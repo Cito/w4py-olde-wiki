@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Database Integration</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="database-integration">
+<h1 class="title">Database Integration</h1>
+
+<p>Eventually, you are going to need persistent objects, or just some way
+to store and retrieve data. The approach you use depends on many
+factors, such as:</p>
+<ul class="simple">
+<li><p>Do you have a lot of data to store?</p></li>
+<li><p>Must you work with an existing database schema, or can you start from scratch with a new schema?</p></li>
+<li><p>Do you need/want to have a traditional relational model so that you or your users can use standard report generating tools?</p></li>
+<li><p>Do you need close control over the database schema for purposes of optimization?</p></li>
+<li><p>If you must use an RDBMS, does it have object-relational features (e.g., inheritance) like say, PostgreSQL?</p></li>
+<li><p>Do you need support for transactions to commit changes to one or more objects/data fields atomically?</p></li>
+<li><p>Do you care about ACID compliance (because your data and/or transactions are mission critical)?</p></li>
+<li><p>Do you care about closed source vs. open source?</p></li>
+<li><p>Must you support ad-hoc online queries, report generation, hot database backups, and heavy multi-user or transaction intensive use?</p></li>
+<li><p>How much do you want to spend?</p></li>
+</ul>
+<div class="section" id="possible-solutions">
+<h1>Possible Solutions</h1>
+<p>The following is a list of possible solutions:</p>
+<ul class="simple">
+<li><p>Use an object-oriented database or object store like ZODB</p></li>
+<li><p>Use an RDBMS and the Webware MiddleKit object-relational mapper</p></li>
+<li><p>Use an RDBMS and some other object-relational mapper. Possibilities include:
+* <a class="reference external" href="http://skunkweb.sourceforge.net/pydo.html">PyDO</a>
+* <a class="reference external" href="http://www.xs4all.nl/~bsarempt/python/dbobj.html">Database Objects</a> (dbObj)
+* <a class="reference external" href="http://www.sqlobject.org">SQLObject</a>
+* <a class="reference external" href="http://modeling.sourceforge.net">Modeling</a></p></li>
+<li><p>Forget about object-relational mapping--use the Python DB API and an RDBMS directly</p></li>
+<li><p>Use <a class="reference external" href="dbutils.html">DBUtils</a> on top of the Python DB API</p></li>
+<li><p>Use Python's pickle and shelve modules</p></li>
+<li><p>Roll your own system with a flat file</p></li>
+</ul>
+</div>
+<div class="section" id="pros-and-cons-of-each-solution">
+<h1>Pros and Cons of Each Solution</h1>
+<ul class="simple">
+<li><p><a class="reference external" href="zodb.html">ZODB</a></p></li>
+<li><p><a class="reference external" href="middlekit.html">MiddleKit</a></p></li>
+<li><p><a class="reference external" href="http://skunkweb.sourceforge.net/pydo.html">PyDO</a></p></li>
+<li><p>dbObj</p></li>
+<li><p><a class="reference external" href="pythondbapiandrdbms.html">Python DB API and RDBMS</a></p></li>
+<li><p>Python's pickle and shelve modules</p></li>
+<li><p><a class="reference external" href="rollyourownsystemwithaflatfile.html">Roll your own system with a flat file</a></p></li>
+</ul>
+</div>
+<div class="section" id="comments-about-various-rdbms-and-oodbms-systems">
+<h1>Comments about various RDBMS and OODBMS Systems</h1>
+<ul class="simple">
+<li><p>Informix (proprietary)</p></li>
+<li><p>InterBase (open source)</p></li>
+<li><p><a class="reference external" href="mysql.html">MySQL</a> (open source)</p></li>
+<li><p>Oracle (proprietary)</p></li>
+<li><p><a class="reference external" href="postgresql.html">PostgreSQL</a> (open source)</p></li>
+<li><p><a class="reference external" href="sapdb.html">SAP DB</a> (now open source, based on ADABAS code)</p></li>
+<li><p>SQL Server (proprietary)</p></li>
+<li><p>Sybase (proprietary)</p></li>
+</ul>
+</div>
+<div class="section" id="more-about-rdbms-and-oodbms-systems">
+<h1>More about RDBMS and OODBMS Systems</h1>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.firstsql.com/dbdebunk/index.htm">Database Debunkings</a> is a great place to look for intelligent
+discussion about database issues by people like C.J. Date and Fabian
+Pascal.</p></li>
+<li><p><a class="reference external" href="http://searchdatabase.techtarget.com/home/">searchDatabase.com</a> seems to be another great site to start
+exploring the literature on databases.</p></li>
+<li><p><a class="reference external" href="http://searchdatabase.techtarget.com/tip/1,289483,sid13_gci788645,00.html?FromTaxonomy=%2Fpr%2F284872">When will they ever learn</a> is a critique (by Fabian Pascal) of an
+exchange on whether MySQL and Innobase are DBMSs, or even
+relational. C.J. Date makes an appearance, and you get to hear the
+horses speak directly.</p></li>
+<li><p><a class="reference external" href="http://www.palslib.com/">Linux RDBMS Library</a> Compilation of free readings on Linux
+relational databases.</p></li>
+<li><p>What exactly is a relational database? C.J. Date explains in <a class="reference external" href="http://www.brcommunity.com/cgi-local/x.pl/commentary/b068.html">A
+Closer Look at Relational Database</a>. This site requires free
+registration.</p></li>
+<li><p>Fabian Pascal explains why SQL sucks and why all SQL DBMS violate
+important relational features, some more than others in <a class="reference external" href="http://www.firstsql.com/dbdebunk/fp4a.htm">Little
+Relationship to Relational</a>.</p></li>
+<li><p>Think OODBMS are the bee's-knees? Better read <a class="reference external" href="http://searchdatabase.techtarget.com/tip/1,289483,sid13_gci769023,00.html?FromTaxonomy=%2Fpr%2F284872">this</a> first.</p></li>
+</ul>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 30 Dec 2001</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 12 Sep 2005</p>
+
+</div>
+</body>
+</html>

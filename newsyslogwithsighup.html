@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Newsyslog with SIGHUP</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="newsyslog-with-sighup">
+<h1 class="title">Newsyslog with SIGHUP</h1>
+
+<p>WebWare don't manage it's logs. it print log in stdin. so I run AppServer like:</p>
+<pre class="literal-block">$ APPSERVER/AppServer &gt;&gt; Logs/webware.log 2&gt;&amp;1 command.</pre>
+<p>But this method cause to large log file. so I fix problem with newsyslog and some fix on Launch.py</p>
+<p>In your application's Launch.py add below lines:</p>
+<pre class="literal-block">import signal
+
+def setupSignal():
+    def handlerHUP(signum, frame):
+        sys.exit(3)
+
+    signal.signal( signal.SIGHUP, handlerHUP)</pre>
+<p>and edit main():</p>
+<pre class="literal-block">def main(args):
+    global webwarePath, appWorkPath
+
+    setupSignal()
+
+    bla bla ...</pre>
+<p>edit /etc/newsyslog.conf:</p>
+<pre class="literal-block">/$APPSERVER/Logs/webware.log     webware:webware 644  5  1000  *       Z       /$APPSERVER/appserverpid.txt</pre>
+<p>then run newsyslog. you will see:</p>
+<pre class="literal-block">$ ls -l /$APPSERVER/Logs/webware.log*
+-rw-r--r--  1 webware  webware      75  4 25 10:59 /$APPSERVER/Logs/webware.log
+-rw-r--r--  1 webware  webware  187907  4 25 10:59 /$APPSERVER/Logs/webware.log.0.gz</pre>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 27 Apr 2005</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>mod_rewrite Recipes</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="mod-rewrite-recipes">
+<h1 class="title">mod_rewrite Recipes</h1>
+
+<p><em>This page describes how to use Apache's mod_rewrite module with
+WebKit, and mod_webkit in particular.  It starts with a general
+overview and then presents some recipes for solving specific
+problems.</em></p>
+<div class="section" id="overview">
+<h1>Overview</h1>
+<p>Related reading: <a class="reference external" href="http://httpd.apache.org/docs/mod/mod_rewrite.html">mod_rewrite reference docs</a>, <a class="reference external" href="http://httpd.apache.org/docs/misc/rewriteguide.html">mod_rewrite guide</a></p>
+<p><em>mod_rewrite</em> is an Apache module that is used to remap URLs.  Here's how the Apache manual describes it:</p>
+<blockquote>
+<p>This module uses a rule-based rewriting engine (based on a
+regular-expression parser) to rewrite requested URLs on the
+fly. It supports an unlimited number of rules and an unlimited
+number of attached rule conditions for each rule to provide a
+really flexible and powerful URL manipulation mechanism. The URL
+manipulations can depend on various tests, for instance server
+variables, environment variables, HTTP headers, time stamps and
+even external database lookups in various formats can be used to
+achieve a really granular URL matching.</p>
+</blockquote>
+<p>It is an incredibly flexible tool that can be used for a wide range of
+tasks.  Here's some examples:</p>
+<ul class="simple">
+<li><p>change the file layout of your site without breaking bookmarked or
+search-engine indexed URLs</p></li>
+<li><p>make a certain directory or file visible in every subdirectory of
+your site without needing to symlink to it in every subdir or manage
+complex relative paths.</p></li>
+<li><p>use mod_webkit to serve files that appear to the user as if they are
+in Apache's top directory ('DOCUMENT_ROOT').  Without mod_rewrite,
+each URL would look like <span class="docutils literal">www.mysite.com/WK/MyServlet.py</span>.  With
+mod_rewrite, you can use a simpler URL like
+<span class="docutils literal">www.mysite.com/MyServlet.py</span></p></li>
+<li><p>redirect to files on remote servers</p></li>
+<li><p>parsing 'variable assignment url prefixes' out of URLs before
+passing them on to webkit and adding the variables to the cgi
+ENVIRONMENT dictionary (trans.request().environ())</p></li>
+</ul>
+<p>To use mod_rewrite you need to compile it with Apache and then enable it in your <span class="docutils literal">httpd.conf</span> configuration file. See the apache docs for compilation instructions.  To enable it in your <span class="docutils literal">httpd.conf</span> file, uncomment or add the following lines to the DSO section in part 1:</p>
+<pre class="literal-block">LoadModule rewrite_module modules/mod_rewrite.so
+AddModule mod_rewrite.c</pre>
+<p>-- TavisRudd - 05 Mar 2002</p>
+</div>
+<div class="section" id="recipes">
+<h1>Recipes</h1>
+<div class="section" id="hiding-the-wk-part-of-an-url-when-using-mod-webkit">
+<h2>Hiding the /WK part of an URL when using mod_webkit</h2>
+<p>To use ModWebKit, you'll usually have some lines like this in your
+<span class="docutils literal">http.conf</span>:</p>
+<pre class="literal-block">&lt;Location /WK&gt;
+    WKServer localhost 8086
+    SetHandler webkit-handler
+&lt;/Location&gt;</pre>
+<p>Then /WK/Servlet will run Servlet.py in the default context.</p>
+<p>The problem with this is that you now have an implementation dependent
+fragment &quot;WK&quot; (standing for &quot;WebKit&quot;) in your application URLs. This
+is considered bad for various reasons. Ideally, the URL should only
+reflect the content and be human readable (you might want to read the
+passage about <a class="reference external" href="http://www.webreference.com/html/tutorial25/3.html#HEAD-3">The right URL for your link</a> from the Tutorial <a class="reference external" href="http://www.webreference.com/html/tutorial25/">The
+Care and Feeding of Hyperlinks</a>). You cannot simply omit the Location
+&quot;/WK&quot; or replace it by &quot;/&quot; if you want everything to be served through
+WebKit (I don't know why, but it won't work). However, you could
+replace &quot;WK&quot; by a memorable and reasonable keyword pointing to the
+application itself, not the technology behind it.</p>
+<p>The more sophisticated solution is to map the URL using the URL
+manipulation capabilities of Apache provided by mod_rewrite. Perhaps
+you want to map different URLs to different contexts, or even to the
+root of the website:</p>
+<pre class="literal-block">RewriteEngine On
+RewriteRule ^(.*) /WK/LocalSite/$1 [L,PT]  ## NOTE: put no space between L and PT!</pre>
+<p>The <span class="docutils literal">L</span> flag means &quot;this the LAST rule, don't apply any more&quot; and
+<span class="docutils literal">PT</span> means &quot;PASS-THROUGH the changed URI to the next handler.&quot; You
+can leave the L off, but the PT is essential if you are using
+mod_webkit.  See the mod_rewrite reference guide for an explanation.</p>
+<p>To redirect all images to a static location, so that there's no
+overhead from calling Webware, you would put this rewrite directive
+<em>before</em> the above:</p>
+<pre class="literal-block">RewriteRule ^(.*\.(jpg|gif|png))$ /images/$1 [L,PT]</pre>
+<p>For a virtual domain, do something like:</p>
+<pre class="literal-block">&lt;VirtualHost bobsyouruncle.com&gt;
+    ...
+    RewriteEngine On
+    RewriteRule ^(.*)$ /WK/BobsYourUncle/$1 [L,PT]
+&lt;/VirtualHost&gt;</pre>
+<p>This assumes <span class="docutils literal">/WK</span> (not virtual) is where the AppServer is located,
+and that you've created a context <span class="docutils literal">BobsYourUncle</span> for that virtual
+domain.</p>
+<p>What if you aren't using mod_webkit?  Say you are using a CGI adapter
+at <a class="reference external" href="http://mainhost.com/cgi-bin/WebKit.cgi">http://mainhost.com/cgi-bin/WebKit.cgi</a> ?  Then just replace <span class="docutils literal">/WK</span>
+with <span class="docutils literal"><span class="pre">/cgi-bin/WebKit.cgi</span></span> in all these examples.  _(can someone
+confirm this for virtual domains?)_ You can use <span class="docutils literal">[L]</span> instead of
+<span class="docutils literal">[L,PT]</span> if you aren't using mod_webkit. _(Do you need <span class="docutils literal">[L,PT]</span> if
+you are using mod_snake, etc?)_</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a>  ... with changes by TavisRudd - 05 Mar 2002</p>
+<p>If the image location is the same as the original URL, use a hyphen as the second argument.  You don't need $1's ()s in this case:</p>
+<pre class="literal-block">RewriteRule ^.*\.(jpg|gif|png)$ - [L,PT]</pre>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 10 Dec 2001</p>
+<hr class="docutils" />
+<p>I had two problems. The first was that I put my httpd.conf rewrite
+rules in a &lt;Directory&gt; such as / or the doc root. This gave either a
+repeating path that was HTTP Forbidden, or gave no response. The
+solution was to put the rules above the first &lt;Directory&gt;.</p>
+<p>The second problem was that if I put a slash in front of $1, the path
+could not be found.</p>
+<p>Finally, I was able to remove the ^ and $, which aren't needed to
+capture the whole path. My final solution was:</p>
+<pre class="literal-block">...
+DocumentRoot &quot;/usr/local/apache/htdocs&quot;
+
+RewriteEngine On
+RewriteRule (.*) /webkit/ContextName$1 [L,PT]
+
+&lt;Directory /&gt;
+...</pre>
+<p>I used Apache 1.3.22 (built from source) on Mandrake Linux 8.1.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 22 Jan 2002</p>
+<hr class="docutils" />
+<p>I used .htaccess files to set the rewrite rule, and had the following
+rules as above:</p>
+<pre class="literal-block">RewriteEngine On
+RewriteRule ^(.*\.(jpg|jpeg|gif|png)) /images/$1 [L,PT]
+RewriteRule ^(.*) /cgi/OneShot.cgi/MyContext/$1 [L,PT]</pre>
+<p>This caused the recursion mentioned above in another case, to solve
+this I went to /cgi/.htaccess and placed there:</p>
+<pre class="literal-block">RewriteEngine Off</pre>
+<p>This solved it. Now I can get to actually try to build my application.</p>
+<p>-- BaruchEven - 17 Feb 2002</p>
+<hr class="docutils" />
+<p>To clarify, if you want Webware to serve URLs in the top-level
+directory (/index.py) without a /WW prefix <em>AND</em> serve certain files
+statically:</p>
+<pre class="literal-block">1 RewriteRule ^/images(.*) - [L]
+2 RewriteRule ^/pix/(images|thumbs)/(.*) - [L]
+3 RewriteRule ^/WW($|/.*) - [L]
+4 RewriteRule ^(.*) /WW/$1 [L,PT]</pre>
+<p>(The line numbers are not in the Apache file.)</p>
+<p>(1) and (2) rewrite /images, /pix/images and /pix/thumbs to their
+original URLs (&quot;-&quot;) and use &quot;L&quot; to prevent rule 4 from executing.</p>
+<p>(3) rewrites URLs with the WebKit prefix to their original URLs, and
+uses &quot;L&quot; to prevent 4 from executing, which would wrongly rewrite
+/WW/index.py to /WW/WW/index.py</p>
+<p>(4) does most of the work, rewriting /index.py to /WW/index.py so that
+users don't have to type the /WW prefix. &quot;PT&quot; is necessary or the
+request won't be passed properly to WebKit.</p>
+<p>I don't know if it's possible to make WebKit serve directly from /
+using &lt;Location /&gt; <em>AND</em> serve some files statically.  If it were
+possible, you'd need to supercede the &quot;SetHandler webkit-handler&quot;,
+thus:</p>
+<pre class="literal-block">&lt;Location /WW&gt;
+    WKServer localhost 8086
+    SetHandler webkit-handler
+&lt;/Location&gt;
+&lt;Location /images&gt;
+    SetHandler apache-core-default-handler
+&lt;/Location&gt;</pre>
+<p>but I don't know how you set the handler back to the default once
+you've set it to something else.</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 16 Apr 2002</p>
+</div>
+</div>
+<div class="section" id="hiding-the-wk-using-modpython-in-a-virtual-host">
+<h1>Hiding the /WK using ModPython in a Virtual Host</h1>
+<p>My server is hosting 3 unrelated URLs.  Each URL resolves to a virtual
+host.  One of these virtual hosts is used as the example.</p>
+<p>The Apache config for the Virtual Server includes both the Location
+directive as well as the RewriteRule directives.  This allows for
+different configs for each of the three virtual hosts.</p>
+<p>The RewriteRules accomplish two things.</p>
+<p>One, the third rule adds the &quot;/wk&quot; to the start of the URL passed
+to Apache.  This makes Webware happy.  However, the first rule
+ensures that a &quot;/wk&quot; does not already exist in the URL, as two
+&quot;/wk&quot; values would be a problem.</p>
+<p>Two, the second rule sends request for images used by mywebcontext
+to the proper non-context directory.  The &quot;[L,PT]&quot; on both the
+second and third rules allows only one of those rules to be processed.</p>
+<p>Given the server directory structure:</p>
+<pre class="literal-block">/pub
+    /httpd
+        /myweb
+            /mywebcontext
+            /mywebimages</pre>
+<p>The Webware context is:</p>
+<pre class="literal-block">'Contexts':  {'mywebcontext':'/pub/httpd/myweb/mywebcontext',
+                                      'default':'mywebcontext'}</pre>
+<p>The Apache config is:</p>
+<pre class="literal-block">&lt;VirtualHost *&gt;
+         DocumentRoot /pub/httpd/myweb
+         ServerName www.e-myweb.com
+        #
+        # Added For WebWare / WebKit Support
+        #
+        RewriteEngine On
+        RewriteRule ^/wk/(.*) /$1 [R]
+        RewriteRule ^/images/(.*) /mywebimages/$1 [L,PT]
+        RewriteRule ^/(.*) /wk/$1 [L,PT]
+        &lt;Location /wk&gt;
+                SetHandler python-program
+                # add the directory that contains ModPythonAdapter.py
+                PythonPath &quot;sys.path+['/usr/local/Webware/WebKit']&quot;
+                PythonOption AppWorkDir /pub/httpd/myweb
+                PythonHandler ModPythonAdapter
+                PythonDebug On
+        &lt;/Location&gt;
+&lt;/VirtualHost&gt;</pre>
+<p>-- TacticalJack - 04 Sep 2002</p>
+</div>
+<div class="section" id="making-webkit-serve-the-root">
+<h1>Making WebKit serve the root</h1>
+<p>I use this trick:</p>
+<pre class="literal-block">&lt;Location /&gt;
+        WKServer localhost
+        SetHandler webkit-handler
+&lt;/Location&gt;
+&lt;Location /_&gt;
+        WKServer localhost
+        SetHandler webkit-handler
+&lt;/Location&gt;
+RewriteEngine On
+RewriteRule $^      /_/   [L,NS]</pre>
+<p>This makes WebKit serve everything including the root folder.</p>
+</div>
+<div class="section" id="mixed-serving-of-static-files-and-dynamic-pages">
+<h1>Mixed serving of static files and dynamic pages</h1>
+<p>Another one is:</p>
+<pre class="literal-block">RewriteCond %{REQUEST_FILENAME}     !-d
+RewriteCond %{REQUEST_FILENAME}     -F
+RewriteRule ^(.*)                   - [L]</pre>
+<p>This tells apache to see if it has the file to serve for the path requested, then check it's not a directory and then serve it, else webkit handles request as ususal. That's a very nice thing to have!</p>
+<p>This enables you to have files like css and favicon in the root of the site, yet in a different directory than code (in htdocs or something) - and no special cases are needed for different file types and stuff. Unlike the recipes above.</p>
+<p>Another possible use is to generate static cached pages for paths that give the most load on your appserver (don't forget to delete them someday after).</p>
+<p>Make sure to have this for the root folder:</p>
+<pre class="literal-block">Options -Indexes</pre>
+<p>Else it will spit out directory listing instead of letting webkit respond - my apache believes root folder is that special that if it can be listed it passes &quot;RewriteCond %{REQUEST_FILENAME} -F&quot; test positive and serves it even it really being a folder. Maybe a misconfiguration of mine.</p>
+<p>--maluke <a class="reference external" href="http://maluke.com/">http://maluke.com/</a> 17 Sep 2004</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 17 Sep 2004</p>
+
+</div>
+</body>
+</html>

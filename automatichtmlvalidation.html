@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Automatic HTML Validation</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="automatic-html-validation">
+<h1 class="title">Automatic HTML Validation</h1>
+
+<div class="section" id="problem">
+<h1>Problem</h1>
+<ul class="simple">
+<li><p>Doing &quot;View source&quot; from the browser doesn't work if your page was
+produced in response to a POST, since your browser may not re-POST
+the form variables (mozilla doesn't, at least).</p></li>
+<li><p>Debugging by hand is tedious, and if posible should be avoided by
+using HTML validators.</p></li>
+<li><p>You can't use online web validators (which validate a given URL) in
+the context of a web application, because your web application often
+requires a session id, which the validator obviously can't send to
+your server</p></li>
+</ul>
+</div>
+<div class="section" id="approach">
+<h1>Approach</h1>
+<p>This approach uses Web Design Group's HTML validator, which can be
+installed on your local machine (available at
+<a class="reference external" href="http://www.htmlhelp.com/tools/validator/">http://www.htmlhelp.com/tools/validator/</a> ).</p>
+<p>You hook it up to your servlets so that the HTML output your servlet
+produces is automatically validated, and the validation output and
+full HTML source (with highlighted errors) is appended to the normal
+output and sent to the browser.</p>
+</div>
+<div class="section" id="details">
+<h1>Details</h1>
+<ul class="simple">
+<li><p>Install the WDG offline-validator.  In particular, you need the
+&quot;validate&quot; script which can be called from the command line. Debian
+users: apt-get install wdg-html-validator</p></li>
+<li><p>Apply the patch at
+<a class="reference external" href="http://www.opensky.ca/~jdhildeb/webware_validator_streambuffer.patch">http://www.opensky.ca/~jdhildeb/webware_validator_streambuffer.patch</a>
+to webware.  This makes it possible to get the accumulated HTML in
+the response object from within your servlets, before the response
+has been committed.</p></li>
+<li><p>Add the validateHTML method (available at
+<a class="reference external" href="http://www.opensky.ca/~jdhildeb/webwarevalidator.py">http://www.opensky.ca/~jdhildeb/webwarevalidator.py</a> ) to your
+SitePage, and call it at the end of writeBodyParts (you'll have to
+override Page.writeBodyParts() if you haven't already done
+so). validateHTML won't get all the HTML produced by your servlet if
+you call response.flush() explicitly, so don't do that. :)</p></li>
+</ul>
+<p>Enjoy!</p>
+<p>-- JasonHildebrand - 20 Sep 2002</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 11 Aug 2004</p>
+
+</div>
+</body>
+</html>

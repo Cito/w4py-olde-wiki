@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Using Webware Effectively</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="using-webware-effectively">
+<h1 class="title">Using Webware Effectively</h1>
+
+<p>Here are some notes on how to use Webware to gain maximum performance:</p>
+<ul>
+<li><p>use Webware with Apache!</p></li>
+<li><p>use mod_webkit, rather than the slower adaptors</p></li>
+<li><p>keep the processing that actually occurs in <a class="reference external" href="webkit.html">WebKit</a> to a minimum by
+serving all static requests directly from Apache / Squid.  Only
+serve dynamic content from <a class="reference external" href="webkit.html">WebKit</a>.</p></li>
+<li><p>follow the Apache tuning guidelines
+(<a class="reference external" href="http://httpd.apache.org/docs/misc/perf-tuning.html">http://httpd.apache.org/docs/misc/perf-tuning.html</a>)</p></li>
+<li><p>if you have a smp server(s), <a class="reference external" href="webkit.html">WebKit</a> might scale better if you run
+one <a class="reference external" href="webkit.html">WebKit</a> process per processor to overcome Python's global
+interpreter lock. This will require multiple ports and multiple
+mod_webkit entries in your httpd.conf file.  You'll need extra RAM
+to do this.</p></li>
+<li><p>Use absolute paths rather than doing relative path calculations
+instead of doing them in Python code.  If you have site global
+directories for your stylesheets, images, etc., but you're using
+mod_rewrite to send all requests to <a class="reference external" href="webkit.html">WebKit</a> do something like this:</p>
+<pre class="literal-block">&lt;VirtualHost_ *&gt;
+    ServerName www.calrudd.com
+    ServerAlias calrudd.com
+    DocumentRoot &quot;/var/www/www.calrudd.com/public_html&quot;
+    &lt;Location /WK&gt;
+        WKServer localhost 8086
+        SetHandler webkit-handler
+    &lt;/Location&gt;
+
+    RewriteEngine on
+    RewriteRule .*/GlobalImages_/(.*)$ /GlobalImages_/$1 [L,PT]
+    RewriteRule .*/spacer.gif$ /GlobalImages_/spacer.gif [L, PT]
+    RewriteRule .*/GlobalStylesheets/(.*)$ /GlobalStylesheets/$1 [L, PT]
+    RewriteRule .*/GlobalJavascript/(.*)$ /GlobalJavascript/$1  [L, PT]
+    RewriteRule .*/ImageStore/(.*)$ /ImageStore/$1  [PT]
+&lt;/VirtualHost&gt;</pre>
+</li>
+</ul>
+<p>This much easier and way more efficient than calculating these
+relative paths in your Servlet code.  It allows you to do this:</p>
+<pre class="literal-block">&lt;img src=&quot;/GlobalImages_/xx.jpg&quot; width=&quot;XX&quot; height=&quot;XX&quot; /&gt;</pre>
+<p>rather than this:</p>
+<pre class="literal-block">&lt;img src=&quot;${pathToRoot_}GlobalImage_/xx.jpg&quot; width=&quot;XX&quot; height=&quot;XX&quot; /&gt;</pre>
+<ul class="simple">
+<li><p>use aggressive caching wherever possible:</p>
+<ul>
+<li><p>in your app code</p></li>
+<li><p>in your db access</p></li>
+<li><p>in your html generation</p></li>
+</ul>
+</li>
+<li><dl class="simple">
+<dt>use URIs that can be cached outside of <a class="reference external" href="webkit.html">WebKit</a> (using Squid or something like that) --</dt>
+<dd><p>no query strings wherever possible</p>
+</dd>
+</dl>
+</li>
+<li><p>encourage client-side caching of static data; see <a class="reference external" href="servingstaticfilesefficiently.html">ServingStaticFilesEfficiently</a>.</p></li>
+<li><p>design your db schema and queries well</p></li>
+<li><p>design your application well</p></li>
+<li><p>use apache-bench and Steve Purcell's HTTPSession.py to profile your site and identify hotspots.</p></li>
+<li><p>you'll probably identify a small number of URIs that eat up most
+of your processing time.  If you really need to (and I doubt you
+will), you can achieve significant performance gains by hardwiring
+each of them to a particular <a class="reference external" href="webkit.html">WebKit</a> port / process and bypassing all
+the URI-to-servlet mapping that <a class="reference external" href="webkit.html">WebKit</a> usually does.  To do this,
+you'll either need to hack <a class="reference external" href="webkit.html">WebKit</a> yourself or use the experimental
+refactoring of Webware that I've been working on (search for
+<a class="reference external" href="webwareexprefactoring.html">WebwareExpRefactoring</a> on the Wiki).  If you use
+<a class="reference external" href="webwareexprefactoring.html">WebwareExpRefactoring</a>, these hard-wired servlets can be run in the
+same process as your normal servlets.</p></li>
+<li><p>keep the Python performance tips in mind while developing
+(<a class="reference external" href="http://manatee.mojam.com/~skip/python/fastpython.html">http://manatee.mojam.com/~skip/python/fastpython.html</a>)</p></li>
+</ul>
+<p>Some helpful strategies are
+* use shortcut namebinding like this:</p>
+<pre class="literal-block">def __init__(self):
+      self._lock = lock = Lock()
+      self._lock_acquire = lock.acquire
+      self._lock_release = lock.release
+
+def doSomething(self):
+      self._lock_acquire()
+      ...
+      self._lock_release()</pre>
+<ul>
+<li><p>always convert globals to locals by using default args:</p>
+<dl class="simple">
+<dt>def doSomething(self, arg1, arg2, currTime=time.time):</dt>
+<dd><p>...
+# do something with currTime()</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>-- TavisRudd - 30 Mar 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 29 Nov 2006</p>
+
+</div>
+</body>
+</html>

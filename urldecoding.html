@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>URL Decoding</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="url-decoding">
+<h1 class="title">URL Decoding</h1>
+
+<p><em>Some ideas on things that I'd like to see Webware allow with URL
+decoding:</em></p>
+<p>I'd like to be able to join two directories -- one which contains
+servlets, and one with contains static pages or perhaps Cheetah
+templates.  A nonprogrammer would then be insulated from documents
+which would be dangerous to edit (Python code).</p>
+<p>I'd like to properly represent abstract objects (like database
+objects).  I can do this with <a class="reference external" href="extrapathinfo.html">extraPathInfo</a> now, but the caching
+doesn't work as I'd want -- I have to recreate the servlet each time
+on awake(), when if the servlets were cached according to that
+<a class="reference external" href="extrapathinfo.html">extraPathInfo</a> (or something like that), then I'd only have to set
+things up in <span class="docutils literal">__init__</span>.</p>
+<p>I'd like to be able to modify settings based on the path of the URL.
+For instance, .html files in some paths might need to go through a
+processor that wraps them in a template -- in other paths they might
+be presented verbatim.  In some paths, errors should be emailed to me,
+in other paths they should be displayed immediately.</p>
+<p>I'd like to be able to better be able to resolve conflicts between
+extensions.  Specifically, I'd like to be able to say that .tmpl files
+override .py files.</p>
+<p>I'd like to do positional arguments before the servlet -- perhaps
+fragile, but also traditional and a bit more compact.</p>
+<p>Somewhat like mod_speling, I'd like to have case-insentive URLs and
+I'd like to have spell checking in the URLs -- including spell
+checking on non-filesystem arguments (positional URL arguments both
+prefixing and following the servlet name).</p>
+<p>I'd like to have enough introspection to create a sitemap directly,
+as well as indexes and the like.</p>
+<p>I'd like to be able to represent arbitrary URL mappings, ala
+mod_rewrite.</p>
+<p>Do the thing that Zope does, where when you should have a url like
+/path/to/something and it should be /path/to/something/, see if the
+servlet can handle that on its own (by putting a BASE HREF in the
+output), or if you should do a client redirect, or if you should just
+ignore it (for instance, if you are serving a non-href-aware type of
+document).</p>
+<p>Virtual domains.  These are mostly like prefix contexts/variables.</p>
+<p>Many of these are possible with some mod_rewrite magic.</p>
+<hr class="docutils" />
+<p>I <em>don't</em> think that Application should support all of these -- quite
+the contrary.  I'd like to see a system that gives all the <em>hooks</em>
+necessary to do these sorts of things.  I'd like a less centralized
+algorithm -- much shorter than what is currently there.</p>
+<p>The one things that I <em>don't</em> particularly want is fully dynamic URL
+mapping -- I'm fine with indefinitely caching the results of a URL
+decoding.  Those results won't necessarily be a filename, but they'll
+be something.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 06 Nov 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 20 Apr 2004</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>App Ideas</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="app-ideas">
+<h1 class="title">App Ideas</h1>
+
+<p>Here is a list of ideas for open source apps to build with, or for
+Webware. If you add an idea or comment, please sign your name and
+leave a date stamp.  Many of the project ideas listed below will be
+interrelated, so use cross-references where appropriate.</p>
+<p><em>Extensions to the Webware and WebKit core (as opposed to other Kits or
+stand-alone applications) belong on the `Wish List`_ page.</em></p>
+<div class="section" id="rss-kit">
+<h1>RSS kit</h1>
+<p>I'm not sure what this would look like, but some object to facilitate
+the collection of RSS feeds and embedding them into a web page.  I
+guess there would be a few parts coded into a single class, or a
+single class with helper classes:</p>
+<ul class="simple">
+<li><p>Configuration info: which site to connect to, how often to refresh.</p></li>
+<li><p>Read and parse the RSS file at the specified interval.</p></li>
+<li><p>Send some kind of &quot;observe me now&quot; signal to the object that's
+serving the final output, so it can refresh itself.  Perhaps
+Threading.Event or a port of Java's Observable/Observer interface
+can help with this.</p></li>
+<li><p>Offer the RSS data in a Python data structure to any routine that
+asks for it.  Perhaps a method in the RSS-retrieval object can offer
+this, or it can be in a well-known attribute somewhere.</p></li>
+<li><p>Have some boilerplate output objects that convert the RSS data into
+HTML hyperlinks, for simple sites that want an &quot;out of the box&quot;
+solution.  These classes should be scalable for adding cosmetic
+enhancements via stylesheets or subclasses.</p></li>
+</ul>
+<p>-- <a class="reference external" href="mikeorr.html">Mike Orr</a> - 14 Apr 2002</p>
+</div>
+<div class="section" id="miscellaneous-small-objects">
+<h1>Miscellaneous small objects</h1>
+<p>The following other web application servers may have objects worth
+porting to Webware:</p>
+<p><a class="reference external" href="http://www.horde.org/horde">Horde</a> Horde may have some objects worth porting.  &quot;The Horde
+Application Framework is a general-purpose web application framework
+in PHP, providing classes for dealing with preferences, compression,
+browser detection, connection tracking, MIME handling, and more.&quot;</p>
+<p><a class="reference external" href="http://skunkweb.sourceforge.net/">SkunkWeb</a></p>
+<p>-- <a class="reference external" href="mikeorr.html">Mike Orr</a> - 04 Apr 2002</p>
+</div>
+<div class="section" id="web-mail-reader">
+<h1>Web mail reader</h1>
+<p>Webmail software that could be ported to Webware or ideas stolen from.</p>
+<p><a class="reference external" href="http://www.horde.org/imp/">Horde IMP</a> -- IMAP/POP e-mail access.</p>
+<p>(This isn't something I need anytime soon, but would be worthwhile
+someday.</p>
+<p>-- <a class="reference external" href="mikeorr.html">Mike Orr</a> - 04 Apr 2002</p>
+<p><a class="reference external" href="http://bobomail.sf.net">BoboMail</a> is a decent POP webmail client that runs off CGI and bobo
+(an old version of Zope).  It's fairly decent code, and even if a lot
+of stuff gets rewritten it would serve a good starting point for
+writing such a client. -- <a class="reference external" href="ianbicking.html">Ian Bicking</a> - 08 Apr 2002</p>
+</div>
+<div class="section" id="python-card-interface">
+<h1>Python Card Interface</h1>
+<p>(See <a class="reference internal" href="#python-card-interface">Python Card Interface</a>)</p>
+<p><a class="reference external" href="http://pythoncard.sourceforge.net/">PythonCard</a> -- looks very interesting, and maybe it could provide an
+alternative to a browser interface, in those cases where the browser
+provides a less-than-optimal interface (e.g., data entry).  Using
+XmlRpc, maybe there's a way to make this sort of thing easy.</p>
+<p>-- <a class="reference external" href="ianbicking.html">Ian Bicking</a> - 23 Jan 2002</p>
+</div>
+<div class="section" id="webware-objects">
+<h1>Webware Objects</h1>
+<p>(See <a class="reference internal" href="#webware-objects">Webware Objects</a>)</p>
+<p>Just finished reading MiddleKit docs.  What are the chances of adding
+a feature to MiddleKit that will read an XSD file, instead of CSV.
+I'm more than willing to take the point on this ... since I'm bringing
+it up, but I would like some help in some of the nitty-gritty details
+of MiddleKit.  It's new to me.  Otherwise I'm just re-writing a whole
+bunch of stuff that's already been done.</p>
+<p>Thanks -- Ray Leyva - 20 Jan 2002</p>
+<p>I know ambitious name, but it's an ambitious plan.  Generate simple
+reusable objects that know how to render, replicate, and store
+themselves.  I'm initially interested in creating objects that will
+automagically tie themselves into a database once imported into a
+framework, and immediately become available for data entry using
+internally defined display / validation schemes</p>
+<p>This came from my initial, and now semi-abandoned attempts to create a
+single interface <a class="reference internal" href="#webwarereportkit">WebwareReportKit</a>.</p>
+<p>I have so far created a validation, rendering, and reporting scheme.
+I'm starting work on the storage components right now.  Don't want to
+redo the MiddleKit stuff, but until I know where I'm going with the
+general object layout I don't want to commit to any single OR mapping.</p>
+<p>Things to note, the items I've completed work with XML / XSL / XSD,
+and AFAIK the current best crop of those tools live in the java world.
+I don't have the time to be able to both build this infrastructure,
+and help out on the PyXML stuff.  Wish I did.  I use XmlRpc to tie
+them together, of course this could be SOAP / CORBA or whatever remote
+invocation procedure you like to use.</p>
+<p>WebKit is the Application server that I'm basing the framework off of,
+but I'm designing these objects with modularity in mind. IE : I don't
+want to rule out using Java based App servers ... if push comes to
+shove, and some client somewhere REALLY doesn't want to use Python /
+Webware ;D</p>
+<p>Is this of interest to anyone.  I'm trying to figure out the best way
+to make this available ... I really want to give back to the
+community.</p>
+<p>All this because I figured out that for me to be able to print the
+stuff from WebwareReportKit I would need to have a semi-intelligent
+data-entry component first ... duh! ;D</p>
+<p>PS : I'll get to that re-org sometime soon! :D
+-- Ray Leyva - 19 Jan 2002</p>
+<p>I have been working on (and then reworking over and over again...)
+some XML tools, imaginatively known as XMLTools, which attempt to
+provide mappings from database schemas to XML &quot;instances&quot; through
+descriptions of those instances, which are themselves highly
+simplified documents with the same purpose as XML Schema documents
+(which is what I presume you mean by XSD).</p>
+<p>The aim is to support XML instance validation, templating and storage
+in various forms (such as in relational databases). An
+object-relational mapping could be a consequence of this work, but
+that doesn't interest me that much right now.</p>
+<p>Eventually, I want to bring XMLForms back with its core replaced by
+XMLTools, so that the main purpose of XMLForms is the integration with
+Webware (and possibly other Web frameworks).</p>
+<p>-- <cite>Paul Boddie</cite> - 02 Apr 2002</p>
+</div>
+<div class="section" id="webwarereportkit">
+<h1>WebwareReportKit</h1>
+<p>This would be more of a general compendium of standard reports that
+can be generated.  For example:</p>
+<ul class="simple">
+<li><p>Invoices</p></li>
+<li><p>Bill Of Materials ( BOM )</p></li>
+<li><p>Legal documents</p></li>
+<li><p>Real Estate Documents</p></li>
+<li><p>Generic process mandated documents.</p></li>
+<li><p>Heck .. tax forms!</p></li>
+</ul>
+<p>This could be used in conjunction with WebWare, and a database to
+generate data driven reports.  It'd be a very useful component because
+a great many applications require reporting functions.</p>
+<p>PS: Are we putting newest ideas at the top, and oldest at the bottom?
+If so I'd like to ask for general permission to re-order the older
+inputs to reflect that.</p>
+<p>-- Ray Leyva - 27 Nov 2001 &lt;br /&gt;</p>
+<p>That certainly does sound useful! Have you looked at <a class="reference external" href="http://biggles.sf.net">Biggles</a> for
+producing charts? ... fine with me about re-ordering -- Tavis Rudd
+- 27 Nov 2001</p>
+<p>Sorry, moved away from python, and code based reporting tools
+... moved towards XSL:FO solutions. -- Ray Leyva - 19 Jan 2002</p>
+</div>
+<div class="section" id="webwarexmanagement">
+<h1>WebwareXManagement</h1>
+<p>(See <a class="reference external" href="webwarexmanagement.html">WebwareXManagement</a>)</p>
+<p>the link point to a page about some meta discussion about the several
+SomethingManagementSystems. The &quot;X&quot; stands for &quot;something&quot; and not a
+well known display manager :-) -- Stephan Diehl - 22 Nov 2001</p>
+</div>
+<div class="section" id="webwareusermanager">
+<h1>WebwareUserManager</h1>
+<p>(See <a class="reference external" href="webwareusermanager.html">Webware User Manager</a>)</p>
+<p>A good user management system is essential for most of the ideas
+listed below! Click on the link above for more notes and
+discussion. -- <cite>Tavis Rudd</cite> - 20 Nov 2001</p>
+</div>
+<div class="section" id="webware-document-management-system">
+<h1>Webware Document Management System</h1>
+<p>(See <a class="reference external" href="webwaredocumentmanagementsystem.html">Webware Document Management System</a>)</p>
+<p>This might be the same than Webware Content Management System
+and/or a Webware Knowledge Management System. More can be seen on
+the topic page -- Stephan Diehl - 21 Nov 2001</p>
+</div>
+<div class="section" id="webware-wiki">
+<h1>Webware Wiki</h1>
+<p>(See <a class="reference external" href="webwarewiki.html">Webware Wiki</a>)</p>
+<p>a wiki built with Webware.  Wikis are wicked!  -- Tavis Rudd - 30
+Oct 2001</p>
+</div>
+<div class="section" id="webware-cvs-manager">
+<h1>Webware CVS Manager</h1>
+<p>(See Webware CVS Manager)</p>
+<p>A WebKit/Webware implementation of the infamous <span class="docutils literal">viewcvs.cgi</span>
+script. WebKit's persistence and potential for caching could make a
+huge improvement in responsiveness and allow sites like SourceForge to
+consume less hardware for this feature.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">Chuck Esterbrook</a> - 31 Oct 2001</p>
+</div>
+<div class="section" id="webware-db-admin">
+<h1>Webware DB Admin</h1>
+<p>(See <a class="reference internal" href="#webware-db-admin">Webware DB Admin</a>)</p>
+<p>A database management frontend. Like phpMyAdmin, but database
+agnostic.  phpMyAdmin is one of the most popular applications on
+SourceForge.  Someone said that &quot;the application sells the platform&quot;,
+well a high quality tool like this would be a huge selling point for
+Webware.  -- Tavis Rudd - 01 Nov 2001</p>
+</div>
+<div class="section" id="webware-content-management-system">
+<h1>Webware Content Management System</h1>
+<p>(See Webware Content Management System)</p>
+<p>A ContentManagementSystem built with Webware (Similar to Zope and
+Macromedia's SiteSpring).  Comprising:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="webwareusermanager.html">WebwareUserManager</a></p></li>
+<li><p>WebAdminInterface</p></li>
+<li><p>WebwareCVSManager</p></li>
+<li><p>WebwareTaskManager</p></li>
+<li><p>SafeDelegation</p></li>
+<li><p>WebwareSearchEngine</p></li>
+<li><p>WebwareFolders (like ZopeFolders)</p></li>
+</ul>
+<p><em>NOTE</em>: this AppIdea is strongly interrelated with the
+<a class="reference external" href="webwaresourceforge.html">WebwareSourceforge</a> AppIdea and <a class="reference external" href="webwarexmanagement.html">WebwareXManagement</a>.</p>
+<p>-- Tavis Rudd - 31 Oct 2001</p>
+</div>
+<div class="section" id="webware-cofax">
+<h1>Webware Cofax</h1>
+<p>(See <a class="reference external" href="webwarecofax.html">Webware Cofax</a>)</p>
+<p><a class="reference external" href="http://www.cofax.org/">Cofax</a> is the Java software that powers Knight-Ridder newspaper web
+sites, like <a class="reference external" href="http://inq.philly.com/">http://inq.philly.com/</a>.</p>
+</div>
+<div class="section" id="webware-sourceforge">
+<h1>Webware Sourceforge</h1>
+<p>(See <a class="reference external" href="webwaresourceforge.html">Webware Sourceforge</a>)</p>
+<p>a sourceforge/tigris like application built with Webware.  --
+Tavis Rudd - 30 Oct 2001</p>
+</div>
+<div class="section" id="webware-list-archive">
+<h1>Webware List Archive</h1>
+<p>(See <a class="reference external" href="webwarelistarchive.html">Webware List Archive</a>)</p>
+<p>a geocrawler-like email archive viewer (that actually works!) --
+Tavis Rudd - 31 Oct 2001</p>
+</div>
+<div class="section" id="webware-cart">
+<h1>Webware Cart</h1>
+<p>(See <a class="reference external" href="webwarecart.html">Webware Cart</a>)</p>
+<p>an ecommerce shopping cart -- Tavis Rudd - 31 Oct 2001</p>
+</div>
+<div class="section" id="webware-forum">
+<h1>Webware Forum</h1>
+<p>(See Webware Forum)</p>
+<p>a discussion forum component -- Tavis Rudd - 01 Nov 2001</p>
+</div>
+<div class="section" id="python-web-stats">
+<h1>Python Web Stats</h1>
+<p>(See <a class="reference external" href="pythonwebstats.html">Python Web Stats</a>)</p>
+<p>a modular web log analyzer with a webware front-end, that can also be
+used programmatically or with other frontends.  The existing Open
+Source log analyzers suck! -- Tavis Rudd - 31 Oct 2001</p>
+<p>I have a totally (overly?) interface-agnostic web log analyzer that I
+never polished with a nice frontend.  If someone wants to try
+something with this, contact me -- <a class="reference external" href="ianbicking.html">Ian Bicking</a> - 02 Nov 2001</p>
+</div>
+<div class="section" id="webware-slash">
+<h1>Webware Slash</h1>
+<p>(See Webware Slash)</p>
+<p>a slashdot news site that sould let users upgrade from a common news
+app such as PHPNuke.  The existing PHP sites get slow under load and
+the code is getting pretty complex and ugly.  A python update will get
+attract frustrated PHP webmasters -- Aaron Held - 2 Nov 2001</p>
+</div>
+<div class="section" id="webware-vaults">
+<h1>Webware Vaults</h1>
+<p>(See <a class="reference external" href="webwarevaults.html">Webware Vaults</a>)</p>
+<p>a Parnassus-like site, not just using WebKit's base features, but also
+using some of the other kits and extensions -- <a class="reference external" href="paulboddie.html">Paul Boddie</a> - 06 Nov
+2001</p>
+</div>
+<div class="section" id="webware-groupware">
+<h1>Webware Groupware</h1>
+<p>(See <a class="reference external" href="webwaregroupware.html">Webware Groupware</a>)</p>
+<p>Looking to create a Webware based Groupware application.  It should
+include email, and calendaring functions.  There's a million of them
+out there, but not for Webware ;D</p>
+<p>With this as a starting point I would like to eventually get to
+something like a WyattERP (it's hosted on SourceForge), except ASP
+and Python/WebWare based.</p>
+<!-- WyattERP: http://www.wyatt-erp.com -->
+<p>-- Ray Leyva - 17 Nov 2001 &lt;br /&gt;</p>
+</div>
+<div class="section" id="non-web-interfaces">
+<h1>Non-Web Interfaces</h1>
+<p>Facilitating non-browser interfaces -- <a class="reference external" href="ianbicking.html">Ian Bicking</a></p>
+</div>
+<div class="section" id="implications">
+<h1>Implications?</h1>
+<p>Why is there the avoidance of discussion on commercial implications of Wiki and related material?  An example would be for how we might implement it our (ASP) ecommerce software <a class="reference external" href="http://www.veracart.com">http://www.veracart.com</a>
+please inform me if such a discussion is taking place already: <a class="reference external" href="mailto:y&#64;mytechsupport.com">y&#64;mytechsupport.com</a></p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 18 Apr 2004</p>
+
+</div>
+</body>
+</html>

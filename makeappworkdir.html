@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>MakeAppWorkDir</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="makeappworkdir">
+<h1 class="title">MakeAppWorkDir</h1>
+
+<p>MakeAppWorkDir is a script located in the bin directory of your
+webware installation.  If you run it, it will create a working
+directory for your application, complete with config files, sample
+context, etc.  You can then add a Lib directory and whatever other
+directories you need.</p>
+<p>My directory structure looks like this:</p>
+<pre class="literal-block">/Webware
+    /WebKit
+    ...
+
+/MyWebSite
+    /Cache
+    /Configs
+    /Contexts - I added this directory
+        /SomeContext
+        /SomeOtherContext
+    /ErrorMsgs
+    /Lib - I added this directory
+        __init__.py - can be empty
+        SitePage.py - SitePage class
+    /Logs
+    /Sessions
+    /Static - I added this directory for static content to be served directly by Apache
+    __init__.py - should contain: __all__ = ['Lib']
+    AppServer.bat
+    Launch.py
+    ...</pre>
+<p>From my servlets I can import Python modules like SitePage out of Lib
+using for example:</p>
+<pre class="literal-block">from Lib.SitePage import SitePage</pre>
+<p>The great thing about using a working directory created with
+MakeAppWorkDir is that you don't have to modify your webware directory
+at all.  All configuration files are contained in your working
+directory in the Config subdirectory.</p>
+<p>-- <a class="reference external" href="geofftalvola.html">GeoffTalvola</a> - 29 Oct 2001</p>
+<p><em>How do you tell Webware where /MyWebSite is?</em></p>
+<hr class="docutils" />
+<p>I had to do some simple changes to use the &lt;nop&gt;AppServer from this
+new working directory as a daemon.</p>
+<ul>
+<li><p>the &quot;webkit&quot; script needs the path to the new &quot;AppServer&quot; script</p></li>
+<li><p>the PID, needed for stopping Webware, now comes from the
+&quot;&lt;nop&gt;AppServer&quot; script comment the line &quot;echo $! &gt; $PID_FILE&quot; from
+&quot;webkit&quot; in and change &lt;nop&gt;AppServer to:</p>
+<pre class="literal-block">#!/bin/sh
+
+/usr/bin/env python Launch.py ThreadedAppServer $* &gt;&gt; /usr/local/Webware/daemon/log/webkit 2&gt;&amp;1 &amp;
+echo $! &gt; /usr/local/Webware/daemon/webkit.pid</pre>
+</li>
+</ul>
+<p>Hope this make sense :-)</p>
+<p>-- StephanDiehl - 03 Jan 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

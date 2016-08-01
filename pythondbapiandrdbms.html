@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Python DBAPI and RDBMs</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="python-dbapi-and-rdbms">
+<h1 class="title">Python DBAPI and RDBMs</h1>
+
+<p>Pro:</p>
+<ul class="simple">
+<li><p>More well-tested than ZODB and MiddleKit.</p></li>
+<li><p>Relational databases are based on solid mathematical foundations
+(relational algebra, set theory, etc.), but OODBMS have no such
+theoretical underpinning (Link to comments by Fabian Pascal).</p></li>
+<li><p>Full control over relations, transactions, etc.</p></li>
+<li><p>All queries are programmer-written and optimized, and by reducing
+the number of queries you give the RDBMS more opportunity to do
+optimizations</p></li>
+<li><p>You can leverage the database's abilities to cache and store
+information compactly</p></li>
+</ul>
+<p>Con:</p>
+<ul class="simple">
+<li><p>Non-Pythonic: requires you to translate your objects and
+manipulations to/from SQL statements</p></li>
+<li><p>No layer of abstraction between the database schema and the Python
+interface -- if you change the schema you must change all the Python
+code unless you create your own abstraction layer or use views more,
+either of which is highly recommended</p></li>
+<li><p>Queries are programmer-written and optimized, which means more work</p></li>
+<li><p>It is difficult to cache results (though the database does caching
+of its own)</p></li>
+<li><p>Some operations are difficult to do in SQL</p></li>
+</ul>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 31 Dec 2001
+-- <a class="reference external" href="edmundlian.html">EdmundLian</a> -- 03 Jan 2002
+-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 04 Jan 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

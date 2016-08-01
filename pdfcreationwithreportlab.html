@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>PDF Creation with ReportLab</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="pdf-creation-with-reportlab">
+<h1 class="title">PDF Creation with ReportLab</h1>
+
+<p>Here is an extremely simple example servlet that generates a PDF
+document on the fly (i.e. not saving it to a temporary file on the
+harddisk, everything takes place in memory) and feeds it back to the
+web browser.  It requires the <a class="reference external" href="http://www.reportlab.com">ReportLab</a> package, and if you want to
+include images in your PDF documents, you will also need the <a class="reference external" href="http://www.pythonware.com/products/pil/">PIL</a>
+package (<a class="reference external" href="http://www.python.org/cgi-bin/moinmoin/PythonImagingLibrary">Python Imaging Library</a>).</p>
+<p>NOTE: You should place a bogus GET variable at the end of the URI
+referencing the page with MSIE.</p>
+<p>Example URI: <a class="reference external" href="http://www.mysite.com/wk/hello?type=.pdf">http://www.mysite.com/wk/hello?type=.pdf</a></p>
+<p>Without this type=.pdf appendix, MSIE fails to recognize the incoming
+stream as a valid PDF file.  It will instead display the PDF file
+contents as text.  Very disconcerting to your user, as they might
+think the reporting engine is broken when in fact it's not.  The
+problem is that MSIE seems to focus on the file extension only, even
+ignoring an explicit content disposition header
+(FileStreamingAndContentDisposition) declaring the content as PDF.
+With Apache as webserver, a nifty solution would be to map the servlet
+name to something with a .pdf extension (ModRewriteRecipes).</p>
+<p>-- RayLeyva
+<a class="reference external" href="chriszwerschke.html">ChrisZwerschke</a></p>
+<hr class="docutils" />
+<p>Here is the minimum code you need to serve a PDF document.  Note that
+the getpdfdata method was added in ReportLab version 1.18. With
+earlier versions, you had to use an additional temporary StringIO
+object, as in the Platypus example below:</p>
+<pre class="literal-block">from WebKit.Page import Page
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import cm
+
+class hello(Page):
+ def writeHTML(self):
+  c = canvas.Canvas(None)
+  c.drawString(9*cm, 27*cm, 'Hello, World!')
+  r = c.getpdfdata()
+  self.response().setHeader('Content-Type', 'application/pdf')
+  self.response().setHeader('Content-Length', str(len(r)))
+  self.response().setHeader('Content-Disposition', 'inline; filename=&quot;hello.pdf&quot;')
+  self.write(r)</pre>
+<p>-- <a class="reference external" href="chriszwerschke.html">ChrisZwerschke</a> - 10 Jul 2003</p>
+<hr class="docutils" />
+<p>The following code generates a more complex PDF file with a header,
+footer, and a simple table, using the Platypus library included in
+&lt;nop&gt;ReportLab.  Included in the code are several sample grid styles.
+These are grabbed basically verbatim from the ReportLab Platypus code
+(tables.py):</p>
+<pre class="literal-block">from reportlab.platypus import BaseDocTemplate, SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.lib import colors
+from WebKit.Page import Page
+from time import *
+from cStringIO import StringIO
+
+GRID_STYLE = TableStyle(
+              [('GRID', (0,0), (-1,-1), 0.25, colors.black),
+                    ('ALIGN', (1,1), (-1,-1), 'RIGHT')]
+              )
+BOX_STYLE = TableStyle(
+              [('BOX', (0,0), (-1,-1), 0.50, colors.black),
+                    ('ALIGN', (1,1), (-1,-1), 'RIGHT')]
+              )
+LABELED_GRID_STYLE = TableStyle(
+              [('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
+                    ('BOX', (0,0), (-1,-1), 2, colors.black),
+                    ('LINEBELOW', (0,0), (-1,0), 2, colors.black),
+                    ('LINEAFTER', (0,0), (0,-1), 2, colors.black),
+                    ('ALIGN', (1,1), (-1,-1), 'RIGHT')]
+              )
+COLORED_GRID_STYLE = TableStyle(
+              [('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
+                    ('BOX', (0,0), (-1,-1), 2, colors.red),
+                    ('LINEBELOW', (0,0), (-1,0), 2, colors.black),
+                    ('LINEAFTER', (0,0), (0,-1), 2, colors.black),
+                    ('ALIGN', (1,1), (-1,-1), 'RIGHT')]
+              )
+LIST_STYLE = TableStyle(
+              [('LINEABOVE', (0,0), (-1,0), 2, colors.green),
+                    ('LINEABOVE', (0,1), (-1,-1), 0.25, colors.black),
+                    ('LINEBELOW', (0,-1), (-1,-1), 2, colors.green),
+                    ('ALIGN', (1,1), (-1,-1), 'RIGHT')]
+              )
+
+PAGE_HEIGHT = letter[1]
+PAGE_WIDTH = letter[0]
+styles = getSampleStyleSheet()
+Address = 'Place address information here.'
+dbDtFormat = '%Y-%m-%d %H:%M:%S'
+theDate = strftime( dbDtFormat, localtime() )
+
+class hello( Page ):
+     def myFirstPage( self, canvas, doc ):
+              canvas.saveState()
+              # Header
+              canvas.setFont( 'Times-Bold', 16 )
+              canvas.drawCentredString( PAGE_WIDTH/2.0, PAGE_HEIGHT-( 0.25*inch ), 'COMPANY NAME' )
+              canvas.line( 0.5*inch, PAGE_HEIGHT-( 0.35*inch ), PAGE_WIDTH-( 0.5*inch ), PAGE_HEIGHT-( 0.35*inch ) )
+              canvas.setFont( 'Times-Bold', 8 )
+              canvas.drawCentredString( PAGE_WIDTH/2.0, PAGE_HEIGHT-( 0.45*inch ), Address )
+              # Footer
+              canvas.setFont( 'Times-Roman', 9 )
+              canvas.drawString( 0.5*inch, 0.75*inch, 'First Page' )
+              canvas.restoreState()
+
+     def myLaterPages( self, canvas, doc ):
+              canvas.saveState()
+              # Header
+              canvas.setFont( 'Times-Roman', 9 )
+              canvas.drawString( 0.5*inch, PAGE_HEIGHT-( 0.5*inch ), 'Page %d' % doc.page )
+              canvas.drawRightString( PAGE_WIDTH-( 0.5*inch ), PAGE_HEIGHT-( 0.5*inch ), theDate )
+              # Footer.
+              canvas.drawString( inch, 0.5*inch, 'Page %d' % ( doc.page ) )
+              canvas.restoreState()
+
+     def writeHTML( self ):
+              response = self.response()
+              request = self.request()
+              trans = self.transaction()
+              app = self.application()
+
+              # Generate the PDF
+              buffer = StringIO()
+              doc = SimpleDocTemplate( buffer, pagesize = letter, leftMargin = 0.5*inch, rightMargin = 0.5*inch, bottomMargin = 1.5*inch )
+              Story = [ Spacer( 1, 0.15*inch ) ]
+              # Add the table
+              colwidths = ( PAGE_WIDTH-( 2*inch ), 1*inch )
+              rowheights = ( 16, 16, 16, 16 )
+              data = (
+                                     ( 'Line #1:', '$' ),
+                                     ( 'Line #2:', '$' ),
+                                     ( 'Line #3:', '$' ),
+                                     ( 'Line #4:', '$' )
+              )
+              t = Table( data, colwidths, rowheights )
+              t.setStyle( GRID_STYLE )
+              Story.append( t )
+              Story.append( Spacer( 1, 0.15*inch ) )
+              doc.build( Story, onFirstPage=self.myFirstPage, onLaterPages=self.myLaterPages )
+              pdf = buffer.getvalue()
+              buffer.close()
+              # Set the response headers
+              response.setHeader( 'Content-type', 'application/pdf' )
+              response.setHeader( 'Content-length', str( len( pdf ) ) )
+              response.setHeader( 'Content-disposition', 'inline; filename=&quot;hello.pdf&quot;' )
+              # Send it back to the user
+              self.write( pdf )</pre>
+<p>-- RayLeyva - 27 Nov 2001, 19 Jan 2002</p>
+<p>Hacking around some pdf files, I've found that the TableStyle objects contains a lists of commands, that include, from lines 1308 of tables.py: &quot;FONT&quot;, &quot;FONTNAME&quot;, &quot;FACE&quot;, &quot;SIZE&quot;, &quot;FONTSIZE&quot;, &quot;LEADING&quot;, &quot;TEXTCOLOR&quot;, &quot;ALIGN&quot;, &quot;ALIGNMENT&quot;, &quot;VALIGN&quot;, &quot;LEFTPADDING&quot;, &quot;RIGHTPADDING&quot;, &quot;TOPPADDING&quot;, &quot;BOTTOMPADDING&quot;, &quot;HREF&quot; and &quot;DESTINATION&quot;, and from line 1290: &quot;GRID&quot;, &quot;BOX&quot;, &quot;OUTLINE&quot;, &quot;INNERGRID&quot;, &quot;LINEBELOW&quot;, &quot;LINEABOVE&quot;, &quot;LINEBEFORE&quot;, &quot;LINEAFTER&quot;, and finally, from line 1166 &quot;ROWBACKGROUNDS&quot;, &quot;COLBACKGROUNDS&quot;, and finally &quot;BACKGROUND&quot;. There is probably a lot of other cool functionality disseminated into the code... Depending on the function, they need different argument, which are somewhat readable from the code (I've search the doc on reportlab website and there is no mention of the table flowable from platypus...). But the main thing I've tested to some extent is that the two tuple after the function represent the targeted cells. Those works as string in python, so (0,0), (0, -1) mean first column, (0,0), (-1, 0) mean first row, and (0, -1), (-1, -1) mean last row. It seems like the only way to get some bold text is by using reportlab getAvailableFonts, or rely on fonts that are usually standard (Times-Bold), or register fonts by yourself... You can have a lot of commands that are the same on different columns and rows, and even weird overwriting statements, it seems to work OK.</p>
+<p>You have to start your table by specifying the constructor a list of the width and heights for each columns, but you don't have to, if not it will be autosized. I don't think it is safe in the case of long lines, which tends to overwrite the nexts cells.</p>
+<p>-- satan - 18 Feb 2007</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 19 Feb 2007</p>
+
+</div>
+</body>
+</html>

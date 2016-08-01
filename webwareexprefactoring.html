@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware Exp. Refactoring</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-exp-refactoring">
+<h1 class="title">Webware Exp. Refactoring</h1>
+
+<p>I have been working on an experimental refactoring of Webware that
+addresses most of the issues currently on the <a class="reference external" href="wishlist.html">WishList</a> and <a class="reference external" href="todo.html">ToDo</a>
+list.  It is near feature complete, but needs extensive testing.</p>
+<p>The CVS repository is available at
+<a class="reference external" href="http://sourceforge.net/cvs/?group_id=41909">http://sourceforge.net/cvs/?group_id=41909</a>.</p>
+<p>Here's a <a class="reference external" href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/expwebware/Webware/README">link</a> to the README file, which has alot more information.</p>
+<p>-- TavisRudd - 14 Jan 2002</p>
+<p>JayLove has also been working on a 'mulitApplication' version of
+WebKit.  It has slightly different aims than this, but is definitely
+worth looking at if you're interested in how Webware could and should
+be evolving.  I've lost the link, so send Jay an email if you're
+interested.  -- TavisRudd - 27 Feb 2002</p>
+<div class="section" id="help-needed">
+<h1>Help Needed</h1>
+<p>There's a few of us working on it behind the scenes, but when/if the
+actual code merge takes place is up to Chuck.  Personally, I feel that
+it's much easier to test the experimental code and tidy up the few
+holes remaining than it would be to implement all the items on the
+<a class="reference external" href="wishlist.html">WishList</a>/<a class="reference external" href="todo.html">Todo</a> using the Webware 0.6 codebase.  That said, Chuck
+has an obligation as Webware's Benevolent Dictator to review all the
+changes in the experimental code, before we merge and cut a
+release. Either he has to do a manual code walkthrough/review or I and
+the other people working on experimental code have to make the
+automated test suite comprehensive enough to mitigate the need for a
+tedious manual review by Chuck.  Either way, an _official_ merge is at
+least a few months away.</p>
+<p>Chuck wants to cut an official release in Feb.  I agree with him that
+we should keep the official releases flowing with whatever we've got
+rather than waiting for the next big thing.  Whether the release in
+Feb is called 0.7 is up to him.</p>
+<p>In the meantime, I'm going to continue testing the experimental code,
+encouraging people to join in on the testing, mirroring any new
+additions to the official codebase, and backporting the smaller
+changes in the experimental code to the official codebase wherever
+possible.</p>
+<p>Geoff has pointed out that the experimental code will only be ready
+for serious consideration once we have some of the larger existing
+applications running on it.  With that in mind, here's what people
+can do to help out:</p>
+<dl class="simple">
+<dt>MINIMAL EFFORT (1/2 hr)</dt>
+<dd><ul class="simple">
+<li><p>download the cvs version of the code</p></li>
+<li><p>read the README and see if what I've written makes sense.</p></li>
+<li><p>follow the installation instructions and report any problems</p></li>
+<li><p>run the automated test suite on their platform ... reporting any problems or further documentation needed along the way</p></li>
+</ul>
+</dd>
+<dt>MODERATE EFFORT (a few hours to a few days)</dt>
+<dd><ul class="simple">
+<li><p>create a small test application, or try porting their existing applications ... reporting any problems or further documentation needed along the way</p></li>
+<li><p>add more test cases to the automated test suite.  This is very easy.</p></li>
+</ul>
+</dd>
+<dt>EXTRA EFFORT (up to you)</dt>
+<dd><ul class="simple">
+<li><p>manually review the code and/or search for any ToDo comments that begin with &#64;&#64;.</p></li>
+<li><p>tackle items on the ToDo/WishList on the Wiki site or in the experimental code's README file.</p></li>
+<li><p>Write documentation/howtos</p></li>
+</ul>
+</dd>
+</dl>
+<p>There's two mailing lists set up for the experimental code: one for
+reporting problems and discussing issues and another for automated
+CVS notifications. <a class="reference external" href="http://sourceforge.net/mail/?group_id=41909">http://sourceforge.net/mail/?group_id=41909</a>.  Please report bugs
+and direct questions to <a class="reference external" href="mailto:expwebware-devel&#64;lists.sf.net">expwebware-devel&#64;lists.sf.net</a> rather than to
+the regular webware email lists.  Sending stuff to the regular lists will
+just confuse people who aren't aware of this refactoring effort.</p>
+<p>For those people who want to get their feet wet with the code, send
+me a message if you want CVS write access or send patches to the
+expwebware-devel email list.</p>
+<p>-- TavisRudd - 14 Jan 2002</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 20 Apr 2004</p>
+
+</div>
+</body>
+</html>

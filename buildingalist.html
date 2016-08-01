@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Building A List</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="building-a-list">
+<h1 class="title">Building A List</h1>
+
+<p>Some might argue that building an opt-in mailing list is not e-commerce,
+because it is not directly involved in the &quot;transactional&quot; commerce.
+However, anyone who has been marketing online for more than a month
+knows that the gold is in the list -- you will continue to struggle
+selling online until you build a list, or become Yahoo!</p>
+<p>So how do you start, and what does it have to do with Webware?</p>
+<dl class="simple">
+<dt>First, you need a marketing plan, specifically:</dt>
+<dd><ol class="arabic simple">
+<li><p>who are you selling to</p></li>
+<li><p>what do they want</p></li>
+<li><p>what makes you different from your competitors</p></li>
+</ol>
+</dd>
+</dl>
+<p>Second, you will need an <a class="reference external" href="http://direct-response-toolbox.com/autoresponder-reviews/">followup autoresponder service</a>  You can program the web part of
+this is python/webware, but unless you want to become an expert in handling spam
+complaints and staying off blacklists, you might want to leave the email broadcasting
+to someone else. YMMV.</p>
+<dl class="simple">
+<dt>Third, you need an &quot;ethical bribe&quot;. This is something that is</dt>
+<dd><ol class="arabic simple">
+<li><p>relevant and specific to your offer</p></li>
+<li><p>valuable to the prospect</p></li>
+<li><p>easy for you to provide (low cost in money and time)</p></li>
+</ol>
+</dd>
+</dl>
+<p>The plan is to offer the bribe as a motivation to get
+the suspect (e.g. fist time visitor) to opt-in.  Once
+the suspect opts-in, he becomes a prospect, and you can
+begin to follow up with him until he knows, likes, and
+trusts you enough to buy when the time is right.</p>
+<p>What does this have to do with Webware?</p>
+<p>The ability to generate dynamic pages allows you to create
+a website that captures the opt-in aggressively without
+being annoying.</p>
+<ol class="arabic simple">
+<li><p>You can control when exit popups appear.</p></li>
+<li><p>You can test multiple offers and easily
+track where the visitor came from.</p></li>
+<li><p>You can offer a repeat visitor something
+he hasn't seen before.</p></li>
+</ol>
+<div class="section" id="using-popups-without-being-annoying">
+<h1>Using Popups Without Being Annoying</h1>
+<p>If someone visits your website, and leaves without opting in
+it would be nice to know why. An exit popup survey is the
+perfect tool.</p>
+<p>Before you go hollering, let me say that I work primarily in
+B2B markets, and my target market is not too terribly annoyed
+by popups. In a B2C market, you'll need to test it.</p>
+<p>What about popup blockers? Well, there is not a lot we can
+do about them. But even if 90% of your popups get blocked,
+that's 10% that got through, and 10% of your abandonment
+traffic got a chance to tell you why they left. That's better
+than nothing.</p>
+<p>If your visitor is coming from a Google AdWords Ad, you need
+to supress the popup. That's pretty easy with Webware.</p>
+<blockquote>
+<dl class="simple">
+<dt>if &quot;google&quot; not in referrer:</dt>
+<dd><p># include popup code</p>
+</dd>
+</dl>
+</blockquote>
+<p>Ok, now the part about not being annoying.</p>
+<p>Suppose someone visits your site, then leaves and gets the popup.
+He answers the question, and clicks ok.</p>
+<p>Later, he comes back, pokes about, then leaves again. Are you
+going to show him the same popup? No.</p>
+<p>What if he just closed the popup the first time he left? Are you
+going to annoy him again by showing it again? Probably not.</p>
+<p>How do you do this? Set a cookie (about 90 days) the first time
+the popup code gets loaded.  When he comes back, you know from
+the cookie that he has already seen the popup, so you suppress it
+just like you did for Google.</p>
+<p>If you have flash audio clips that play automatically, you'll want
+to use the same technique to say that they don't play automatically
+when the page is revisited.</p>
+</div>
+<div class="section" id="testing-different-response-modifiers">
+<h1>Testing Different Response Modifiers</h1>
+<p>In order to make your marketing messages most effective, you need
+to continually measure, change, and measure again.</p>
+<p>The most significant Response Modifier is &quot;traffic source.&quot; It's
+easy to set up different pages for different traffic sources if
+you have control of the link -- you can just link to a different
+page in the site. (But in terms of concentrating page rank, you
+may not want to do this all of the time.) If you don't have control
+of the link, you'll just need to trust the http-referrer header.</p>
+<p>In any case, you'll want to track each traffic source, measure
+how many &quot;hits&quot; vs. &quot;actions&quot; you get (that's your conversion rate)
+and possibly create different offers for each.</p>
+<p>Another important Response Modifier is the headline. How do you
+test a headline?</p>
+<p>When someone first visits your page, you randomly select one of
+two (or more) headlines, and include that in the page. You also
+set a cookie (about 30 days) so he sees the same headline when
+he comes back or refreshes the page.  When the visitor finally
+does take action (opt-in or purchase), you record that as an
+action for that particular headline. The first version to get
+40 actions is the winner and becomes the new control.</p>
+<p>Use the same pattern to test as many other response modifiers
+as you want. (BTW: you should never stop testing.)</p>
+</div>
+<div class="section" id="offering-fresh-content">
+<h1>Offering Fresh Content</h1>
+<p>Caveat: This part is just a theory.  I have not tested it, and I
+don't know whether it works or not. After I do test it and get
+significant results, I'll come back and update this paragraph.</p>
+<p>Suppose you have a dozen different sites that are related. Each
+site has a different ethical bribe, a different offer, and a
+different autoresponder sequence. Because the sites are related,
+someone who opts-in at one site is likely to be interested in
+the other sites and offers.</p>
+<p>Suppose someone visits site A, opts-in, and downloads the ebook.
+The next time he visits site A, it may make sense to cross-promote
+site B.  You can do that because you know he has already opted-in
+on A, so including the same offer as before is just wasting
+screen real estate.  And if he goes to site B after opting-in
+on A and B, you can make offer C.  Similarly if he keeps ignoring
+offer B, stop showing it to him.</p>
+<p>If you would like more information about testing and tracking,
+or about building pages that compell the opt-in, you can join
+my <a class="reference external" href="http://terrel-recommends.com/shy-yes/">shy-yes</a> list.</p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> 10 July 2004</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 11 Jul 2004</p>
+
+</div>
+</body>
+</html>

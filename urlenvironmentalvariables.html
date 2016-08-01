@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>URL Environmental Variables</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="url-environmental-variables">
+<h1 class="title">URL Environmental Variables</h1>
+
+<p>Here's my understanding of the various environmental variables that
+can be passed with a request, and exactly how they relate to the
+actual URL:</p>
+<dl class="simple">
+<dt>WK_ABSOLUTE:</dt>
+<dd><p>if set, then the URL should be constructed by joining DOCUMENT_ROOT and REQUEST_URI (without query string, of course)</p>
+</dd>
+<dt>SCRIPT_NAME:</dt>
+<dd><p>points to the adapter portion of the URL (after rewrite)</p>
+</dd>
+<dt>PATH_INFO:</dt>
+<dd><p>the rest of the path after the adapter (after rewrite)</p>
+</dd>
+<dt>REQUEST_URI:</dt>
+<dd><p>the original URL requested (pre-rewrite ?)</p>
+</dd>
+<dt>REQUEST_FILENAME:</dt>
+<dd><p>the file the original URL would have pointed to (?) -- or maybe just a different name for SCRIPT_NAME</p>
+</dd>
+<dt>SCRIPT_URL:</dt>
+<dd><p>the path of the original (pre-rewrite) request</p>
+</dd>
+<dt>SCRIPT_URI:</dt>
+<dd><p>the full URI (with hostname) of the original (pre-rewrite) request</p>
+</dd>
+</dl>
+<p>Information produced from this:</p>
+<dl class="simple">
+<dt>context:</dt>
+<dd><p>the context of the request</p>
+</dd>
+<dt>servlet:</dt>
+<dd><p>the servlet it points to</p>
+</dd>
+<dt>extraPathInfo:</dt>
+<dd><p>the extra portion of the URL</p>
+</dd>
+<dt>adapterURL:</dt>
+<dd><p>the url of the adapter</p>
+</dd>
+<dt>hostname:</dt>
+<dd><p>the hostname</p>
+</dd>
+<dt>servletURL:</dt>
+<dd><p>the url of the servlet, with adapter and context</p>
+</dd>
+<dt>fullURL:</dt>
+<dd><p>the url of the servlet, with <a class="reference external" href="extrapathinfo.html">extraPathInfo</a> as well</p>
+</dd>
+<dt>webkitBaseURL:</dt>
+<dd><p>the url of the adapter</p>
+</dd>
+<dt>contextBaseURL:</dt>
+<dd><p>the url of the context</p>
+</dd>
+</dl>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 26 Jun 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

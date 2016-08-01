@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>List of Available Settings</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="list-of-available-settings">
+<h1 class="title">List of Available Settings</h1>
+
+<p>I noticed that the list of settings in the users guide
+<a class="reference external" href="http://webware.sourceforge.net/Webware-0.7/WebKit/Docs/UsersGuide.html#Configuration">http://webware.sourceforge.net/Webware-0.7/WebKit/Docs/UsersGuide.html#Configuration</a>
+cannot possibly be up to date.</p>
+<pre class="literal-block">find -name \*.py |xargs grep setting\(</pre>
+<p>will give you a list of the settings in the code.</p>
+<pre class="literal-block">find -name \*.py |xargs perl -ne 'if (/setting\((.*?)\)/) {print &quot;$1\n&quot;;}' |sort -u|grep ^\'</pre>
+<p>gives just the names. (Love that line noise!)</p>
+<pre class="literal-block">find -name \*.py |xargs grep -c setting\(</pre>
+<p>may give you a little context of how it is used.</p>
+<p>Can we come up with a convention for documenting settings in-line?</p>
+<p>see <a class="reference external" href="configschema.html">ConfigSchema</a></p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 24 Apr 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

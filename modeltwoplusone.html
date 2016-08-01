@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Model Two plus One</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="model-two-plus-one">
+<h1 class="title">Model Two plus One</h1>
+
+<div class="section" id="introduction">
+<h1>Introduction</h1>
+<p>The Model2+1 design is a bit like the <a class="reference external" href="modelviewcontroller.html">ModelViewController</a> paradigm,
+although maybe a bit better suited for web design.</p>
+</div>
+<div class="section" id="design">
+<h1>Design</h1>
+<p>The idea, is to seperate display logic (pulling data from a
+db... etc), display and control logic (inserting data into a
+db). Luckly Webware makes this very easy to do.</p>
+<p>My approach to the Model2+1 paradigm is based on my experience with
+<a class="reference external" href="http://jakarta.apache.org/turbine/turbine-2/">Jakarta Turbine</a>.</p>
+<p>This approach features:</p>
+<ul class="simple">
+<li><p><strong>Site logic</strong>: You provide almost all of your logic in utility
+classes. For example, you might have a UserUtils class that handles
+things like authentication. Using MiddleKit derived classes to
+access a database is a very good example of site logic.</p></li>
+<li><p><strong>View</strong>: This is where all your front end design goes. Almost NO
+logic should exist in your view except the min required to display
+data from a logic class.</p></li>
+<li><p><strong>Actions</strong>: Actions are the reverse of Views. The action will never
+directly display anything to the user. They handle things like forms
+where an action has to be performed. For example... Say you have an
+authentication form. When the user submits their login data, the
+data is sent directly to your login action. If the login action
+found errors in the submited data, it would return the user to the
+login form. If the action found no errors, it would perform
+authentication via your Auth/UserUtils class, then redirect the user
+to the next page.</p></li>
+</ul>
+<p>I am going to demonstrate using this approach, by showing you a simple
+WebKit site that uses a basic form of authentication. The code
+included on this page might not be perfect. I just wanted to provide a
+working example of how to use this model =)</p>
+<p><em>PLEASE NOTE:</em></p>
+<p>This example is based on a copy of Webware from CVS as of
+01/07/2002. You might want to use a current version of Webware form
+CVS if wish to use the examples provided. In addition to this, the
+version I am using requires the following patch to let the Security
+mixin work right with PSP. This patch has been commited to CVS, so if
+your CVS tree is newer than 01/07/2002 you should not need the patch.</p>
+<pre class="literal-block">--- ParseEventHandler.py    2002-10-24 15:24:18.000000000 -0700
++++ ParseEventHandler_lholden.py    2003-01-07 20:26:22.000000000 -0800
+&#64;&#64; -328,11 +328,19 &#64;&#64;
+             self._writer.println()
+
+             if not AwakeCreated:
+                     self._writer.println('def awake(self,trans):')
+                     self._writer.pushIndent()
+-                   self._writer.println('self.__class__.__bases__[0]'+'.awake(self, trans)\n')
++##                 self._writer.println('self.__class__.__bases__[0]'+'.awake(self, trans)\n')
++                   self._writer.println('for baseclass in self.__class__.__bases__:')
++                   self._writer.pushIndent()
++                   self._writer.println('if hasattr(baseclass, &quot;awake&quot;):')
++                   self._writer.pushIndent()
++                   self._writer.println('baseclass.awake(self, trans)')
++                   self._writer.println('break\n')
++                   self._writer.popIndent()
++                   self._writer.popIndent()
+ ##commented out for new awake version per conversation w/ chuck
+ ##          self._writer.println('if &quot;init&quot; in dir(self) and type(self.init) == type(self.__init__):\n')
+ ##          self._writer.pushIndent()
+ ##          self._writer.println('self.init()\n')
+ ##          self._writer.popIndent()</pre>
+<p>Here is an example of what the directory structure of this site looks
+like:</p>
+<pre class="literal-block">+ public_html/
+|-+ SiteContext/
+| |-+ action/
+| | |- Login.py
+| | |- Logout.py
+| |-+ layout/
+| | |- BaseLayout.py
+| | |- SiteLayout.py
+| |-+ navigation/
+| | |- nav.psp
+| |- login.psp
+| |- Main.psp
+|-+ lib/
+| |-+ Security/
+| | |-+ GeneratedPy/
+| | | |- ...
+| | |-+ GeneratedSQL/
+| | | |- ...
+| | |-+ Security.mkmodel/
+| | | |- Classes.csv
+| | | |- Samples.csv
+| | | |- Settings.config
+| | |- ...
+| | |- SecureMixIn.py
+| | |- User.py
+| | |- UserFactory.py
+| | |- ...
+|-+ WebKit/
+| |-+ Cache/
+| |-+ Configs/
+| |- ...</pre>
+<ul class="simple">
+<li><p><strong>SiteContext/action/</strong>: This is where specific actions are
+stored. For example, actions for dealing with a specific form.</p></li>
+<li><p><strong>SiteContext/layout/</strong>: Simple classes which contain the basic
+layout(s) of the site.</p></li>
+<li><p><strong>SiteContext/navigation/</strong>: This is where you have the bits and
+peices that make up a large portion of the design. Most of your
+navigations links/etc will go here.</p></li>
+<li><p><strong>Main.psp, login.psp, ...</strong>: These files hold the design portion of
+the sites pages.  Very little logic should exist inside these
+pages. Instead, call logic from other classes and/or use Action
+logic to handle working with data.</p></li>
+<li><p><strong>lib/</strong>: This is where most of your site logic goes. Most of the
+modules in this directory will probably have Util in their name.</p></li>
+<li><p><strong>WebKit/</strong>: this is a directory I created with Webware's
+MakeAppWorkDir command. It contains some of the WebKits Configs,
+logs and sessions for this specific site.</p></li>
+</ul>
+</div>
+<div class="section" id="section-from-apache-conf-to-handle-webkit">
+<h1>Section from apache.conf to handle WebKit:</h1>
+<p>Note that I am using mod_rewrite (see mod_rewrite recipes). This allows me to have apache serve
+up static content in addition to using WebKit:</p>
+<pre class="literal-block">Alias /ext /home/alterself/public_html/ExternalContext
+RewriteRule ^/ext(.*) - [L]
+RewriteRule ^/ExternalContext(.*) /ext$1 [R]
+RewriteRule ^/wk/(.*) /$1 [R]
+RewriteRule ^/(.*) /wk/$1 [L,PT]
+&lt;Location /wk&gt;
+       WKServer localhost 8087
+       SetHandler webkit-handler
+&lt;/Location&gt;</pre>
+</div>
+<div class="section" id="security-classes">
+<h1>Security classes</h1>
+<p>First we will start by setting up our Security system. We are going to
+use MiddleKit to help us do this. To start, you should Create the
+directories:</p>
+<pre class="literal-block">lib/Security
+lib/Security/Security.mkmodel</pre>
+<p>In the Security.mkmodel directory, we need to define our specification
+files. These are in comma-separated value format and you can use your
+favorite spread sheet program to edit them. I personally use
+OpenOffice. See the MiddleKit <a class="reference external" href="http://webware.sourceforge.net/Webware-0.7/MiddleKit/Docs/index.html">documentation</a> for more details.</p>
+</div>
+<div class="section" id="classes-csv">
+<h1>Classes.csv</h1>
+<p>This contains our model definition:</p>
+<pre class="literal-block">| *Class*         | *Attribute* | *Type*                       | *isRequired* | *Min* | *Max* | *Extras* |
+| User            |             |                              |              |       |       |          |
+|                 | name        | string                       |             1|      1|    100|          |
+|                 | passwd      | string                       |             1|      1|    100|          |
+|                 | roles       | list of &lt;nop&gt;UserRoles       |             0|       |       |          |
+|                 | preferences | list of &lt;nop&gt;UserPreferences |             0|       |       |          |
+| Role            |             |                              |              |       |       |          |
+|                 | name        | string                       |             1|      1|    100|          |
+|                 | permissions | list of &lt;nop&gt;RolePermissions |             0|       |       |          |
+|                 | info        | string                       |             0|      1|    255|          |
+| Permission      |             |                              |              |       |       |          |
+|                 | name        | string                       |             1|      1|    100|          |
+|                 | info        | string                       |             0|      1|    255|          |
+| Preference      |             |                              |              |       |       |          |
+|                 | name        | string                       |             1|      1|    100|          |
+|                 | info        | string                       |             0|      1|    255|          |
+| RolePermissions |             |                              |              |       |       |          |
+|                 | role        | Role                         |             1|       |       |          |
+|                 | detail      | Permission                   |             1|       |       |          |
+| UserRoles       |             |                              |              |       |       |          |
+|                 | user        | User                         |             1|       |       |          |
+|                 | detail      | Role                         |             1|       |       |          |
+| UserPreferences |             |                              |              |       |       |          |
+|                 | user        | User                         |             1|       |       |          |
+|                 | detail      | Preference                   |             1|       |       |          |
+|                 | data        | string                       |             1|      1|    255|          |</pre>
+</div>
+<div class="section" id="samples-csv">
+<h1>Samples.csv</h1>
+<p>This contains example data for use with our model:</p>
+<pre class="literal-block">| *User objects*            |                    |
+| *name*                    | *password*         |
+| guest                     | guest              |
+| root                      | testpass           |
+|                           |                    |
+| *Role objects*            |                    |
+| *name*                    | *info*             |
+| guest                     |                    |
+| user                      | Registered user    |
+|                           |                    |
+| *name*                    | *info*             |
+| registered                | user is registered |
+|                           |                    |
+| *RolePermissions objects* |                    |
+| *role*                    | *detail*           |
+|                          2|                   1|
+|                           |                    |
+| *UserRoles objects*       |                    |
+| *user*                    | *detail*           |
+|                          2|                   2|</pre>
+</div>
+<div class="section" id="settings-config">
+<h1>Settings.config</h1>
+<p>This is used to set some settings in reguard to our model:</p>
+<pre class="literal-block">{
+     'Package': 'Security',
+     #'SQLLog': { 'File': 'Auth-sql.log' },
+}</pre>
+<p>Once you have these files setup... you will need to generate the
+python and SQL source. You can do this by typing:</p>
+<pre class="literal-block">python (PATH-TO-WEBWARE)/MiddleKit/Design/Generate.py Security</pre>
+<p>Once this is done... you should have a bunch of files sitting in your
+<span class="docutils literal">Security</span>, <span class="docutils literal">Security/GeneratedPy</span> and <span class="docutils literal">Security/GeneratedSQL</span>
+directories.</p>
+<p>Now would be a good time to setup the database with the tables needed
+for our security system... This can be done by doing the fillowing:</p>
+<pre class="literal-block">cd lib/Security/GeneratedSQL
+mysql -u root -p &lt; Create.sql
+mysql -u root -p &lt; InsertSamples.sql</pre>
+<p>If there where no errors, things should be going well.</p>
+<p>We have three steps left before the security system is done... Edit
+User.py and create the SecureMixIn and UserFactory classes. All of
+these files live in the lib/Security directory.</p>
+</div>
+<div class="section" id="user-py">
+<h1>User.py</h1>
+<p>We are going to add a method to this class so we can check if a user
+has the permissions we need:</p>
+<pre class="literal-block"># User.py
+from GeneratedPy.GenUser import GenUser
+
+class User(GenUser):
+
+       def __init__(self):
+                GenUser.__init__(self)
+
+
+       def hasPermissions(self, reqPermissionNames):
+                permissionCount = 0
+                reqPermissionCount = len(reqPermissionNames)
+                for role in self.roles():
+                              for permission in role.detail().permissions():
+                                       for reqPermissionName in reqPermissionNames:
+                                                if reqPermissionName == permission.detail().name():
+                                                              permissionCount += 1
+
+                if reqPermissionCount == permissionCount:
+                              return True
+                else:
+                              return False</pre>
+</div>
+<div class="section" id="securemixin-py">
+<h1>SecureMixIn.py</h1>
+<p>This class is used to add security features to a page. You will see
+later how this is mixed into the PSP pages.</p>
+<p>Note that the page can overwrite the reqPermissions method to require
+any specific permissions needed:</p>
+<pre class="literal-block"># SecureMixIn.py
+from User import User
+from UserFactory import UserFactory
+
+class SecureMixIn:
+       def preLayer(self):
+                auth = False
+                if self.session().isExpired():
+                              # Message for login screen about expired session here
+                              pass
+                else:
+                              if self.session().hasValue('username'):
+                                       username = self.session().value('username')
+                                       userfactory = UserFactory()
+                                       user = userfactory.userFromName(&quot;root&quot;)
+
+                                       if user.hasPermissions(self.reqPermissions()):
+                                                auth = True
+
+                if not auth:
+                              self.forward(&quot;/login&quot;)
+                              pass
+
+       def reqPermissions(self):
+                return [&quot;registered&quot;,]</pre>
+</div>
+<div class="section" id="userfactory-py">
+<h1>UserFactory.py</h1>
+<p>The UserFactory is used to create new User objects from a username. It
+would be best to have this as a singleton class... but I will leave
+that up to the user =)</p>
+<p><em>NOTE:</em> You should replace (USER) and (PASSWD) with that of a user
+which has proper access to the Security table we added earlier.</p>
+<pre class="literal-block"># UserFactory.py
+from MiddleKit.Run.MySQLObjectStore import MySQLObjectStore
+
+class UserFactory:
+       def __init__(self):
+                self.store = MySQLObjectStore(user='(USER)', passwd='(PASSWD)')
+                self.store.readModelFileNamed('../lib/Security/Security')
+
+       def userFromName(self, username):
+                userResults = self.store.fetchObjectsOfClass('User', clauses=&quot;WHERE name = '&quot;+ username +&quot;'&quot;)
+                if len(userResults) &lt; 1:
+                              return 0
+                else:
+                              return userResults[0]</pre>
+</div>
+<div class="section" id="sitecontext-navigation-nav-psp">
+<h1>SiteContext/navigation/nav.psp</h1>
+<p>This is a simple navigation bar for our site. It displays the users
+username, and provides a way to log out:</p>
+<pre class="literal-block">&lt;%-- topbar.psp --%&gt;
+&lt;%&#64; page indentType=&quot;braces&quot; %&gt;
+&lt;table&gt;
+       &lt;tr&gt;
+                &lt;td&gt;Site navigation&amp;nbsp;|&lt;/td&gt;
+                &lt;% if self.session().hasValue('username'): {%&gt;
+                &lt;td&gt;User: &lt;%= self.session().value('username') %&gt;&amp;nbsp;|&lt;/td&gt;
+                &lt;td&gt;&lt;a href=&quot;/action/Logout&quot;&gt;Logout&lt;/a&gt;
+                &lt;% } else: { %&gt;
+                &lt;td&gt;Not logged in&lt;/td&gt;
+                &lt;% } %&gt;
+       &lt;/tr&gt;
+&lt;/table&gt;</pre>
+</div>
+<div class="section" id="sitecontext-layout-baselayout-py">
+<h1>SiteContext/layout/BaseLayout.py</h1>
+<p>This is the core layout class. <em>layout</em> Functionality generic to all
+the layout classes should be put in this file:</p>
+<pre class="literal-block"># BaseLayout.py
+from WebKit.Page import Page
+
+class BaseLayout(Page):
+       def awake(self, transaction):
+                Page.awake(self, transaction)
+
+       def preLayer(self):
+                pass
+
+       def postLayer(self):
+                pass
+
+       def writeHTML(self):
+                self.preLayer()
+                # There is a space in the body tag because for some reason
+                # without it, TWiki or Mozilla messes up how the Model2+1 page
+                # is rendered. You are welcome to remove this space of course =)
+                self.writeln('''
+                              &lt;html&gt;
+                                       &lt;head&gt;
+                                                &lt;title&gt;''' + self.title() + '''&lt;/title&gt;
+                                       &lt;/head&gt;
+                                       &lt; body&gt;''')
+                self.writeHTMLBody()
+                self.writeln('''
+                                       &lt;/body&gt;
+                              &lt;/html&gt;''')
+                self.postLayer()
+
+       def writeScreen(self):
+                &quot;&quot;&quot; Write screen contents inside the page&quot;&quot;&quot;
+                self.writeln('&lt;h1&gt;No page content defined&lt;/h1&gt;')
+
+       def writeHTMLBody(self):
+                self.writeScreen()</pre>
+</div>
+<div class="section" id="sitecontext-layout-sitelayout-py">
+<h1>SiteContext/layout/SiteLayout.py</h1>
+<p>This is the main layout class for the site. We use this to include all
+of our navigation components:</p>
+<pre class="literal-block"># SiteLayout.py
+from BaseLayout import *
+
+class SiteLayout(BaseLayout):
+
+       def writeHTMLBody(self):
+                self.includeURL(&quot;navigation/nav&quot;)
+                self.writeScreen()</pre>
+</div>
+<div class="section" id="sitecontext-main-psp">
+<h1>SiteContext/Main.psp</h1>
+<p>The home page for the site. This page requires the user to be
+authenticated before it can be displayed.  Notice how the SecureMixIn
+class is the first class to be extended. We need to do this so it can
+overwrite the preLayout method from SiteLayout:</p>
+<pre class="literal-block">&lt;%-- Main.psp --%&gt;
+&lt;%&#64; page method = &quot;writeScreen&quot; %&gt;
+&lt;%&#64; page imports = &quot;layout:SiteLayout:SiteLayout, Security.SecureMixIn:SecureMixIn&quot; %&gt;
+&lt;%&#64; page extends = &quot;SecureMixIn,SiteLayout&quot; %&gt;
+&lt;%&#64; page indentType=&quot;braces&quot; %&gt;
+&lt;psp:method name=&quot;title&quot;&gt;return &quot;Test page&quot;&lt;/psp:method&gt;
+
+Great! We are authorized!</pre>
+</div>
+<div class="section" id="sitecontext-login-psp">
+<h1>SiteContext/login.psp</h1>
+<p>This is our login page:</p>
+<pre class="literal-block">&lt;%-- login.psp --%&gt;
+&lt;%&#64; page imports = &quot;action.Login:Login&quot; %&gt;
+&lt;%&#64; page indentType=&quot;braces&quot; %&gt;
+&lt;% loginForm = self.request().arg('loginForm', Login.formTmpl()) %&gt;
+
+&lt;% if self.session().hasValue('username'): { %&gt;
+Username already exists: &lt;%= self.session().value('username') %&gt;&lt;br&gt;&lt;br&gt;
+&lt;% } %&gt;
+
+Please login &lt;br&gt;
+
+&lt;form method=&quot;post&quot; action=&quot;/action/Login&quot;&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+       &lt;td valign=&quot;top&quot;&gt;username:&amp;nbsp;&lt;/td&gt;
+       &lt;td valign=&quot;top&quot;&gt;&lt;%if loginForm['username']['error']:{%&gt;&lt;%=loginForm['username']['error']%&gt;&lt;br&gt;&lt;%}%&gt;
+                &lt;input type=&quot;text&quot; name=&quot;username&quot; value=&quot;&lt;%= loginForm['username']['data']%&gt;&quot;&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+       &lt;td valign=&quot;top&quot;&gt;password:&amp;nbsp;&lt;/td&gt;
+       &lt;td valign=&quot;top&quot;&gt;&lt;%if loginForm['passwd']['error']:{%&gt;&lt;%=loginForm['passwd']['error']%&gt;&lt;br&gt;&lt;%}%&gt;
+                &lt;input type=&quot;text&quot; name=&quot;passwd&quot; value=&quot;&lt;%= loginForm['passwd']['data']%&gt;&quot;&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;input name=&quot;_action_login&quot; type=&quot;submit&quot; value=&quot;Login&quot;&gt;&lt;br&gt;
+&lt;/form&gt;</pre>
+</div>
+<div class="section" id="sitecontext-action-login-py">
+<h1>SiteContext/action/Login.py</h1>
+<p>This is the action we use to handle logging the user in. This action
+should do the following:</p>
+<ul class="simple">
+<li><p>Make sure the form data is valid</p></li>
+<li><p>Make sure the requested user is valid</p></li>
+<li><p>Log the user in</p></li>
+<li><p>If the data/user is not valid, go back to login page.</p></li>
+</ul>
+<pre class="literal-block"># Login.py
+from WebKit.Page import Page
+from Security.UserFactory import UserFactory
+import string
+
+class Login(Page):
+       &quot;&quot;&quot;
+       This class handles login requests
+       &quot;&quot;&quot;
+       def formTmpl():
+                return {'username':{'data':'',
+                                                                       'error':''},
+                                       'passwd':  {'data':'',
+                                                                       'error':''},
+                                       'valid':       True}
+       formTmpl=staticmethod(formTmpl)
+
+
+       def actions(self):
+                return ['login',]
+
+       def isValidStr(self, string):
+                return string != &quot;&quot;
+
+       def isValidUsername(self, username):
+                return self.isValidStr(username)
+
+       def isValidPasswd(self, passwd):
+                return self.isValidStr(passwd)
+
+       def login(self):
+                form = self.formTmpl()
+                req = self.request()
+                ses = self.session()
+
+                acceptLogin = False
+
+                # Populate our form dictionary with data
+                if req.hasField('username'):
+                              form['username']['data'] = string.strip(req.field('username'))
+                if req.hasField('passwd'):
+                              form['passwd']['data'] = string.strip(req.field('passwd'))
+
+                # Validate the contents of our form dictionary
+                if not self.isValidUsername(form['username']['data']):
+                              form['valid'] = False
+                              form['username']['error'] = &quot;Not a valid username&quot;
+
+                if not self.isValidPasswd(form['passwd']['data']):
+                              form['valid'] = False
+                              form['passwd']['error'] = &quot;Not a valid password&quot;
+
+                # If the contents is valid, perform login
+                if form['valid']:
+                              user = UserFactory().userFromName(form['username']['data'])
+                              if user:
+                                       if user.passwd() == form['passwd']['data']:
+                                                acceptLogin = True
+                                       else:
+                                                form['passwd']['error'] = &quot;Wrong password&quot;
+                              else:
+                                       form['username']['error'] = &quot;Unknown username&quot;
+
+                if acceptLogin:
+                              ses.setValue('username', username)
+                              self.forward(&quot;../test&quot;)
+                else:
+                              req.setArg('loginForm', form)
+                              self.forward(&quot;../login&quot;)</pre>
+</div>
+<div class="section" id="sitecontext-action-logout-py">
+<h1>SiteContext/action/Logout.py</h1>
+<p>And finally... the logout action. This action is a lot simpler because
+we do not care about form data:</p>
+<pre class="literal-block"># Logout.py
+from WebKit.Page import Page
+
+class Logout(Page):
+       def writeHTML(self):
+                self.session().invalidate()
+                self.forward(&quot;../test&quot;)</pre>
+</div>
+<div class="section" id="conclusion">
+<h1>Conclusion</h1>
+<p>By now you should have a basic site using the Model2+1
+paradigm. Although it is not perfect, you should have an idea on how
+to use this design within your own site.</p>
+<p>More information on the Model2+1 paradigm can be found on the <a class="reference external" href="http://jakarta.apache.org/turbine/turbine-2/">Jakarta
+Turbine</a> website.</p>
+<p>If you have any questions reguarding any of the information here, just
+shoot me an email =)</p>
+<p>-- LukeHolden - 07 Jan 2003</p>
+</div>
+<div class="section" id="changelog">
+<h1>Changelog</h1>
+<p><em>01/08/2003 6:53 pm</em>: <span class="docutils literal">Login.py</span> now returns error data back to
+login.psp</p>
+<p>-- LukeHolden</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 18 Sep 2005</p>
+
+</div>
+</body>
+</html>

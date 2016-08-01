@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware Document Management System</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-document-management-system">
+<h1 class="title">Webware Document Management System</h1>
+
+<p>This would be interelated to nearly everything else.</p>
+<div class="section" id="basic-ideas">
+<h1>Basic Ideas</h1>
+<p>The main object would be a <em>document</em>. This contains the actual text
+(or file), some information how to render the text and, most
+important, some <em>attribute</em> information. An <em>attribute</em> would be a
+basic meta information about the document.</p>
+<p>Here is a simple example. We want store documents about
+software. Basic attributes would be:</p>
+<ul class="simple">
+<li><p>operating system</p></li>
+<li><p>vendor</p></li>
+<li><p>product (name of the software)</p></li>
+<li><p>modul (if it's not a trivial software)</p></li>
+<li><p>version</p></li>
+<li><p>information category (getting started, installation, tips and tricks,...)</p></li>
+</ul>
+<p>Some of these attributes are related to each other while others are
+not. If I have for example a product, I have already the vendor (Word
+-- &gt; Microsoft). This leads to a hierachical structure:</p>
+<pre class="literal-block">operating system
+
+vendor
+     |---product
+     |---module
+     |---version
+
+information category</pre>
+<p>Every of these attributes can have several instances
+* operating system: Win98, Linux, ...
+* vendor: Microsoft, RedHat, ...
+* ...</p>
+<p>All of this should be configurable via the web interface. This is
+exactly where I've seen some Document Management Systems fail: the
+attributes are hardcoded or, even if you can change something, it is
+not possible to introduce a hierachy of attributes.</p>
+</div>
+<div class="section" id="usage">
+<h1>Usage</h1>
+<ul class="simple">
+<li><p>documents can be browsed via the attributes or searched via a search engine.</p></li>
+<li><p>documents can be converted on the fly (XML/XSLT --&gt; HTML)</p></li>
+<li><p>documents can be exported on the fly (XML/XSLT --&gt; PDF)</p></li>
+<li><p>batch import/export of documents</p></li>
+<li><p>revision management</p></li>
+<li><p>check out of documents</p></li>
+<li><p>integrated workflow management?</p></li>
+</ul>
+<p>This might be enough for a start and some dicussion. Please feel free to add your ideas.</p>
+<p>-- StephanDiehl - 23 Nov 2001</p>
+<p>Small point on the &quot;exported on the fly&quot;.  Currently the best way to
+go from XML style documents to PDF, is utilizing FO documents, and
+process them with FOP ( A java tool ). [ Purely my opinion RL ]</p>
+<p><a class="reference external" href="http://xml.apache.org/fop/">http://xml.apache.org/fop/</a></p>
+<p>I haven't found an XML:FO option to reportlab, they do support some
+XML style tags inline of their flowables ( specifically their
+Paragraph one ).  I'm looking into it to see how best to extend that.
+If possible tie it into a cheetah template like structure ... and push
+out some PDF.</p>
+<p>Second small point &quot;documents can converted&quot;.  That implies utilizing
+XML as the basis of the document structure, and utilizing XSLT
+transformation via 4Suite, or some such.  I would recommend possibly
+distributing the load for something like this via <a class="reference external" href="xmlrpc.html">XmlRpc</a>, and
+utilizing a Java / Xalan engine for the transformation.  I'm looking
+into the same for the XML/XSLT to PDF translation utilizing FOP, and
+<a class="reference external" href="xmlrpc.html">XmlRpc</a>.</p>
+<p>It could allow for a more scalable system architecture, even though it
+would probably slow the responsiveness of the system.</p>
+<p>Having said all of the above.  I find working with Cheetah / Webware /
+Python substantially faster ( for me! ), in development.  I came from
+Taglibs / JSP ( Tomcat / WebLogic / JRun ) / XML ( XSP via Cocoon ) /
+Java.  Personal preference is to stick with Cheetah / Webware template
+applications, spitting out reportlab PDF ... but hey they can't (
+currently ) support your request of XML to PDF, or XML to HTML, but I
+find it easier to work with Cheetah templates than XML / XSLT
+transformations.  Personal preference only.</p>
+<p>-- RayLeyva - 21 Nov 2001</p>
+<p>---</p>
+<p>The reason I'd like to use XML is to be independent from any
+application in order to create the documents outside the management
+system and do whatever I want with them.  I've played around with
+4suite. It's quite easy to use but seems to be a little slow. A non
+python xslt processor might give better results in that area.  Another
+way to produce PDF is going via LaTeX. It looks quite promising but is
+really not usable for &quot;on the fly&quot; processing.</p>
+<p>Anyway, to be able to preprocess the files before sending to the
+browser is central. Another example that comes to mind is the usage of
+Wiki pages (see <a class="reference external" href="webwarewiki.html">WebwareWiki</a>): strcutured test --&gt; html via a wiki
+parser.</p>
+<p>-- StephanDiehl - 22 Nov 2001 &lt;br/&gt;</p>
+<p>Couldn't we just use Cheetah to generate templated XML exports?  It's
+what I was thinking to create the XML for the xalan based
+transformations.  Just a thought.</p>
+<p>-- RayLeyva - 22 Nov 2001</p>
+<p>If it works, why not? I wouldn't want to force to anybody anyway to
+use something specific. There should be some configurable filetype
+handler. So, in the case of XML, the admin should decide, if he is
+using a xslt processor, some css stylesheet, Cheetah, or whatever
+works best for the situation.</p>
+<p>-- StephanDiehl - 22 Nov 2001</p>
+<p>Perhaps we can use the term &quot;property&quot; or &quot;attribute&quot; rather than
+&quot;category&quot;.  The word &quot;category&quot; normally means a group the document
+is &quot;in&quot;.  In other words, it's the <em>value</em> of a certain property, not
+the property itself.  The category may also be expressed above the
+doucment; e.g., the directory the document is in.  This encourages
+users to think of the document as being in a certain hierarchical
+location.  But putting the category name in a property allows for
+easier sorting/searching (sort by any property, search for all
+documents matching a certain property value).  Which is better depends
+on the application.  But in any case, using the term category for
+property is confusing.</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 22 Nov 2001</p>
+<p>Agreed. This makes a lot of sense. I wasn't too happy about
+&quot;category&quot;, but couldn't think of anything better. From now on I'll
+use <em>attribute</em>.</p>
+<p>-- StephanDiehl - 23 Nov 2001</p>
+<p>Here are a bunch of wishlist items for a content management system
+(CMS): <a class="reference external" href="webwaredocumentmanagementsystemmso1.html">WebwareDocumentManagementSystemMSO1</a>.</p>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 15 Apr 2002</p>
+<p>I think RDF would probably give a good framework for document
+classification.</p>
+<p>The backend storage has to be in native format -- not XML.  If you
+demand that everything be converted to XML, you'll lose information in
+the process and not be able to retrieve it later -- especially
+annoying if you try to retrieve the original content and get something
+slightly different back.</p>
+<p>To do this, you might rank every sort of conversion and find the
+shortest path from the original document format to the target document
+format, probably caching various formats while you're at it.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 15 Apr 2002</p>
+<p>About XML transformations, performance and so on: 4Suite isn't the
+only option for XSLT - there's a wrapper around Xalan as well as
+libxslt (and libxml2), although those packages may not be compliant
+with the XML-SIG API.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 16 Apr 2002</p>
+<p>We're using the Apache stuff in a separate process (i.e.,
+os.system(...)) to generate PDFs from XML that we build using
+Cheetah. It's not the fastest in the world, but it's functional. I'm
+planning on updating it and bypassing the XML step, having the XSLT
+engine call directly into our object model, which saves the XML export
+and the subsequent XML parse steps. I'll report back on my experiences
+when I finish that :)</p>
+<p>(PS: I haven't read closely enough to determine how much actual
+forward motion there's been on the Webware CMS. Anyway, in case it's
+relevant, we (<a class="reference external" href="http://hfd.com/">HFD</a> ) are &quot;most likely&quot; going to release our content
+management product (built on Webware) under an Open Source license by
+the end of 2003. I say &quot;most likely&quot; because we're all generally
+agreed that it's what we want to do, but we have to iron out the
+details, and I don't want to make a concrete statement without having
+concrete under me :) (PPS: Chuck, Geoff, the Monkey's grown up a lot
+since you last saw him :) ))</p>
+<p>-- <a class="reference external" href="tripplilley.html">TrippLilley</a> - 11 Nov 2002</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Non-Web Interfaces</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="non-web-interfaces">
+<h1 class="title">Non-Web Interfaces</h1>
+
+<p>(moved from <a class="reference external" href="appideas.html">AppIdeas</a>)</p>
+<p>For certain parts of a website, interfacing information through a web browser can be tedious -- for instance, uploading multiple files.  It would be nice to have a clear structure/framework for creating non-web interfaces to complement the other controls -- often a way to fill out forms without a browser.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 18 Nov 2001</p>
+<p>Automation of Web interfaces, like the automation of applications that one can do with COM in Windows environments, could be done using something like XML-RPC or SOAP. Indeed, I think that such technologies could lend themselves quite well to such activities, since you're likely to avoid the need to deal with cookies and other things which could complicate automation unnecessarily. As an aside, I added some features to my XmlForms package to process XML &quot;instances&quot;; these could be used as similar but more lightweight alternatives to SOAP for automating applications written to use that framework.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 19 Nov 2001</p>
+<p>Yes, after using <a class="reference external" href="xmlrpc.html">XmlRPC</a> some, it is a pretty easy way to control the website from an external application -- much better than what I was using (though the error messages because of unsupported data types are less than helpful).  I'm thinking of making <a class="reference external" href="funformkit.html">FunFormKit</a> capable of verifying the inputs to an XmlRPC call just like it does normal HTTP requests -- at some point, it would be nice if every pretty form for human use was easily turned into something XmlRPC could handle.  It would be nice if authentication and such could also be more seemlessly added.  (I edited some of the original comment to take out some of my less informed ideas)</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 19 Nov 2001</p>
+<p>XmlRPC is something I've been using on and off for about a year now.  It's fairly flexible, and I haven't really run into anything I couldn't get it to work with.  I sort of disagree that HTML / ASP / JSP can't give decent data entry feedback.  With well written server side validation you can create a fairly robust application that gives the users decent feedback.  Throw in a smidge of server generated Javascript, and you've got a workable feedback system for a user.  You can even mix Javascript, XmlRPC and a messageQ system to give even better immediate feedback, w/o having to reload an entire page ... on some platforms ( IE ).</p>
+<p>(Un)fortunately ( mixed-blessing ) HTML is pretty much the only game in town if you really want to write a single front end to a system.  Otherwise you end up with having to maintain clients in a goodly number of systems just to make sure it's useful accross OS's.  I use OSX / Linux / BSD / and pretty much all the Win line after W95 on a daily basis.</p>
+<p>Don't know if I'm just dreaming but I believe that the HTML interface is / can be manipulated so as to make data entry less painful, but the inherent latency ( quite a bit on the client side rendering the HTML ) of an HTTP / HTML application even if it's only a few seconds is too slow for data intensive entry operations.  That's where a green screen environment is still the best way to go, unless you can create an intelligent batching / queing mechanism that can hold udpates on a local memory resident status, and only send to the ( server ) after a set period of time has passed ( still has the latency problem with rendering HTML ).</p>
+<p>Other possibilities include utilizing some form of &lt;nop&gt;FrontEndKit to actually generate a front end via wxWindows / GTK / QT / Tk / etc. depending on host system, and based on some form of Widget factory.  yeah ... ok ... now I know I need to get some sleep. &lt;grin&gt;</p>
+<p>-- RayLeyva - 21 Nov 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Credit Cards</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="credit-cards">
+<h1 class="title">Credit Cards</h1>
+
+<p>This page is about accepting, storing and processing credit cards.</p>
+<hr class="docutils" />
+<p>A brief, high level overview of accepting payments on-line, with a focus on credit cards is at <a class="reference external" href="http://selfpromotion.com/credit.t">http://selfpromotion.com/credit.t</a></p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 18 Mar 2002</p>
+<hr class="docutils" />
+<p>This information comes courtesy of Jeff Johnson:</p>
+<div class="section" id="how-to-store-credit-card-numbers">
+<h1>How to Store Credit Card Numbers</h1>
+<p>For starters, you'll likely store them in a SQL database. You'll want
+to encrypt them for safekeeping, but might also choose to store the
+last 4 digits as plain text so that customer service reps can tell a
+customer which card they used (without seeing the whole number).</p>
+<p>You can encrypt them using either <a class="reference external" href="http://www.post1.com/home/ngps/m2/">M2Crypto</a> or the Python <a class="reference external" href="http://python.org/doc/current/lib/module-rotor.html">rotor</a>
+library.</p>
+<hr class="docutils" />
+<p>The rotor module implements an encryption algorithm used in the second
+world war. Beware that data encrypted with this algorithm are easily
+cracked!</p>
+<p>--AlbertBrandl</p>
+<p>Here's an interesting link about credit card handling, including the
+pitfalls of not retaining card information:
+<a class="reference external" href="http://www.arsdigita.com/books/panda/ecommerce#credit_cards">http://www.arsdigita.com/books/panda/ecommerce#credit_cards</a></p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 06 Mar 2002</p>
+<hr class="docutils" />
+<p>Here's what Jeff Johnson said:</p>
+<p>I store them encrypted using the rotor library, I might use M2Crypto if I
+were to do it again but so far rotor is fine.  I also store the last 4
+digits as plain text so CSRs can tell the customer which card they used
+without seeing the whole number.  Then, I store the hash so we can search
+the database and compare numbers without passing the actual number.  Here's
+my code, altered a little for security reasons:</p>
+<pre class="literal-block">def decryptCreditCard(self,number):
+ r = rotor.newrotor(???,???)
+ number = binascii.a2b_hex(number)
+ number = r.decrypt(number)
+ number = re.sub(r&quot;\D&quot;,&quot;&quot;,number)
+ return number
+
+def encryptCreditCard(self,number):
+ number = re.sub(r&quot;\D&quot;,&quot;&quot;,number)
+ r = rotor.newrotor(???,???)
+ number = r.encrypt(number)
+ number = binascii.b2a_hex(number)
+ return number
+
+def creditCardShaHex(self,number):
+ number = re.sub(r&quot;\D&quot;,&quot;&quot;,number)
+ return binascii.b2a_hex(sha.new(number).digest())
+
+def creditCardFromNumber(self,number):
+ number = re.sub(r&quot;\D&quot;,&quot;&quot;,number)
+ numberShaHex = self.creditCardShaHex(number)
+ sql = &quot; select creditCardID,number,expiration,numberShaHex,numberPart from CreditCard where numberShaHex = '%s' &quot; % numberShaHex
+ rs = self.recordset(&quot;DEG&quot;,sql)
+ if rs:
+       return rs[0]
+ else:
+       return None
+
+def creditCardFromID(self,creditCardID):
+ sql = &quot; select creditCardID,number,expiration,numberShaHex,numberPart from CreditCard where creditCardID = %s &quot; % creditCardID
+ rs = self.recordset(&quot;DEG&quot;,sql)
+ if rs:
+       return rs[0]
+ else:
+       return None
+
+def insertCreditCard(self,number,expiration):
+ # Get rid of non-digits (\D).
+ number = re.sub(r&quot;\D&quot;,&quot;&quot;,number)
+ expiration = re.sub(r&quot;\D&quot;,&quot;&quot;,expiration)
+
+ # Encrypt the number before storing it.
+ numberRotor = self.encryptCreditCard(number,expiration)
+ # To find a credit card in the database, get the sha hex value, then query the database.
+ numberShaHex = self.creditCardShaHex(number)
+ # If a customer wants to know which card they used, read the last 4 digits back to them.
+ numberPart = number[-4:]
+
+ sql = &quot;&quot;&quot; select nextval('CreditCardSeq') as creditCardID &quot;&quot;&quot;
+ rs = self.recordset(&quot;DEG&quot;,sql)
+ creditCardID = rs[0].creditCardID
+
+ sql = &quot;&quot;&quot;
+       insert into CreditCard
+       (creditCardID,number,expiration,numberShaHex,numberPart)
+       values
+       (%(creditCardID)d,'%(numberRotor)s','%(expiration)s','%(numberShaHex)s','%(numberPart)s')
+       &quot;&quot;&quot; % locals()
+ rs = self.recordset(&quot;DEG&quot;,sql)
+ return creditCardID</pre>
+</div>
+<div class="section" id="ssl">
+<h1>SSL</h1>
+<p>You'll need SSL for encryption. You can run Apache 1.3.x + mod_ssl and
+get SSL certs from a variety of
+companies. <a class="reference external" href="http://google.com/search?q=buy+ssl+certificates">http://google.com/search?q=buy+ssl+certificates</a></p>
+<p>You can use stunnel to talk SSL to the credit card company.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 04 Mar 2002</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

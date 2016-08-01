@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Use CSVs</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="use-csvs">
+<h1 class="title">Use CSVs</h1>
+
+<p>A CSV is a comma-separated-value file. These are often used to
+represent a table of data with named columns and rows of records. For
+example:</p>
+<pre class="literal-block">language,author,website
+Python,Guido,http://www.python.org/
+Perl,Larry,http://www.perl.org/
+Java,James,http://java.sun.com/</pre>
+<p>I use these in my sites to store configuration information. This could
+be:</p>
+<ul class="simple">
+<li><p>what columns of data to display for different objects</p></li>
+<li><p>a list of menu item titles, links and descriptions</p></li>
+<li><p>logs</p></li>
+<li><p><a class="reference external" href="middlekit.html">MiddleKit</a> object models</p></li>
+</ul>
+<p>You might also obtain csv's by saving a spreadsheet as that format,
+dumping SQL data, downloading information from a web site, or
+exporting data from some other program.</p>
+<p>CSVs are easy to work with because they are text, can easily be read
+by your programs and can be edited with nice GUI programs.</p>
+<div class="section" id="guis">
+<h1>GUIs</h1>
+<p>Do not torture yourself by editing csv's with a text editor except for
+the occasional tweak or search-and-replace. Instead use a spreadsheet
+which gives better presentation and navigation of the cells of data:</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 19%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr><th class="head"><p>language</p></th>
+<th class="head"><p>author</p></th>
+<th class="head"><p>website</p></th>
+</tr>
+</thead>
+<tbody>
+<tr><td><p>Python</p></td>
+<td><p>Guido</p></td>
+<td><p><a class="reference external" href="http://www.python.org/">http://www.python.org/</a></p></td>
+</tr>
+<tr><td><p>Perl</p></td>
+<td><p>Larry</p></td>
+<td><p><a class="reference external" href="http://www.perl.org/">http://www.perl.org/</a></p></td>
+</tr>
+<tr><td><p>Java</p></td>
+<td><p>James</p></td>
+<td><p><a class="reference external" href="http://java.sun.com/">http://java.sun.com/</a></p></td>
+</tr>
+</tbody>
+</table>
+<p>On Linux, I have the best luck with <a class="reference external" href="http://www.gnome.org/projects/gnumeric/">gnumeric</a> (even though I am
+typically a KDE fan, which provides <a class="reference external" href="http://www.koffice.org/kspread/">KSpread</a>). On Windows, I use
+Excel.</p>
+</div>
+<div class="section" id="python">
+<h1>Python</h1>
+<p>Webware provides MiscUtils.DataTable which has excellent doc strings
+and is very easy to use. In addition to fully supporting the typical
+csv format (regarding embedded commas, quotes and newlines) (after
+Webware 0.6.1), it will also strip whitespace around fields and
+support simple one line #comments which are quite useful in &quot;config&quot;
+csv files.</p>
+<p>If you want something lower level than DataTable, see
+MiscUtils.CSVParser which is the parsing guts for DataTable and can
+be used separately.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

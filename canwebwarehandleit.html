@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Can Webware Handle It?</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="can-webware-handle-it">
+<h1 class="title">Can Webware Handle It?</h1>
+
+<p>People often ask 'Is Webware ready for prime-time use?' or 'Can
+Webware really handle it?' The answer is yes, but this is the wrong
+question.</p>
+<p>A better question would be 'can Webware help me build an application
+that can reliably handle heavy loads?' Webware is not an application,
+methodology, or recipe for success.  It is a development framework and
+a collection of useful tools.  If you use the framework and tools
+intelligently, and design your application well, then yes it will help
+you build an application that can reliably handle heavy loads.  If you
+use them poorly, or botch your application design, don't cross your
+fingers.</p>
+<p>An even better question is 'does Webware's architecture encourage and
+facilitate effective application designs?'  I believe it does, for the
+following reasons:</p>
+<ul class="simple">
+<li><p>it uses Python: a well designed, modular, object-oriented, easy to
+learn, and easy to maintain language</p></li>
+<li><p>it is thoroughly object-oriented and encourages object-oriented
+applications, unlike other frameworks like PHP and ColdFusion, which
+tend to spawn a maze of spaghetti code and include files.</p></li>
+<li><p>it is fairly simple to understand and very fast to develop with once
+you've groked it.  This encourages rapid prototyping and testing,
+and helps weed out bad designs early on.  Webware is a great fit for
+software engineering methodologies such as <a class="reference external" href="http://www.xprogramming.com/what_is_xp.htm">eXtreme Programming</a>
+and <a class="reference external" href="http://martinfowler.com/articles/newMethodology.html">Agile</a> methods.</p></li>
+</ul>
+<ul class="simple">
+<li><p>it doesn't dictate how you handle data storage and object
+persistence.</p></li>
+<li><p>it is extremely portable, allowing you great flexibility in your
+choice of operating systems and other tools.</p></li>
+<li><p>the Python and Webware user community is supportive, intelligent,
+and experienced.  If you run into technical or conceptual hurdles,
+ask some smart questions and you'll get some real gems of clear
+thought in response.</p></li>
+<li><p>objects (servlets, sessions, data caches) persist in memory between
+requests. This can lead to huge performance gains over other
+frameworks without in-memory object persistence.</p></li>
+<li><p>it is extensible by design.</p></li>
+</ul>
+<p>Drop by the <a class="reference external" href="webwarepropaganda.html">Webware Propaganda</a> for some more info.</p>
+<p>Keep in mind that Webware is only one part of your toolkit.
+Non-trivial applications will rely on many other resources.  These
+might include server and network hardware; operating system(s);
+persistence mechanisms, such as filesystems and databases; web
+servers(s); web caches, such as squid; external credit card
+processors; shipping processors; and, of course, web browsers.  The
+performance and reliability of your application will depend on how you
+utilize these resources in conjunction with Webware.</p>
+<p>Here's some notes on <a class="reference external" href="usingwebwareeffectively.html">Using Webware Effectively</a>.</p>
+<p>-- TavisRudd - 30 Mar 2002</p>
+<p>Have a look at some recent <a class="reference external" href="webwarebenchmarks.html">Webware benchmarks</a>.</p>
+<p>-- <a class="reference external" href="chriszwerschke.html">ChrisZwerschke</a> - 18 Apr 2010</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 18 Apr 2010</p>
+
+</div>
+</body>
+</html>

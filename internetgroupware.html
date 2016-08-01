@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Internet Groupware</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="internet-groupware">
+<h1 class="title">Internet Groupware</h1>
+
+<p><em>SourceForge.net provides a valuable service to the Open Source
+community, but its implementation and user interface could be improved
+in many ways</em>.  (TavisRudd in <a class="reference external" href="webwaresourceforge.html">WebwareSourceforge</a>)</p>
+<p>The biggest improvement would be to get the browser out of the way. I
+cringe every time I need to search a mailing list (or worse, a
+Sourceforge &quot;forum&quot;) for a specific keyword or conversation through
+some strange web-interface. IMAP, which was designed for exactly that
+purpose, does the job thousands of times faster with far less drain on
+both human and computer/network resources. (NNTP is also ok, but
+requires the <em>client</em> software to do the searching, thus causing
+<em>more</em> load on the server by having to transfer all of the articles,
+rather than just the interesting ones.)</p>
+<p>I think that a key benefit of the webware approach over the Zope
+approach is that you can design your application without being
+constrained by a browser.  Roundup's design is a good example of
+this. It uses the most approriate protocol/tool for each task,
+instead of trying to shoehorn everything into &quot;stateless&quot; HTTP
+transactions.</p>
+<p>Therefore: a &quot;webware application&quot; such as this proposed collaboration
+suite, should be first an <em>application</em> with a <em>thin</em> adapter to
+create a browser-based UI generated using webware components.</p>
+<p>Please read these before you start:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://udell.roninhouse.com/GroupwareReport.html">http://udell.roninhouse.com/GroupwareReport.html</a></p></li>
+<li><p><a class="reference external" href="http://www.byte.com/documents/s=593/byt20010425s0012/index.htm">http://www.byte.com/documents/s=593/byt20010425s0012/index.htm</a></p></li>
+</ul>
+<p>And beware of this (another &quot;feature&quot; of the current sourceforge development model):</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.byte.com/documents/s=620/byt20010504s0007/index.htm">http://www.byte.com/documents/s=620/byt20010504s0007/index.htm</a></p></li>
+</ul>
+<p>(Can you tell that I <em>strongly dislike</em> web-only interfaces? 8-D)</p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 16 Apr 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

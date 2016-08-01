@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Model-View-Controller</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="model-view-controller">
+<h1 class="title">Model-View-Controller</h1>
+
+<div class="section" id="introduction">
+<h1>Introduction</h1>
+<p>Here is an example how to use the Model-View-Controller
+paradigm with Webware. I'll also show how to integrate
+unit testing into the development.</p>
+</div>
+<div class="section" id="requirements">
+<h1>Requirements</h1>
+<p>Let's assume the task is to model a basket with apples. You
+can either add an apple or empty the basket. The basket can
+hold at most 10 apples.</p>
+<p>We'd like to have a web interface for adding apples and
+emptying the basket. The interface should show the contents
+of the basket and be able to react to the most common errors
+(e.g. emptying an empty basket or adding an apple to a full
+basket).</p>
+</div>
+<div class="section" id="design">
+<h1>Design</h1>
+<p>I'll use three classes: Basket, Basket Controller and Basket Page.
+The basket (i.e. model) is responsible for administering the data
+structure and persistence. The controller is responsible for
+high-level operations on the basket and the translation of exceptions
+to user messages, and the page (i.e. view) is responsible for
+presenting the user interface (containing details on the basket) and
+forwarding user requests to the controller.</p>
+</div>
+<div class="section" id="the-basket">
+<h1>The Basket</h1>
+<pre class="literal-block"># file basket.py
+import UserList
+import fileinput
+
+NoSuchApple = &quot;No such apple!&quot;
+BasketEmpty = &quot;The basket is empty&quot;
+BasketFull = &quot;The basket is full&quot;
+
+
+class Basket (UserList.UserList):
+
+    def __init__(self, filename):
+        &quot;&quot;&quot;initialize UserList data structures, set maximum size&quot;&quot;&quot;
+        UserList.UserList.__init__(self)
+        self.max_size = 10
+        self.filename = filename
+        self.load()
+
+    def putAppleInside(self, a_type):
+        &quot;&quot;&quot;add an apple if the basket is not full&quot;&quot;&quot;
+        if len(self) == self.max_size:
+            raise BasketFull
+        self.append(a_type)
+
+    def removeApple(self, a_type):
+        &quot;&quot;&quot;remove an apple of a certain kind, if available&quot;&quot;&quot;
+        if not self:
+            raise BasketEmpty
+        if a_type in self:
+            self.remove(a_type)
+        else:
+            raise NoSuchApple
+
+    def empty(self):
+        num = len(self)
+        if not num:
+            raise BasketEmpty
+        self.data = []
+        self.save()
+        return num
+
+    def load(self):
+        &quot;&quot;&quot;load data from text file.&quot;&quot;&quot;
+        self.data = []
+        for line in fileinput.input(self.filename):
+            self.append(line[:-1])
+
+    def save(self):
+        &quot;&quot;&quot;save data to text file&quot;&quot;&quot;
+        f = open(self.filename, &quot;w&quot;)
+        for line in self:
+            f.write(line + &quot;\n&quot;)
+        f.close()</pre>
+</div>
+<div class="section" id="testing-the-basket">
+<h1>Testing the Basket</h1>
+<p>The Basket class can be tested e.g. with the following lines:</p>
+<pre class="literal-block">def testBasket():
+    testfile = &quot;basket.txt&quot;
+    b = Basket(testfile)
+
+    # test putAppleInside
+    b.putAppleInside(&quot;jonagold&quot;)
+    assert len(b) == 1
+    assert b[0] == &quot;jonagold&quot;
+    b.putAppleInside(&quot;granny smith&quot;)
+    assert  len(b) == 2
+    assert b[0] == &quot;jonagold&quot;
+    assert b[1] == &quot;granny smith&quot;
+
+    # test empty
+    b.empty()
+    assert len(b) == 0
+
+    # lots of tests removed...
+
+if __name__ == &quot;__main__&quot;:
+    testBasket()</pre>
+</div>
+<div class="section" id="how-to-execute-the-tests">
+<h1>How to Execute the Tests</h1>
+<p>For smaller projects, I usually write tests like this and insert them
+into the file that is tested. Using the Emacs Python mode, I type
+Ctrl-C Ctrl-C each time I changed something. This key combination starts
+the Python interpreter and executes testBasket(). If you are using SciTe
+instead of Emacs as your editor, you can use the F5 key for this.</p>
+<p>If you do not use Emacs, SciTe or a Python IDE, you can run the tests
+from the commandline via:</p>
+<pre class="literal-block">python basket.py</pre>
+<p>or doubleclick it, if you use e.g Windows Explorer.</p>
+<p>Larger projects need some more thought - you might e.g. want to switch
+to the unittest-Framework and / or write a test module which runs all
+tests that are available. With Emacs, you can import this module as
+above in every source file, otherwise you can start it as standalone
+program.</p>
+</div>
+<div class="section" id="the-basket-controller">
+<h1>The Basket Controller</h1>
+<p>As a next step, you add a controller which knows how to modify the
+basket and report the results to the (not yet implemented) view class:</p>
+<pre class="literal-block"># file basket_ctl.py
+import basket
+
+class BasketController:
+
+    def __init__(self, a_basket):
+        self.basket = a_basket
+
+    def awake(self):
+        &quot;&quot;&quot;reload the basket - necessary if someone else has
+        put apples inside in the meantime&quot;&quot;&quot;
+        self.basket.load()
+
+    def addApple(self, name):
+        &quot;&quot;&quot;add an apple and return a string describing if it
+        was successful&quot;&quot;&quot;
+        if not name:
+            return &quot;You did not provide a name&quot;
+        try:
+            self.basket.putAppleInside(name)
+            self.basket.save()
+            return &quot;Added apple&quot;
+        except basket.BasketFull:
+            return &quot;The basket is full!&quot;
+
+    def emptyBasket(self):
+        try:
+            apples = self.basket.empty()
+            return &quot;The basket contained &quot; + \
+                `apples` + &quot; apples. It's empty now.&quot;
+        except basket.BasketEmpty:
+            return &quot;The basket is already empty!&quot;</pre>
+<p>For testing this class, you do not need any knowledge about Webware
+data structures like requests, transactions, sessions etc.  The class
+is not very complex, so the tests are rather straightforward (which
+means I won't present them here...).</p>
+</div>
+<div class="section" id="the-basket-page">
+<h1>The Basket Page</h1>
+<p>Finally, the Webware page is written. It communicates with themodel
+(to present data) and the controller (to modify data). It also
+translates the Webware specific data structures (transactions,
+requests and so on) to Webware independent structures that are
+understood by the controller:</p>
+<pre class="literal-block"># file BasketPage.py
+from WebKit.Page import Page
+
+import basket
+import basket_ctl
+
+class BasketPage (Page):
+    &quot;&quot;&quot;Usually, you derive your pages from a customized
+    SitePage. I won't do this here.&quot;&quot;&quot;
+
+    def __init__(self):
+        &quot;&quot;&quot;create model and controller objects&quot;&quot;&quot;
+        Page.__init__(self)
+        self.basket = basket.Basket(&quot;basket.txt&quot;)
+        self.ctl = basket_ctl.BasketController(self.basket)
+
+    def awake(self, transaction):
+        &quot;&quot;&quot;make sure everything is up to date&quot;&quot;&quot;
+        Page.awake(self, transaction)
+        self.ctl.awake()
+
+    def writeBody(self):
+        &quot;&quot;&quot;present the contents of the basket and some
+        means to control it&quot;&quot;&quot;
+        self.writeln(&quot;&lt;ul&gt;&quot;)
+        for item in self.basket:
+            self.writeln(&quot;&lt;li&gt;%s&lt;/li&gt;&quot; % item)
+        self.writeln(&quot;&lt;/ul&gt;&quot;)
+        self.writeln(&quot;&lt;form&gt;&quot;)
+        self.writeln('&lt;input type=text name=&quot;apple&quot;&gt;')
+        self.writeln('&lt;input type=submit name=&quot;_action_&quot; value=&quot;Add apple&quot;&gt;')
+        self.writeln('&lt;input type=submit name=&quot;_action_&quot; value=&quot;Empty basket&quot;&gt;')
+
+    def addApple(self):
+        &quot;&quot;&quot;extract the kind of apple and forward the request to the
+        controller which tells you what to respond&quot;&quot;&quot;
+        req = self.request()
+        self.show_response(self.ctl.addApple(req.field(&quot;apple&quot;)))
+
+    def emptyBasket(self):
+        &quot;&quot;&quot;forward the request to empty the basket to the
+        controller&quot;&quot;&quot;
+        self.show_response(self.ctl.emptyBasket())
+
+    def show_response(self, response):
+        &quot;&quot;&quot;a helper method to present the response&quot;&quot;&quot;
+        self.writeln(response)
+        self.writeln('&lt;p&gt;&lt;a href=&quot;BasketPage&quot;&gt;Back to overview&lt;/a&gt;&lt;/p&gt;')
+
+    # these are the usual, webware specific methods for
+    # easing the use of forms
+
+    def actions(self):
+        &quot;&quot;&quot;return the list of all actions that can be called&quot;&quot;&quot;
+        return Page.actions(self) + [&quot;addApple&quot;, &quot;emptyBasket&quot;]
+
+    def methodNameForAction(self, name):
+        &quot;&quot;&quot;return the names for the actions&quot;&quot;&quot;
+        return {&quot;Add apple&quot;: &quot;addApple&quot;,
+                &quot;Empty basket&quot;: &quot;emptyBasket&quot;}[name]</pre>
+<p>As you can see, this page does not contain much logic. Most of
+the issues will be about the layout - and this is something that
+cannot be automated anyway ;-)</p>
+<p>-- AlbertBrandl - 09 Nov 2001</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 06 Oct 2005</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>AppServer</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="appserver">
+<h1 class="title">AppServer</h1>
+
+<p>Webware's core is its &quot;Application Server&quot;, which is known as &quot;WebKit&quot;.</p>
+<p>See <a class="reference external" href="http://webopaedia.com/TERM/a/application_server.html">http://webopaedia.com/TERM/a/application_server.html</a> for more
+notes on application servers.</p>
+<div class="section" id="note">
+<h1>NOTE:</h1>
+<p>Several people have suggested that the name &quot;WebKit&quot; should be
+scrapped when Webware is transitioned to a DistUtils based package
+architecture. <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> likes the name and has rejected these
+suggestions so far, but the discussion isn't over yet.  My argument is
+that it is better to position and describe Webware as 'A
+Python-Powered Application Server', that comes with a suite of useful
+components, than saying that &quot;Webware for Python is a suite of
+software components for developing object-oriented, web-based
+applications.&quot;  The former is clearer and more direct.  The latter is
+ambiguous and needs clarification.  The name &quot;WebKit&quot; and the latter
+description imply that the AppServer is just another component of
+Webware.  This is misleading: the AppServer is the heart of Webware.</p>
+<p>Using the name WebKit also makes the module/package structure and path
+management issues more complex than they should be.</p>
+<p>-- Tavis Rudd - 29 Oct 2001</p>
+<p>I wouldn't mind seeing other kits which handle other forms of
+communication. What about MailKit, for example? One could imagine the
+nature of requests and responses to be quite different in that kind of
+environment.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 30 Oct 2001</p>
+<p>Such 'kits' could still be created if the name 'WebKit' was removed.
+A sensible package layout would be something like this:</p>
+<ul class="simple">
+<li><p><em>Webware</em> [package]</p>
+<ul>
+<li><p>MultiPortServer [module]</p></li>
+<li><p>AppServer [module]</p></li>
+<li><p>Application [module]</p></li>
+<li><p>Transaction [module]</p></li>
+<li><p>Servlet [module]</p></li>
+<li><p>Request [module]</p></li>
+<li><p>Response [module]</p></li>
+<li><p>Session [module]</p></li>
+<li><p>SessionStore [module]</p></li>
+<li><p>Cookie [module]</p></li>
+<li><p><em>WebUtils</em> [sub-package]</p></li>
+<li><p><em>MiscUtils</em> [sub-package]</p></li>
+</ul>
+</li>
+<li><p><em>MiddleKit</em> [package]</p></li>
+<li><p><em>UserKit</em> [package]</p></li>
+<li><p><em>FunFormKit</em> [package]</p></li>
+<li><p><em>Cheetah</em> [package]</p></li>
+<li><p><em>XMLForms</em> [package]</p></li>
+<li><p>other 'kits' and related packages ...</p></li>
+</ul>
+<p>-- Tavis Rudd - 30 Oct 2001</p>
+<p>I brought this up again on the list a few weeks ago and Chuck said his
+final answer to my request to get rid of the name 'WebKit' was no.
+I'll agree to disagree.</p>
+<p>-- Tavis Rudd - 23 Nov 2001</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 30 Apr 2004</p>
+
+</div>
+</body>
+</html>

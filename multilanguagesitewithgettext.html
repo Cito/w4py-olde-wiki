@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Multi-language site with gettext</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="multi-language-site-with-gettext">
+<h1 class="title">Multi-language site with gettext</h1>
+
+<p><strong>This is a short recipe how to make a multi-language site</strong></p>
+<p>First of all, I load all my languages during the WebKit start-up into a variable, which is visible from any place, i.e. I create this variable in <em>__builtin__</em> dictionary. So, in my <em>contextInitialize()</em> method is:</p>
+<pre class="literal-block">__builtin__.__dict__['LANGUAGES'] = Languages()</pre>
+<p>where <em>Languages()</em> is a dictionary-like object, where keys are language codes and items are <em>gettext.translation()</em> objects:</p>
+<pre class="literal-block">import gettext
+import os
+
+class Languages:
+
+    def __init__(self):
+        self._langs = {}
+        self.load()
+
+    def __getitem__(self, lang):
+        return self._langs[lang]
+
+    def load(self):
+        localeDir = 'yourLocaleDirectory'
+        dirItems = os.listdir(localeDir)
+        for dirItem in dirItems:
+            if os.path.isdir(os.path.join(localeDir, dirItem)):
+                try:
+                    self._langs[dirItem] = gettext.translation('yourDomain', localeDir, [dirItem])
+                except Exception, e:
+                    print 'Error: Loading language: &quot;%s&quot;' % dirItem
+
+    def gettextFunc(self, lang):
+        if self._langs.has_key(lang):
+            return self._langs[lang].gettext
+        else:
+            return lambda x: x</pre>
+<p>So. I have all the translations in memory and now I need to use them. I need to know, which language to choose. Because my site is also for registered users, there are two ways:</p>
+<ul class="simple">
+<li><p>If the user is logged in, language code is read from his profile.</p></li>
+<li><p>If the user is not logged in, I pass choosen language code via GET method from page to page, but if the user did not choose language, some default one is used.</p></li>
+</ul>
+<p>In <em>awake()</em> method of a servlet I set right gettext function:</p>
+<pre class="literal-block">awake(self, transaction):
+    ...
+    self._ = LANGUAGES.gettextFunc('languageCode')
+    ...</pre>
+<p>Every string, that needs to be translated, I mark as usually <em>_('stringToTranslate')</em> and in the beginig of every method Where I need it, I just do:</p>
+<pre class="literal-block">someMethod(self):
+    _ = self._</pre>
+<p>That's it. :-)</p>
+<p>One last thing. Strings that needs to be translated are not just in servlets, but on other places too (for example in some modules), so I need some <em>_()</em> function there. At the begining of such a place I have:</p>
+<pre class="literal-block">_ = lambda x: x</pre>
+<hr class="docutils" />
+<p>If you have lots of situations where you need to internationalize code
+that won't have access to your context (i.e., to <span class="docutils literal">self._</span>), then you
+might want to try keeping track of language on a per-thread manner.
+(If you are using that last recipe, <span class="docutils literal">_ = lambda x: x</span>, then you
+might want to try this instead.)  An <strong>untested</strong> example of this:</p>
+<pre class="literal-block">def awake(self, trans):
+    self._ = LANGUAGES.gettextFunc('languageCode')
+    languagecontext.register(self._)
+
+def sleep(self, trans):
+    languagecontext.deregister()
+
+# then in languagecontext:
+import threading
+
+class LanguageContextTracker:
+
+    def __init__(self):
+        self._threads = {}
+
+    def curName(self):
+        return threading.currentThread().getName()
+
+    def register(self, obj):
+        self._threads[self.curName()] = obj
+
+    def deregister(self):
+        try:
+            del self._threads[self.curName()]
+        except KeyError:
+            pass
+
+    def language(self):
+        return self._threads[self.curName()]
+
+TheLanguageContextTracker = LanguageContextTracker()
+register = TheLanguageContextTracker.register
+deregister = TheLanguageContextTracker.deregister
+language = TheLanguageContextTracker.language</pre>
+<p>Then use <span class="docutils literal">languagecontext.language()</span> to get your <span class="docutils literal">_</span> object, even
+after you've lost track of the servlet you are associated with.</p>
+<p>(If someone implements this, please correct this code as necessary)</p>
+<blockquote>
+<p>-- <a class="reference external" href="ianbicking.html">Ian Bicking</a></p>
+</blockquote>
+<hr class="docutils" />
+<p>Based on <strong>very light testing</strong> the above approach seems to work.</p>
+<p>Although I implemented it slightly differently. Instead of gettext -functions
+TheLanguageContextTracker keeps track of preferred translation languages (as strings like 'en', 'fi',...).</p>
+<p>My LangUtil.py looks like this:</p>
+<pre class="literal-block">import threading
+import gettext
+
+class LanguageContextTracker:
+
+    def __init__(self):
+        self._threads = {}
+
+    def curName(self):
+        return threading.currentThread().getName()
+
+    def register(self, obj):
+        self._threads[self.curName()] = obj
+
+
+    def deregister(self):
+        try:
+            del self._threads[self.curName()]
+        except KeyError:
+            pass
+
+    def language(self):
+        return self._threads[self.curName()]
+
+TheLanguageContextTracker = LanguageContextTracker()
+register = TheLanguageContextTracker.register
+deregister = TheLanguageContextTracker.deregister
+language = TheLanguageContextTracker.language
+
+_translations = {}
+
+def initialize():
+    &quot;Load translations and put them to a dictionary. ADD ERROR HANDLING HERE&quot;
+    _translations['fi'] = gettext.translation(&quot;mydomain&quot;,&quot;C:/mywebkitproject/locale&quot;,[&quot;fi&quot;])
+    _translations['en'] = gettext.translation(&quot;mydomain&quot;,&quot;C:/mywebkitproject/locale&quot;,[&quot;en&quot;])
+
+
+def mygettext(s):
+    &quot;Look up the preferred translation and return the translated string&quot;
+    try:
+        return _translations[language()].lgettext(s)
+    except:
+        return s</pre>
+<p>In a Page -class from which all other Page -classes in the site inherit I have the following:</p>
+<pre class="literal-block">def awake(self,trans):
+    if trans.request().hasField(&quot;lang&quot;):
+        trans.session().setValue(&quot;lang&quot;,trans.request().field(&quot;lang&quot;))
+    LangUtil.register(trans.session().value('lang','en'))
+    SiteTemplate.awake(self,trans) # I've got a Cheetah template at the top of my Page-class hierarcy
+
+
+def sleep(self,trans):
+    SiteTemplate.sleep(self,trans)
+    LangUtil.deregister()</pre>
+<p>And into Launch.py I've added the following:</p>
+<pre class="literal-block"># Initialize translations and have _ point to LangUtil.mygettext
+import LangUtil
+LangUtil.initialize()
+__builtins__.__dict__['_'] = LangUtil.mygettext</pre>
+<p>-- jranki</p>
+<p>One issue with the above implementation is that LangUtil can be loaded multiple times. Once in Launch.py and another time in your Page class.  Having the effect that when _ is called, there is never anything in the LanguageContextTracker._threads variable.</p>
+<p>A better solution is within Launch.py to store the module you loaded:</p>
+<pre class="literal-block">__builtins__.__dict__['__langutil__'] = LangUtil</pre>
+<p>and then in your Page class:</p>
+<pre class="literal-block">__langutil__.register(trans.session().value('lang','en'))</pre>
+<p>within the LangUtil you could use the threading.local() object which has been around since Python2.4 to store the thread specific language string. Instead of using the _threads dictionary.</p>
+<pre class="literal-block">class LangUtil:
+    def __init__(self):
+        self.data = threading.local()
+
+    def register(self, obj):
+        self.data.lang = obj
+
+    def language(self):
+        return self.data.lang</pre>
+<p>-- <a class="reference external" href="http://www.bcctechinc.com">bcctech</a></p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 24 Jul 2009</p>
+
+</div>
+</body>
+</html>

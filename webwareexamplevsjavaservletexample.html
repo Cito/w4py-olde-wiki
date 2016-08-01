@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware Example vs. Java Servlet Example</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-example-vs-java-servlet-example">
+<h1 class="title">Webware Example vs. Java Servlet Example</h1>
+
+<p>An easy example (Java, Python):</p>
+<p>The straight, Hello World example:</p>
+<pre class="literal-block">import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class HelloWorld_ extends HttpServlet_ {
+
+  public void doGet(HttpServletRequest_ req, HttpServletResponse_ res)
+      throws ServletException_, IOException {
+
+    res.setContentType_(&quot;text/html&quot;);
+    PrintWriter_ out = res.getWriter();
+
+    out.println(&quot;&lt;HTML&gt;&quot;);
+    out.println(&quot;&lt;HEAD&gt;&lt;TITLE&gt;Hello World&lt;/TITLE&gt;&lt;/HEAD&gt;&quot;);
+    out.println(&quot;&lt;BODY&gt;&quot;);
+    out.println(&quot;&lt;BIG&gt;Hello World&lt;/BIG&gt;&quot;);
+    out.println(&quot;&lt;/BODY&gt;&lt;/HTML&gt;&quot;);
+  }
+}</pre>
+<p>Python:</p>
+<pre class="literal-block">from WebKit.Page import Page
+
+class HelloWorld_(Page):
+    def writeHTML(self):
+        self.write('''
+        &lt;HTML&gt;
+        &lt;HEAD&gt;&lt;TITLE&gt;Hello World&lt;/TITLE&gt;&lt;/HEAD&gt;
+        &lt;BODY&gt;
+        &lt;BIG&gt;Hello World&lt;/BIG&gt;
+        &lt;/BODY&gt;&lt;/HTML&gt;
+        ''')</pre>
+<p>A larger example might be nice too</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 10 Dec 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

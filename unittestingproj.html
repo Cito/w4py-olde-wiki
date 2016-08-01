@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Unit Testing Proj</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="unit-testing-proj">
+<h1 class="title">Unit Testing Proj</h1>
+
+<p><a class="reference external" href="subprojects.html">Subprojects</a> &gt; <a class="reference external" href="unittestingproj.html">UnitTestingProj</a></p>
+<div class="section" id="project-summary">
+<h1>Project Summary</h1>
+<p>Create an automated regression testing suite for WebKit.</p>
+<p>Project Moderator: <a class="reference external" href="winstonwolff.html">WinstonWolff</a></p>
+<dl class="simple">
+<dt>Project Members:</dt>
+<dd><ul class="simple">
+<li><p><a class="reference external" href="winstonwolff.html">WinstonWolff</a></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="status">
+<h1>Status</h1>
+<p><em>Jan 2005</em> - Winston - I have converted test for half of the kits in Webware.  There is a script, AllTests.py, which runs all the tests within each package.  I have also written a number of tests for PSP, which identify problems with indentation when files use returns instead of newlines.  I've also fixed PSP for those test cases (test first design of course).  While I was in there, I added two features which I needed--writing Python code at the file/module level, and at the class level from within a PSP file.</p>
+</div>
+<div class="section" id="project-goals">
+<h1>Project Goals</h1>
+<p>Here are my first thoughts on organizing automated test cases.  To make it easy for people to contribute automated tests, I think we need:</p>
+<ul class="simple">
+<li><p>Test discussion - A way to get feedback when you are thinking about writing a test.  Although a test might be only a few lines of code, it's affect on Webware is significant.  Writing a test implies that all of Webware must now comply with this test and the &quot;proper&quot; result may not be obvious for some cases.  So people who are new might need help to know what to test for, especially taking into account other platforms.  Simply discussing on the development list is probably sufficient, but the issue should be mentioned in the documentation.</p></li>
+<li><p>Easy to run tests - When writing a test, I want to know that I am not breaking things on other platforms that I cannot test on.  So there should be a way to get feedback quickly after checking in a new test.  Conversely, all the people who are developing with Webware are reluctant to download new versions and run tests if they break things and disrupt their own development.  So I think Webware needs to be arranged so you can have two separate versions on your machine.  One that you develop with, and a second that you can download often just to run the tests.  This implies that we will not use disutils to install Webware into the Python standard places, and that we have a way to control the python path to determine which version of Webware is being used.</p></li>
+<li><p>Testing Configuration - With an automated testing system, we need a way to specify what tests run on my computer, e.g. I am on a Mac so don't run COMKit tests, or I have only PostgreSQL so don't run MySQL or MSSQL tests, or  I have Apache with mod_kit or I use the cgi adapter.</p></li>
+<li><p>Testing daemon - Eventually, we might setup a &quot;continuous testing daemon&quot; that people can run on their machine which will check for new versions in CVS, download them to a separate place, run the tests, and email any failures to a mailing list.  I've heard of one for Ant, perhaps we could use that, or write a simple one in Python.  That would allow developers to get feedback on new tests from all platforms within minutes of committing a new test.</p></li>
+</ul>
+<p>So to accomplish this we need:</p>
+<ul class="simple">
+<li><p>Documentation describing the need to discuss a test on the webware-devel list, and describing how to add a test, run the tests, etc.</p></li>
+<li><p>alltests.py in each kit - We need a standard module that contains all the automated tests for that component.  I have always called it alltests.py.  It has a suite() function that returns the suite of unittest.TestCases for that component.</p></li>
+<li><p>Test Launcher - A script that will set the python path, choose the local machine's configuration, and then run all or just some tests.  BuildBot <a class="reference external" href="http://buildbot.sourceforge.net/">http://buildbot.sourceforge.net/</a> has been suggested for this, and it looks good to Winston.</p></li>
+</ul>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 14 Jan 2005</p>
+
+</div>
+</body>
+</html>

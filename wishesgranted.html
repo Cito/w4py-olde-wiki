@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Wishes Granted</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="wishes-granted">
+<h1 class="title">Wishes Granted</h1>
+
+<p>This page is a repository for <a class="reference external" href="wishlist.html">WishList</a> and <a class="reference external" href="todo.html">ToDo</a> entries that have
+been completed.</p>
+<p>-- TavisRudd - 23 Feb 2002</p>
+<hr class="docutils" />
+<p><em>Extension cascading</em> - Added to the cvs in Dec. 2001</p>
+<p>When dropping the extensions from filenames in requests the existing
+Webware will raise an exception if there are multiple files with
+different extensions for the requested basename.  It should allow you
+to specify a list of extensions to cascade through and use the first
+one found.  If you list .html before .py in your list of extensions
+and a request can map to 'file.html' or 'file.py', 'file.html' will be
+returned rather than raising an exception.</p>
+<p>-- TavisRudd - 31 Oct 2001</p>
+<p>This might be represented by a nested list, like <span class="docutils literal"><span class="pre">['.tmpl',</span> <span class="pre">['.py',</span> <span class="pre">'.psp'],</span> 'html']</span>, which would mean that <span class="docutils literal">.py</span> and <span class="docutils literal">.psp</span> would
+be at the same level of precedence (and an error would occur if there
+was abiguity)... unfortunately this isn't backward-compatible, but I
+don't think it matters much here.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 06 Nov 2001</p>
+<hr class="docutils" />
+<p><em>Email interface</em></p>
+<p>It would be nice if the <a class="reference external" href="appserver.html">AppServer</a>/servlets could respond to email in
+addition to HTTP requests.  This would have to be done through
+adapters, because most email configurations are probably more complex
+than HTTP servers (though most situations will use the same very
+simple interface).  Typically it would be with a small program that
+gets the entire text of the message dumped to it -- such a program
+would be very easy to write, but I'm not sure how to map that to a
+request (maybe XMLRPCServlet is analagous).  I assume the adapter will
+take the target servlet as a command-line argument, as I don't see any
+natural mapping between emails and servlets.  The servlet would not
+have any meaninful output. -- <a class="reference external" href="ianbicking.html">IanBicking</a> - 04 Jan 2002</p>
+<p>I thought a MailKit might be nice. You could have a Request object
+(similar to HTTPRequest, I suppose) which is fed by some kind of agent
+- it's possible to implement a program which scans a POP3 mailbox, for
+example, even though most mail handling applications seem to ignore
+this entry-level (and very useful) approach. The Response object would
+be passed on to some SMTP agent. -- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 14 Jan 2002</p>
+<p>More on this: one could implement something comparable to <a class="reference external" href="webkit.html">WebKit</a>.cgi
+or an adapter like mod_webkit which connects to <a class="reference external" href="appserver.html">AppServer</a> and feeds
+requests to them in almost the same way. These new adapters could even
+be part of an SMTP server (there's one available for Python). Perhaps
+there would need to be another connection point for these other
+adapters in <a class="reference external" href="appserver.html">AppServer</a>, and applications implementing servlets and
+pages for e-mail would obviously need to be aware of the limitations
+of the medium. -- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 21 Feb 2002</p>
+<p>I've made this.  I haven't been able to test it properly due to
+unrelated MTA configuration issues. It's based on <a class="reference external" href="webkit.html">WebKit</a>.cgi, and
+connects to the <a class="reference external" href="appserver.html">AppServer</a> very similarly to XML-RPC, except it passes
+an RFC822-formatted message (the email) instead of the XML input.
+This is sufficient, except for the fact that it pretends the post data
+is of type text/xml instead of message/rfc822 -- adding a small hook
+to Webware is all that's necessary to fix this.  It runs from a pipe
+so, for example, you can set it up by putting something like
+<cite>&quot;|/usr/local/Webware/WebKit_/WebKitEmail_.py /path/to/servlet&quot;</cite> in your
+.forward file. -- <a class="reference external" href="ianbicking.html">IanBicking</a> - 21 Feb 2002</p>
+<p>I had a look to see what implementations of mail protocols in servers
+there are for Python and I found a few interesting packages and
+applications. There's a POP3/SMTP mail server called &quot;shicks&quot; which
+I'd never seen before, although that might be too heavyweight for a
+lightweight Webware interface (and it's GPL'd). What the extra
+component needs to support is SMTP reception and sending (as far as I
+can tell), but <a class="reference external" href="webkit.html">WebKit</a> should, unlike with HTTP requests, allow the
+creation of new &quot;mail&quot; requests which can get out to this new
+component. Question: should incoming and outgoing mails be handled by
+a single component? (Of course, one could change <a class="reference external" href="webkit.html">WebKit</a> to allow new
+HTTP requests to be created by applications, but this would be for
+client-side connectivity to other sites - another fascinating area to
+experiment with.) -- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 22 Feb 2002</p>
+<p>I feel most email systems will be heterogeneous, similar to web
+servers (mine is).  So, an adapter-like interface is easiest for when
+you want to direct just a few emails to Webware (global redirecting is
+still easy).  For sending emails, smtplib works well right now.  Email
+isn't really a request-response protocol, and I don't think there's
+any reason to make it look like that. -- <a class="reference external" href="ianbicking.html">IanBicking</a> - 22 Feb 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

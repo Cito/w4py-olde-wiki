@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Dynamic Pricing</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="dynamic-pricing">
+<h1 class="title">Dynamic Pricing</h1>
+
+<div class="section" id="introduction">
+<h1>Introduction</h1>
+<p>Price points are extremely important in business as their selection
+can make a huge difference in gross revenue.</p>
+<p>To illustrate the importance of price point, consider a product which
+might be priced between $5 and $20. The number of customers that
+purchase at these different prices will change for different reasons:</p>
+<table>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 19%" />
+<col style="width: 12%" />
+<col style="width: 55%" />
+</colgroup>
+<thead>
+<tr><th class="head"><p>$/month</p></th>
+<th class="head"><p>% that buy</p></th>
+<th class="head"><p>score</p></th>
+<th class="head"><p>comment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr><td><p>$5</p></td>
+<td><p>5%</p></td>
+<td><p>25</p></td>
+<td></td>
+</tr>
+<tr><td><p>$10</p></td>
+<td><p>7%</p></td>
+<td><p>70</p></td>
+<td><p>higher price sometimes yields higher
+perceived value by customer</p></td>
+</tr>
+<tr><td><p>$15</p></td>
+<td><p>6%</p></td>
+<td><p>90</p></td>
+<td><p>higher price eventually drives
+customers away</p></td>
+</tr>
+<tr><td><p>$20</p></td>
+<td><p>3%</p></td>
+<td><p>60</p></td>
+<td><p>higher price eventually causes many
+customers to balk</p></td>
+</tr>
+</tbody>
+</table>
+<p>So $15 is head and shoulders above the rest: more that 29% higher
+grossing than the second most profitable price point.</p>
+<p>Selecting a price point is done by almost all major businesses that
+have goods and services to sell. Often a combination of surveys,
+consultants, spreadsheets and software are employed by businesses
+large enough to afford all that. Price testing is also conducted.</p>
+<p>It's notable that Amazon's initial random price testing caused an
+uproar among customers. Some reports state that Amazon refined their
+approach by giving customers the lowest price available at the end of
+the test and others state that Amazon ceased testing
+indefinitely. See:
+<a class="reference external" href="http://www.google.com/search?hl=en&amp;q=amazon+dynamic+pricing">http://www.google.com/search?hl=en&amp;q=amazon+dynamic+pricing</a></p>
+</div>
+<div class="section" id="proposed-approach">
+<h1>Proposed Approach</h1>
+<p>A dynamic web site offers a unique environment to determing price
+points dynamically, e.g., to adjust prices automatically as they need
+adjusting.</p>
+<p>One approach could be to set a base price and after a certain number
+of potential sales, adjust it. If the last batch scored less than its
+predecessor, the price drops. Otherwise, the price increases.</p>
+<p>A <em>period</em> is defined in terms of the number of visitors that actually
+get to the pricing information for the opportunity to purchase. We'll
+call those visitors the <em>potential customers</em>. The purchase rate is
+the # of customers divided by the # of potential customers. The
+purchase rate times the price gives the <em>score</em> for that period.</p>
+<p>Here are some fragmented thoughts expressed in Python:</p>
+<pre class="literal-block">bp = 4.95   # base price
+inc = 1.00  # increment amount
+dec = 1.00  # decrement amount
+period = 100        # number of visitors before analyzing
+
+periods = []        # list of periods
+
+class Period:
+    &quot;&quot;&quot;
+    attributes:
+        date  - the date the period started
+        score - the important number. how well this period did
+        rate  - rate of customers who saw pricing information and purchased
+        parameters - dictionary of parameters at the time such as bp, inc, dec, etc.
+    &quot;&quot;&quot;
+    pass
+
+if len(periods)&gt;1:
+    prev = period[-1]
+    beforePrev = period[-2]
+    if prev.score&gt;beforePrev.score:
+        newPrice = price + inc
+    elif prev.score&lt;beforePrev.score:
+        newPrice = price - dec</pre>
+<p>By giving all potential customers the same price for a given period of
+time, customers are treated fairly (contrasted with the original
+Amazon approach). The period price adjustments are no different than
+manual adjustments made by other companies for their products. What's
+special is that the adjustments are automatic and precise.</p>
+<p>What's also special is that the price adjustments are made whenever
+needed. The underlying factors could be all kinds of things:</p>
+<ul class="simple">
+<li><p>change in product quality</p></li>
+<li><p>change in economy</p></li>
+<li><p>appearance or disappearance of a competitor</p></li>
+<li><p>presentation of product</p></li>
+<li><p>and much, much more</p></li>
+</ul>
+<p>But the computation doesn't need to know the factors and will
+therefore, never miss any, because the score is the bottom line.</p>
+<p>Additional ideas to refine this approach are:</p>
+<ul>
+<li><p>Have a minimum number of days for the current price point, at least 1. This would avoid customers experiencing changing prices in a single day, which could make them feel uncomfortable.</p></li>
+<li><p>Likewise, have a maximum number of days in order to put a limit to the timewise duration of a pricing period.</p></li>
+<li><p>Refrain from price adjustments if the score difference was less than some minimum percentage such as 1%.</p></li>
+<li><p>Adjust prices dynamically according to the difference in scores. Here's a thought:</p>
+<pre class="literal-block">factor = 0.5
+scoreRelDiff = (period[-1].score - period[-2].score) / period[-2].score
+price += price*scoreRelDiff*factor</pre>
+</li>
+<li><p>Another approach could use multiple moving averages. For example, if the average score of the past 5 days is higher than that of the past 10 days, increase the price. This &quot;moving average&quot; approach is used by some stock market investors.</p></li>
+<li><p>Some sites would need to be cautious of the cost of goods sold (COGS) in order to avoid selling product at a loss.</p></li>
+</ul>
+</div>
+<div class="section" id="summary">
+<h1>Summary</h1>
+<p>The advantages of Dynamic Pricing are:</p>
+<ul class="simple">
+<li><p>maximizing profits</p></li>
+<li><p>adjusting price whenever needed</p></li>
+<li><p>automating price adjustment</p></li>
+<li><p>treating customers in a given period equally</p></li>
+</ul>
+<p>There's a huge number of approaches that could be taken and lots of
+different topics to be discussed. Feel free to add to this Wiki page.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 17 Mar 2002</p>
+<p>---</p>
+<p>This is brilliant -- thanks Chuck! JamesBecker</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

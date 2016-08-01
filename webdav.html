@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>WebDAV</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webdav">
+<h1 class="title">WebDAV</h1>
+
+<div class="section" id="preliminary-points">
+<h1>Preliminary Points</h1>
+<ul class="simple">
+<li><p>WebDAV can be used to manage</p>
+<ul>
+<li><p>source resources (aka Webware entities: psp, cheetah templates, servlet source files, graphic assets, etc.)</p></li>
+<li><p>logical resources (i.e., Application objects; e.g., Purchase Order, Article, Author, Buyer, Album, Artist, etc.) using the <a class="reference external" href="http://conveyor.com/RESTwiki/moin.cgi">REST (representation state transfer) Web Architecture</a>.</p></li>
+</ul>
+</li>
+<li><p>The application of DAV semantics to source resources is fairly generalizable, which means an out-of-the-box implementation in <a class="reference external" href="webkit.html">WebKit</a> will work for just about any use case</p></li>
+<li><p>But the application of DAV semantics to logical resources is not very generalizable, so <a class="reference external" href="webkit.html">WebKit</a>'s DAV implementation needs to be as easily customizable and extensible as possible</p></li>
+<li><p>There is a core of DAV requirements that can be implemented independently of specific application semantics:</p>
+<ul>
+<li><p>Request and Response handling, including XML and HTTP header parsing and creation</p></li>
+<li><p>Some parts of property management, including a storage interface, which may well be able to leverage <a class="reference external" href="webkit.html">WebKit</a>'s Session Store interface and/or <a class="reference external" href="middlekit.html">MiddleKit</a></p></li>
+<li><p>Some parts of lock management, including lock token creation</p></li>
+</ul>
+</li>
+<li><p>One of the most important use cases for DAV in Webware is MS Web Folders used to provide basic, generic CMS facilities for Webware sites</p></li>
+<li><p>Another important use case is management of source resources</p></li>
+<li><p>Given the variety of applications of DAV semantics in the various use case contexts, it's important to have maximal flexibility in the way <a class="reference external" href="webkit.html">WebKit</a> goes about <a class="reference external" href="managingtheurispace.html">ManagingTheURISpace</a>.</p></li>
+<li><p>One obvious place to begin an implementation is to write a custom databinding between DAV HTTP Requests and XML entity bodies and Python structs (classes or dicts or some other custom data structure); SAX is likely to be the fastest solution, and the least memory consumptive, but it basically means writing a state machine, and that can get hairy, though the DAV XML isn't too bad. For DAV XML response construction, DOM makes good sense. -- initially, anyway, during prototyping, it won't matter very much; the important thing to get right is the in-memory representation of the XML entity bodies in DAV Requests (and Responses).</p></li>
+</ul>
+</div>
+<div class="section" id="webware-code">
+<h1>Webware Code</h1>
+<p>DAVKit: <a class="reference external" href="http://www.colorstudy.net/software/webware/DAVKit-0.1.tar.gz">http://www.colorstudy.net/software/webware/DAVKit-0.1.tar.gz</a></p>
+<p>(see <a class="reference external" href="http://www.colorstudy.net/software/webware/">http://www.colorstudy.net/software/webware/</a> in case that link
+doesn't keep up with new versions)</p>
+</div>
+<div class="section" id="resources">
+<h1>Resources</h1>
+<p><a class="reference external" href="http://www.webdav.org/">http://www.webdav.org/</a>
+<a class="reference external" href="http://webdav.de/">http://webdav.de/</a></p>
+<p>-- KendallClark - 27 Apr 2002</p>
+<p>webware recipe: <a class="reference external" href="usewebdavtoeditsourceresources.html">UseWebDAVtoEditSourceResources</a></p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 07 May 2002</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

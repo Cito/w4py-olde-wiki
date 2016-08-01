@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Javascriptdependencyresolution</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="javascriptdependencyresolution">
+<h1 class="title">Javascriptdependencyresolution</h1>
+
+<p>As we all know, JavaScript sucks in many ways, one of them being its lack of a module import system. So, if you have a substantial amount of JavaScript code, there are basically three choices:</p>
+<ul class="simple">
+<li><p>stuff everything into one huge file,</p></li>
+<li><p>break the code down into multiple files that load recursively by issuing multiple HTTP requests,</p></li>
+<li><p>manually add all JS URLs, in carefully maintained order, to each and every page that needs them.</p></li>
+</ul>
+<p>The first choice is unpleasant for the developer, whereas the second is unpleasant for the user (who gets to watch the sometimes slow loading). Approach 3 is unpleasant to both parties.</p>
+<p>An alternative is to use dependency resolution between JavaScript files on the server side. The dependencies can be declared in JavaScript comments:</p>
+<p><span class="docutils literal">// requireScript script1, script2, script0815</span></p>
+<p>The resolution is done in a servlet, whose URL is prefixed to the topmost JS file. In this way, one big JS file is assembled that can be sent in a single transaction. The file will include all required files recursively and in proper order, such that required files are always included before their dependent ones. The assembled JS file can be cached. The servlet file <a class="reference external" href="http://www.science.uwaterloo.ca/~mpalmer/software/JSResolver.py">JSResolver.py</a>
+contains additional explanations.</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 18 Nov 2005</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware Benchmarks</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-benchmarks">
+<h1 class="title">Webware Benchmarks</h1>
+
+<p>In order to get a feeling for the performance of the different ways
+of connecting Apache to the Webware application server, I have recently
+done some benchmarking using the Colors example servlet.</p>
+<p>The test was done with Apache 2.2 32bit connecting to the Webware 1.1
+ThreadedAppServer, running under MS Windows 7 on an Intel Quad core CPU with 2.66GHz.
+Here is the result:</p>
+<img alt="Apache and Webware AppServer performance" class="align-center" src="webwarebenchmarkspic1.png" />
+<p>As expected, mod_webkit and mod_scgi are giving the best performance,
+while WebKit.cgi and OneShot.cgi have the worst performance, since as
+classic CGI programs they are creating new processes for each request,
+each firing up a new Python interpreter.</p>
+<p>Interestingly, the performance of mod_wsgi with the WSGIAdapter is also
+not so bad. Note that the test was done using embedded mode without any optimization,
+and maybe the performance could be improved in daemon mode with proper configuration.</p>
+<p>Note that mod_webkit is a part of Webware for Python, while the other
+Apache modules are third party projects.</p>
+<p>-- ChrisZwerschke, 18 Apr 2010</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 19 Apr 2010</p>
+
+</div>
+</body>
+</html>

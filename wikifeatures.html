@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Wiki Features</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="wiki-features">
+<h1 class="title">Wiki Features</h1>
+
+<p>Some of the features of this wiki:</p>
+<dl>
+<dt>Restructured Text:</dt>
+<dd><p><a class="reference external" href="http://docutils.sourceforge.net/rst.html">Restructured Text</a> is fully supported, and is extended in a way
+that is natural both for a wiki and for reST.  Any links (like
+<span class="docutils literal">link_</span>) that cannot be resolved internally in a document are
+considered to be wiki links to other pages on the system.</p>
+<p>Because Restructured Text is a full-featured markup language, it
+does not cut corners based on a limited initial domain.  It is not
+wiki-specific, and does not produce output that is in any way
+wiki-specific or of inferior layout.  It does not use WikiNames.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>WYSIWYG Editor:</dt>
+<dd><p>WYSIWYG editing using <a class="reference external" href="http://docutils.sourceforge.net/rst.html">Xinha</a>.  Includes a custom button to
+insert intra-wiki links.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>External Editor:</dt>
+<dd><p>The wiki supports using an <a class="reference external" href="http://www.plope.com/software/ExternalEditor">external editor</a> to edit content, to
+avoid through-the-web editing (browser textareas are poor for
+editing).</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Universal Edit Button:</dt>
+<dd><p>The wiki also supports the <a class="reference external" href="http://universaleditbutton.org">Universal Edit Button</a> to edit content.</p>
+</dd>
+<dt>Searching:</dt>
+<dd><p>Text and title searching.  Incremental page searches
+when finding pages to link to.</p>
+</dd>
+<dt>Non-text pages:</dt>
+<dd><p>&quot;Pages&quot; can be of any type, including binary and image files
+(e.g., PDF).</p>
+</dd>
+<dt>RSS Feed:</dt>
+<dd><p>XML RSS feeds for <a class="reference external" href="/feeds/new_pages.xml">new pages</a> and <a class="reference external" href="/feeds/recent_changes.xml">recent changes</a>
+available for updates of the site.</p>
+</dd>
+</dl>
+<dl>
+<dt>Versioning:</dt>
+<dd><p>All edits are versioned, and a history is kept.  You can compare
+versions.</p>
+</dd>
+<dt>Administration:</dt>
+<dd><p>Administrators can easily rollback changes, remove old versions
+or remove user accounts. This helps a lot in cleaning from spam.</p>
+</dd>
+<dt>Captchas:</dt>
+<dd><p>You can plug in your own captcha for creating user accounts.
+Currently there are captchas suited for Python programmers and
+musicians. Robots and stupid spammers will not be able to
+create user accounts, but for serious users it is easy.</p>
+</dd>
+<dt>Static publishing:</dt>
+<dd><p>The wiki can be published to static files, with URLs that will be
+analogous to the in-wiki URLs.  You can provide your own Cheetah
+template to control the page content.  Pages are regenerated as
+their wiki equivalents are edited.  Links to pages that do not
+exist are removed from the static published content; creating
+those pages will regenerate any pages that contained the
+previously dangling link.</p>
+<p>These pages can be statically published both locally, and to an
+SFTP or FTP account.</p>
+</dd>
+<dt>Virtual domains:</dt>
+<dd><p>Multiple domains can be served off a single installation; both
+aliases (e.g., <a class="reference external" href="http://wiki.webwareforpython.org">http://wiki.webwareforpython.org</a> and
+<a class="reference external" href="http://wiki.w4py.org">http://wiki.w4py.org</a>), or entirely separate sites
+(<a class="reference external" href="http://wiki.cheetahtemplate.org">http://wiki.cheetahtemplate.org</a>).</p>
+</dd>
+<dt>Configuration:</dt>
+<dd><p>Configuration is done through a simple <span class="docutils literal">.ini</span> file.
+Configuration can be global or domain-specific.  One possibility
+would be to configure two domains to point to the same content,
+but for one domain to be marked read only.  As this wiki becomes
+more configurable, this could allow for it to grow into more
+CMS-like features.</p>
+</dd>
+<dt>Simple persistence:</dt>
+<dd><p>All data is stored in simple text files; pages in <span class="docutils literal">.txt</span> files,
+metadata in <a class="reference external" href="http://www.ietf.org/rfc/rfc0822.txt">rfc822</a>-style files, RSS in its own RSS file
+(as the canonical source of data), configuration in an <span class="docutils literal">.ini</span>
+file.  There is no binary data and no pickles (except for some
+indexing which is done in bdb files, which are not canonical sources
+of data -- you can delete and regenerate those files at any
+time).  This makes upgrading easy -- you only need to update the
+code, not the data.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>No requirements:</dt>
+<dd><p>Doesn't require any special tools, like RCS.  It is self-contained
+(beyond the Webware requirement, and modules in the standard
+Python library).  Though it has grown some other optional
+libraries.</p>
+</dd>
+<dt>Strong object model:</dt>
+<dd><p>The logic for the <em>wiki</em> is separated from the logic for the
+<em>interface</em>.  The wiki is written in independent modules which are
+not bound to Webware or any particular interface.</p>
+</dd>
+<dt><a class="reference external" href="relatedterms.html">Related Terms</a>:</dt>
+<dd><p>Another way of relating wiki pages to each other.  More on its
+page.  This is the beginning of blog functionality.</p>
+</dd>
+<dt>Comments:</dt>
+<dd><p>Comments are a certain kind of related page -- both individually
+addressable and editable, but are also shown inline in the
+commented-upon page.</p>
+</dd>
+</dl>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 03 Jan 2009</p>
+
+</div>
+</body>
+</html>

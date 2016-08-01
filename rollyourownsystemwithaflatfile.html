@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Roll Your Own System with a Flat File</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="roll-your-own-system-with-a-flat-file">
+<h1 class="title">Roll Your Own System with a Flat File</h1>
+
+<p>Pro:</p>
+<ul class="simple">
+<li><p>You have total control over it.</p></li>
+<li><p>Can leverage existing parsing libraries: rfc822, ConfigParser, xml,
+CSV, MiscUtils.DataTable.</p></li>
+</ul>
+<p>Con:</p>
+<ul class="simple">
+<li><p>You have to create the entire infrastucture yourself.</p></li>
+<li><p>No support for concurrent access unless you provide it.</p></li>
+</ul>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 31 Dec 2001</p>
+<hr class="docutils" />
+<p>I just want to expand on Mike's point of <em>no support for concurrent access unless you provide it</em>.</p>
+<p>That item is huge and in a recent project I briefly considered trying
+this approach just to experience the pros and cons first hand. As I
+thought about it more it became less attractive.</p>
+<p>Web sites are inherently concurrent and the issues around concurrency
+can be subtle and numerous. Unless your application is exceedingly
+simple, don't go this route.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p>
+<p>These same issues of concurency exist for
+<a class="reference external" href="pythonspickleandshelvemodules.html">PythonsPickleAndShelveModules</a> -- but are not horribly difficult to
+avoid, especially when you use a factory.  I've written a note at
+<a class="reference external" href="pythonspickleandshelvemodules.html">PythonsPickleAndShelveModules</a> about how I approached this problem.</p>
+<p>-- IanBicking - 03 Jan 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>XMLForms</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="xmlforms">
+<h1 class="title">XMLForms</h1>
+
+<div class="section" id="executive-summary">
+<h1>Executive Summary</h1>
+<p>XMLForms is an experimental work (at least for now) which attempts to
+define a robust framework for the presentation and processing of
+form-based information.</p>
+<p>It attempts to unify the handling of inputs from HTML forms (amongst
+other things) with the presentation of such forms, and it supports
+hierarchical data structures.</p>
+</div>
+<div class="section" id="technical-summary">
+<h1>Technical Summary</h1>
+<ul class="simple">
+<li><p>The input descriptions, known as <em>models</em>, are written in XML and define the structure of the input expected for a servlet.</p></li>
+<li><p>The output descriptions, known as <em>templates</em>, are based on the input descriptions, but include presentation information amongst the structural elements.</p></li>
+<li><p>Templates do not embed programming language fragments or support arbitrary programming language features. This reduces complexity and encourages other activities...</p></li>
+<li><p>To be sure that users can supply enough information to a servlet to satisfy the model, the template can be compared to the model for that servlet to see if all the model information is being presented. Since the template descriptions are restricted, this activity is easier than for other template systems.</p></li>
+<li><p>Validation/verification is done with the model, and error presentation is supported automatically in the templates. Just define the areas where error messages occur, and include some content for those messages, and they will appear automatically in the output.</p></li>
+<li><p>Each resource or servlet can include templates for different audiences, known as <em>editions</em> - therefore localisation is possible to a certain extent.</p></li>
+</ul>
+<p>The author of XMLForms is <a class="reference external" href="paulboddie.html">PaulBoddie</a> and details of where to find it,
+along with other potentially interesting things, can be found from his
+Wiki page.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 01 Nov 2001</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

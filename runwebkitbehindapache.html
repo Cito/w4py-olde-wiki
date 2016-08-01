@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Run WebKit Behind Apache</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="run-webkit-behind-apache">
+<h1 class="title">Run WebKit Behind Apache</h1>
+
+<p>As seen on <span class="docutils literal">comp.lang.python</span>, it is apparently possible to run Web
+servers &quot;behind&quot; Apache. Since WebKit now has a Web server component,
+this should provide an interesting solution for serving mixed content.</p>
+<p>Of course, even without using any built-in Web serving capability
+provided with WebKit, it's probably possible to run two Apache servers
+and to &quot;pipeline&quot; them. (I've seen worse things done in real life!)</p>
+<p>Holger Krekel wrote that the configuration option is <span class="docutils literal">ProxyPass</span>:</p>
+<pre class="literal-block">ProxyPass /sub/name/ http://localhost:7000</pre>
+<p>Written in your domain's configuration section, this would pass
+requests such as:</p>
+<pre class="literal-block">http://www.yourdomain.net/sub/name/something</pre>
+<p>to:</p>
+<pre class="literal-block">http://localhost:7000/something</pre>
+<p>---+++ References</p>
+<p><a class="reference external" href="http://httpd.apache.org/docs/mod/mod_proxy.html#proxypass">http://httpd.apache.org/docs/mod/mod_proxy.html#proxypass</a></p>
+<p><a class="reference external" href="http://groups.google.com/groups?th=1d6c5a1de5088a50">http://groups.google.com/groups?th=1d6c5a1de5088a50</a></p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 14 May 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Multiple Python Versions</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="multiple-python-versions">
+<h1 class="title">Multiple Python Versions</h1>
+
+<p>There are two obvious ways of installing multiple versions of Python.</p>
+<div class="section" id="make-an-alternative-version">
+<h1>Make an Alternative Version</h1>
+<p>In the Python source distribution, one would usually do a <span class="docutils literal">make install</span> to install Python in the pre-configured place. However, you
+can also do a <span class="docutils literal">make altinstall</span> which should install a new version of
+Python in that place without replacing the <span class="docutils literal">python</span> program.</p>
+<p>Thus, if you have Python 1.5.2 as <span class="docutils literal">/usr/bin/python</span> and you have
+configured Python 2.0 to install in <span class="docutils literal">/usr/bin</span> then you can
+(theoretically) do a <span class="docutils literal">make altinstall</span> to keep <span class="docutils literal">/usr/bin/python</span>
+as Python 1.5.2 whilst creating <span class="docutils literal">/usr/bin/python20</span> as Python 2.0.</p>
+<p>For various reasons covered in EnvironmentVariables, I think it's
+easier to install Python in the following way...</p>
+</div>
+<div class="section" id="install-into-a-different-place">
+<h1>Install into a Different Place</h1>
+<p>On my Red Hat system, Python 1.5.2 is installed under <span class="docutils literal">/usr</span> - so,
+the executable is found at <span class="docutils literal">/usr/bin/python</span>. To install Python 2.0,
+I downloaded the source distribution of Python and configured it so
+that the <span class="docutils literal">prefix</span> was given as <span class="docutils literal">/usr/local</span> (this is an option to
+the <span class="docutils literal">configure</span> program). I then installed Python 2.0 in the normal
+way using <span class="docutils literal">make install</span>, so that the executable is found at
+<span class="docutils literal">/usr/local/bin/python</span>.</p>
+<p>To determine which program is run when <span class="docutils literal">python</span> is invoked depends
+on certain EnvironmentVariables, of course.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 31 Oct 2001</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

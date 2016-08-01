@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>File Extensions</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="file-extensions">
+<h1 class="title">File Extensions</h1>
+
+<div class="section" id="problem">
+<h1>Problem</h1>
+<p>I created a pure HTML Cheetah test.tmpl file, and compiled it to
+test.py. When I tried to visit the url &quot;~MyContext/test&quot;, I got a 404
+error. But if I went to &quot;~MyContext/test.py&quot;, the page is returned
+correctly. Why is this happening?</p>
+</div>
+<div class="section" id="solution">
+<h1>Solution</h1>
+<p><a class="reference external" href="ianbicking.html">IanBicking</a> wrote:</p>
+<p>Maybe because there's an ambiguity of what file you are calling --
+test.tmpl or test.py.  When you give the extension it is unambiguous.</p>
+<p>I thought Webware would ignore the unregistered extension, though.</p>
+<p><a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> wrote:</p>
+<p>Actually, it's the other way around. You have to specify what
+extensions to ignore. An old TO DO item is to switch WebKit to a
+setting called ExtensionsToServe.</p>
+<p>But in the mean time, go to WebKit/Configs/Application.config and add
+.tmpl to the ExtensionsToIgnore setting.</p>
+<p>I (Edmund) add:</p>
+<p>It's not enough to do this. You must also add things like .tmpl~
+(backup files created by emacs, in my case) to the
+ExtensionsToIgnore setting, or you will still get 404 errors.</p>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 02 Dec 2001</p>
+<p>I noticed also that Cheetah leaves _bak files around, too, so I needed
+to add .py_bak to the list of extensions to ignore.  This may be a
+problem if you regenerate an HTML file with Cheetah, too (meaning,
+.html_bak would need to be ignored, too).</p>
+<p>-- DavidHancock - 07 Jul 2002</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

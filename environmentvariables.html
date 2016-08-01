@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Environment Variables</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="environment-variables">
+<h1 class="title">Environment Variables</h1>
+
+<p>Many Python scripts start with the following line:</p>
+<pre class="literal-block">#!/usr/bin/env python</pre>
+<p>On UNIX-like systems, this instructs the operating system to find the <span class="docutils literal">python</span> executable according to the environment. To determine which version of Python gets run, just make sure that your <span class="docutils literal">PATH</span> environment variable is set up correctly.</p>
+<p>If Python 2.0 is installed as <span class="docutils literal">/usr/local/bin/python</span> and Python 1.5.2 is installed as <span class="docutils literal">/usr/bin/python</span>, and you want to run Python 2.0, then you should make sure that <span class="docutils literal">/usr/local/bin</span> appears on your &quot;path&quot; before <span class="docutils literal">/usr/bin</span>. How and when this is done depends a lot on your system and how you want to work.</p>
+<div class="section" id="setting-the-default-environment">
+<h1>Setting the Default Environment</h1>
+<p>Let's say you want to always use Python 2.0 as a particular user. This
+means that you need to edit your shell's resource file so that when it
+is started, it puts the directory in which Python 2.0 is found before
+the directory in which Python 1.5.2 is found.</p>
+<p>Check your system documentation for details of which file you should
+edit and how you should edit it. Here's an example, though - for
+<span class="docutils literal">bash</span> (the Bourne Again Shell), edit the <span class="docutils literal">.bashrc</span> file in your
+home directory and add this at the end of the file:</p>
+<pre class="literal-block">export PATH=/usr/local/bin:${PATH}</pre>
+<p>This assumes that you did install Python 2.0 in <span class="docutils literal">/usr/local</span> when
+considering MultiplePythonVersions.</p>
+</div>
+<div class="section" id="setting-the-environment-for-appserver">
+<h1>Setting the Environment for AppServer</h1>
+<p>If you just want to run AppServer with a changed environment so that
+only that program uses Python 2.0, and you are running <span class="docutils literal">bash</span>, you
+can try this:</p>
+<pre class="literal-block">PATH=/usr/local/bin:${PATH} ./AppServer</pre>
+<p>Why not put this in a script:</p>
+<pre class="literal-block">#!/bin/sh
+PATH=/usr/local/bin:${PATH} ./AppServer</pre>
+</div>
+<div class="section" id="what-you-should-not-do">
+<h1>What You Should Not Do</h1>
+<p>Don't be tempted to go round changing the first line of all Python
+scripts to something like this:</p>
+<pre class="literal-block">#!/usr/bin/env python20</pre>
+<p>If you do have Python 2.0 installed as something other than <span class="docutils literal">python</span>
+then consider making a symbolic link from another directory to the
+executable, like this:</p>
+<pre class="literal-block">cd /usr/local/bin
+ln -s /usr/bin/python20 python</pre>
+<p>Now add that directory (in this case, <span class="docutils literal">/usr/local/bin</span>) to the start
+of your &quot;path&quot;, like we did above.</p>
+<p>-- <a class="reference external" href="paulboddie.html">PaulBoddie</a> - 31 Oct 2001</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

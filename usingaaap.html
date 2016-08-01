@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Using A-A-P</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="using-a-a-p">
+<h1 class="title">Using A-A-P</h1>
+
+<div class="section" id="a-a-p">
+<h1>A-A-P</h1>
+<ul class="simple">
+<li><p>URL: <a class="reference external" href="http://www.a-a-p.org/">http://www.a-a-p.org/</a></p></li>
+<li><p>Author: Bram Moolenaar (yes, it's VIMs author)</p></li>
+<li><p>License: GPL</p></li>
+</ul>
+<p>A-A-P is does everything what <span class="docutils literal">make</span> does plus you can use python in
+it's recipes. Another great thing is that A-A-P uses signatures
+instead of timestamps to detect changed files.</p>
+<p>The examples expect that you are using a UNIX like OS.</p>
+</div>
+<div class="section" id="using-a-a-p-with-webware">
+<h1>Using A-A-P with Webware</h1>
+<p>I did not invest too much time to write the following recipes, so I'm sure
+there is much room to improve/enhance them in many ways.</p>
+<p>Assuming the following directory structure of the the application
+&quot;Example&quot;:</p>
+<ul class="simple">
+<li><p><span class="docutils literal">Example/</span> (this is the working directory created by <span class="docutils literal">MakeAppWorkDir_.py</span>)</p>
+<ul>
+<li><p><span class="docutils literal">Application/</span></p>
+<ul>
+<li><p><span class="docutils literal">Lib/</span> (business logic, ...)</p></li>
+<li><p><span class="docutils literal">Logic/</span> (presentation logic)</p></li>
+<li><p><span class="docutils literal">Servlets/</span> (files delivered by <a class="reference external" href="webkit.html">WebKit</a>, a context)</p></li>
+<li><p><span class="docutils literal">Templates/</span></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="compiling-cheetah-templates-to-servlets">
+<h1>Compiling Cheetah Templates to Servlets</h1>
+<p>To compile new and changed templates living in <span class="docutils literal">Templates/</span> and move
+them to <span class="docutils literal">Servlets/</span> I use the following recipe:</p>
+<p>File <span class="docutils literal">main.aap</span> in <span class="docutils literal">Example/Application/Servlets/</span>:</p>
+<pre class="literal-block">TEMPLATES = `glob(&quot;../Templates/*.tmpl&quot;)`
+
+SERVLETS`` `' '.join([os.path.split(tmpl)[1] for tmpl in var2list(aap_sufreplace('.tmpl', '.py', TEMPLATES))])`
+
+:rule %.py : ../Templates/%.tmpl
+    :sys cheetah compile $source
+    :move ../Templates/$target .
+
+all : $SERVLETS</pre>
+<p>Since the file is called <span class="docutils literal">main.aap</span>, you can compile your templates
+by simply changing your working directory to <span class="docutils literal">Servlets/</span> and typing
+<span class="docutils literal">&quot;aap&quot;</span> at the command prompt.</p>
+<p>First we create a list of source files <span class="docutils literal">(TEMPLATES)</span> and a list of
+target files <span class="docutils literal">(SERVLETS)</span> using python commands enclosed with
+backticks. Since we use the python <span class="docutils literal">glob</span> function, we don't have to
+care about a growing number of template files.</p>
+<p>The <span class="docutils literal">:rule</span> command teaches A-A-P how to create servlets from
+cheetah templates. It calls cheetah as an external process, so A-A-P
+can use its return value to determine the success of the compilation.</p>
+</div>
+<div class="section" id="publishing-the-application">
+<h1>Publishing the Application</h1>
+<p>File <span class="docutils literal">main.aap</span> in <span class="docutils literal">Example/Application/Servlets/</span>:</p>
+<pre class="literal-block">FILES = `glob(&quot;Lib/*.py&quot;)`
+    `glob(&quot;Logic/*.py&quot;)`
+    `glob(&quot;Servlets/*.py&quot;)`
+
+compile:
+    :execute Servlets/main.aap
+
+dist: compile
+    :attr {publish = scp://user&#64;distserver/path/to/application/%file%} $FILES
+
+test: compile
+    :attr {publish = scp://user&#64;testserver/path/to/application/%file%} $FILES</pre>
+<p>Installing the files on the test server is simply a matter of typing
+<span class="docutils literal">&quot;aap test publish&quot;</span> at the command prompt in the <span class="docutils literal">Application/</span>
+directory.  Modified files will be compiled automatically by executing
+the A-A-P recipe in <span class="docutils literal">Servlets/</span>.</p>
+<p>In practice I check more dependencies (for example successful
+execution of unit test) before the files are copied to a server and I
+do other things like changing file permissions on the server after the
+upload.</p>
+<p>Quite simple, isn't it?</p>
+<p>Its very easy to define dependencies with the <span class="docutils literal">make</span> like syntax and
+python does the rest. A powerful combination in my opinion.</p>
+</div>
+<div class="section" id="what-does-a-a-p-mean">
+<h1>What does A-A-P mean?</h1>
+<p>Bram Molenaar wrote on the a-a-p-user mailing list that &quot;A-A-P doesn't
+stand for something specific&quot;.</p>
+<p>-- AndiPoisel - 26 Feb 2003</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

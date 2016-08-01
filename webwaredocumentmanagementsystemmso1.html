@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware Document Management System MSO1</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-document-management-system-mso1">
+<h1 class="title">Webware Document Management System MSO1</h1>
+
+<p>At minimum, the basic functionality of a wiki minus the wiki syntax:
+write document online, edit online.  I guess a preview mode should be
+essential, with a &quot;make more changes&quot; button (sometimes pressing the
+browser's Back button on TWiki's preview page loses all my changes).</p>
+<p>Alternate ways to edit the document are important, because textareas
+are inconvenient for large documents.  FTP (a la Zope) is good because
+everybody has it, and <a class="reference external" href="webdav.html">WebDAV</a> for those who have it.  The first phase
+could just have a stub for import/export routines, to be filled in
+later.)</p>
+<p>Version history is not that important to me, but if it's easy enough
+to incorporate CVS, why not?  That might suggest a web interface to
+CVS (CVSKit?), but that would be better done as a separate project.
+(PS.Remember that CVS alternatives are emerging, so we wouldn't want
+to write a CVS kit that precludes plugging in alternative back ends.)</p>
+<p>Most sites will want metadata stored with the document.  Title,
+author, publishing date, category, etc.  However, each site has
+different ideas about what these fields should be.  You'd need a list
+of field names, types, and boolean required/optional.  We'd need a
+form for editing these fields.  Zope makes a form with the fields at
+the top and the textarea below, with a file upload control (actually a
+tab) for the textarea.  Zope also has a web interface to modify the
+field names, but we could skip that and make the siteadmin put a
+Python list somewhere instead.  For field types, we'd have to decide
+what variety to support. Strings at minimum, maybe also numbers and
+dates (using <a class="reference external" href="http://www.egenix.com/products/python/mxBase/mxDateTime/">mx.DateTime</a>). Zope supports many types, but maybe we
+don't want to go that far.</p>
+<p>Some sites will need a &quot;hide this document&quot; checkbox, or a date range
+for when to display, to avoid the public reading an unreleased or
+expired document.  Sometimes documents need to be prepared the day
+before and published in the middle of the night when nobody is at
+around, to coincide with 8am in another time zone.</p>
+<p>Sites that edit documents in text files may want to edit the metadata
+with the documents.  We could use a simple XML format.  (Angle
+brackets changed to braces to prevent wiki misformatting.)</p>
+<pre class="literal-block">{article}
+    {system-metadata}
+             {publish}Y{/publish}   {!-- Legal values: 'Y', 'N' --}
+             {start}2002-04-15{/start}      {!-- Date visible to public, empty=now --}
+             {end}2002-04-15{/end}           {!-- Date expires, empty=never --}
+    {/system-metadata}
+    {user-metadata} {!-- Fields specified by siteadmin --}
+             {title}The Adventures of Huckleberry Finn{/title}
+             {author}Mark Twain{/author}
+             {email}abd&#64;def.ghi{/email}
+             {visible-publishdate}2002-04-15{/visible-publish-date}
+             {dateline}Raleigh, NC{/dateline}
+             {teaser}A story about an ornery dude.{/teaser}
+    {/user-metadata}
+    {body} {![CDATA[
+This is my article.  In HTML format, wiki format, or whatever is
+acceptable for this site section.
+    ]]} {/body}  {!-- Strip leading/trailing whitespace, add final newline. --}
+{/article}</pre>
+<p>External Python routines will need a way to get all the articles in a
+certain site section, query metadata fields individually, update
+fields and validate articles (e.g., all required metadata present,
+correct types, start date &lt;= end date).  Perhaps export it like this:</p>
+<pre class="literal-block">class MyDisplay_(Display):
+                       def __init__(self, article):
+                                              self.article = article  # An Article instance.
+                       def html:
+                                              searchList = [article]
+                                              t = Template(file=TEMPLATE_FILE, searchList=searchList)
+                                              html = str(t)
+                                              return html</pre>
+<p>with a template like:</p>
+<pre class="literal-block">#set $umd = $user_metadata
+### sectionImage is a user method to convert section name to image URL.
+&lt;IMG SRC=&quot;$sectionImage($umd.section)&quot;&gt;
+&lt;H1&gt;$umd.title&lt;/H1&gt;
+$body</pre>
+<p>which would be plugged into a larger servlet.</p>
+<p>Of course, some sites will need distinct pools of articles for various
+portions of the site, with different display styles and different
+metadata.  They can use separate CMS Kit instances for this.</p>
+<p>Since it's unlikely we'll arrive at one CMS Kit that pleases
+everybody, we should plan a naming scene that allows several to
+coexist.Especially, the generic name CMSKit should not be monopolized
+by one implementation that may turn out not to be the best.</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

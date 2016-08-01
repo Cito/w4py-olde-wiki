@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>MySQL Third Party</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="mysql-third-party">
+<h1 class="title">MySQL Third Party</h1>
+
+<p>The <a class="reference external" href="http://www.mysql.com/">MySQL web site</a> already lists plenty of third party tools, but
+doesn't necessary do a good job of mentioning which ones are really
+nice and of course, doesn't include any Webware related notes. That's
+what this page does.</p>
+<ul class="simple">
+<li><p>mysqldiff: <a class="reference external" href="http://adamspiers.org/computing/mysqldiff/">http://adamspiers.org/computing/mysqldiff/</a></p></li>
+<li><p>Can diff any combination of SQL files or live databases. Outputs the SQL statements necessary to transform one database to another.</p></li>
+<li><p>Caveat: Understandably, mysqldiff can't tell when a column's name has changed, so such name changes will result in a removal of the original column and the addition of a new one. That means you lose the data for that column, so if you expect name changes (including tables as well) you must scan the results for them. Fairly easy in practice.</p></li>
+<li><p>This tool is very useful for MiddleKit users to update an existing database whose object model has changed. An important warning: Since MK's generated Create.sql includes USE, CREATE and DROP statements, you can screw up your live database (mysqldiff uses the mysql server to grok files). The current solution is to copy Create.sql, axe those statements and use that file.</p></li>
+</ul>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p>
+<ul class="simple">
+<li><p>MySQLfront: <a class="reference external" href="http://anse.de/mysqlfront/">http://anse.de/mysqlfront/</a></p></li>
+<li><p>An excellent GUI client for Windows.</p></li>
+<li><p>Too bad I switched to Linux. I haven't found a GUI on Linux as good as this one.</p></li>
+</ul>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>AJAX in Webware</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="ajax-in-webware">
+<h1 class="title">AJAX in Webware</h1>
+
+<p>John Dickinson has created three files which, together, provide a fairly simple way to implement some Ajax functionality into Webware servlets. <a class="reference external" href="ajaxpage.py">AjaxPage</a> provides a super class to your servlet (but below your site page). All JavaScript necessary is contained in <a class="reference external" href="ajaxjavascript.js">ajax.js</a> and <a class="reference external" href="ajaxjavascriptpolling.js">ajax_polling.js</a>. <a class="reference external" href="ajaxjavascript.js">ajax.js</a> provides basic functionality useful for most situations, and <a class="reference external" href="ajaxjavascriptpolling.js">ajax_polling.js</a> provides support for long-running requests and out-of-band server to client commands.</p>
+<div class="section" id="id1">
+<h1>AjaxPage</h1>
+<p>The AjaxPage class creates a function ajax_allowed() which returns a list of function names. These function names refer to Python functions that are able to be called by an Ajax-enabled web page. This is very similar in functionality to webware's actions. Child classes should override ajax_allowed().</p>
+<p>AjaxPage also provides the class PyJavascript. This class simply tanslates a Python expression into a string. For example:</p>
+<pre class="literal-block">foo = PyJavascript('bar')
+foo.hello('hi').another.element.func() # evaluates as the string &quot;bar.hello('hi').another.element.func()&quot;</pre>
+<p>PyJavascript is based in large part on code from Nevow 0.4.1 (<a class="reference external" href="http://www.nevow.org">nevow.org</a>).</p>
+<p>The AjaxPage class uses PyJavascript to set up several useful references to JavaScript functions.</p>
+</div>
+<div class="section" id="ajax-js-and-ajax-polling-js">
+<h1>ajax.js and ajax_polling.js</h1>
+<p>ajax.js provides all the client-side heavy lifting required to get Ajax functionality into a web page. Several pieces of it are based on ideas from Apple developer code (<a class="reference external" href="http://developer.apple.com">developer.apple.com</a>) and Nevow 0.4.1 (<a class="reference external" href="http://www.nevow.org">nevow.org</a>).</p>
+<p>ajax_polling.js provides functionality that allows the server to process long-running requests from the client and allows the server to send commands to the client without the user on the client side triggering an event.</p>
+</div>
+<div class="section" id="the-anatomy-of-an-ajax-enabled-page">
+<h1>The Anatomy of an AJAX-enabled page</h1>
+<ol class="arabic simple">
+<li><p>Client triggers an action. This request is sent to ajax_controller().</p></li>
+<li><dl class="simple">
+<dt>ajax_controller() calls the appropriate functions on the server.</dt>
+<dd><ol class="loweralpha simple">
+<li><p>Once the server-side function has returned, the results are sent back down the pipe to the client...</p></li>
+<li><p>...unless it took longer that TIMEOUT seconds to complete (the timeout is defaulted to 100). If the function take a while to finish, ajax_controller() puts the results into the results bucket that ajax_response() is polling.</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><p>ajax_response(), which is being polled every few seconds by the client, sees that there is something for the client in the results bucket, grabs it, and sends it to the cient.</p></li>
+</ol>
+<p>The polling behavior of an ajax-enabled page may be controlled by overriding ajax_clientPollingTimeout. Setting its return value to None prevents the polling from happening at all. Otherwise, this function needs to return the number of seconds to wait until the client polls the server again.</p>
+</div>
+<div class="section" id="example">
+<h1>Example</h1>
+<pre class="literal-block">class my_servlet(AjaxPage):
+  def ajax_allowed(self):
+    return ['check_if_even']
+
+  def check_if_even(self,val):
+    is_even = (int(val) % 2) == 0
+    if is_even:
+      ret = self.setTag('response_id','The value you entered is even!')
+    else:
+      ret = self.alert('Oh no! The value you entered is not even!')
+    return '%s; %s' % (self.setReadonly('even_num',False),ret) # don't forget to unlock the field
+
+  def writeContent(self):
+    wl = self.writeln
+    wl('&lt;form action=&quot;some_page.py&quot; method=&quot;post&quot;&gt;')
+
+    # will first set the input field to read only, then call check_if_even with the field's value passed in
+    ajax_cmd = self.generic_ajax(self.setReadonly('even_num',True),'check_if_even',self.this.value)
+
+    wl('&lt;input name=&quot;even_num&quot; id=&quot;even_num&quot; type=&quot;text&quot; onchange=&quot;%s&quot;/&gt;' % ajax_cmd)
+    wl('&lt;span id=&quot;response_id&quot;&gt;&lt;/span&gt;') # see check_if_even() for tag name
+    wl('&lt;/form&gt;')</pre>
+<p>Downloads:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="ajaxpage.py">AjaxPage</a></p></li>
+<li><p><a class="reference external" href="ajaxjavascript.js">ajax.js</a></p></li>
+<li><p><a class="reference external" href="ajaxjavascriptpolling.js">ajax_polling.js</a></p></li>
+</ul>
+<p>Robert Forkel has compiled an extended example named <a class="reference external" href="ajaxsuggest.py">AjaxSuggest</a>. This example shows how to implement functionality a la Google suggest. <em>Note:</em> This example will be already included in the Examples context of Webware for Python starting with version 0.9.1.</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Mar 2006</p>
+
+</div>
+</body>
+</html>

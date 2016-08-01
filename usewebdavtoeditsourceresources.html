@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Use WebDAV to Edit Source Resources</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="use-webdav-to-edit-source-resources">
+<h1 class="title">Use WebDAV to Edit Source Resources</h1>
+
+<p>When using <a class="reference external" href="webdav.html">WebDAV</a>, one ususally wants to distinguish between source
+resources (.psp, .py files) and logical resources (the generated
+HTML).  To access the source resources, you probably want to use
+mod_dav and set up a separate location that webware will not handle.</p>
+<p>Put this into your httpd.conf (untested: please fix it if it is
+broken) (taken from <a class="reference external" href="http://httpd.apache.org/docs-2.0/mod/mod_dav.html">http://httpd.apache.org/docs-2.0/mod/mod_dav.html</a>):</p>
+<pre class="literal-block">DavLockDB_ /tmp/DavLock_
+
+&lt;Location /source-dav/&gt;
+# get mod_dav to handle this
+Dav On
+
+AuthType Basic
+AuthName DAV
+AuthUserFile user.passwd
+
+&lt;LimitExcept_ GET HEAD OPTIONS&gt;
+    require user admin
+&lt;/LimitExcept_&gt;
+
+&lt;/Location&gt;</pre>
+<p>then point your WebDAV client to /source-dav/</p>
+<p>-- <a class="reference external" href="terrelshumway.html">TerrelShumway</a> - 07 May 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

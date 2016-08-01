@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Batteries Included Proj</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="batteries-included-proj">
+<h1 class="title">Batteries Included Proj</h1>
+
+<div class="section" id="project-summary">
+<h1>Project Summary</h1>
+<div class="section" id="synopsis">
+<h2>Synopsis</h2>
+<p>Create a <a class="reference external" href="batteriesincluded.html">BatteriesIncluded</a> distribution of Webware that comes with
+other related tools, such as <a class="reference external" href="cheetah.html">Cheetah</a>, <a class="reference external" href="funformkit.html">FunFormKit</a>, <a class="reference external" href="xmlforms.html">XmlForms</a>, the
+database adaptors, etc.</p>
+</div>
+<div class="section" id="project-moderator">
+<h2>Project Moderator</h2>
+<p>TavisRudd</p>
+</div>
+<div class="section" id="project-members">
+<h2>Project Members</h2>
+<ul class="simple">
+<li><p>TavisRudd</p></li>
+</ul>
+</div>
+<div class="section" id="current-status">
+<h2>Current Status</h2>
+<p>Packaging/installation system using distutils has been created as part
+of <a class="reference external" href="webwareexprefactoring.html">WebwareExpRefactoring</a>.</p>
+</div>
+<div class="section" id="problem">
+<h2>Problem</h2>
+<p>There are several tools that are designed for, or complement, Webware
+that are not currently distributed with it and must be downloaded and
+installed separately. As a result Webware installations take longer
+than they should.</p>
+</div>
+<div class="section" id="solution">
+<h2>Solution</h2>
+<p>Uses Python's DistUtils to create a meta-distribution that gathers all
+the most useful Webware tools in one place and installs them in one
+operation.</p>
+</div>
+<div class="section" id="risks">
+<h2>Risks</h2>
+<ul class="simple">
+<li><p>incompatible license problems</p></li>
+<li><p>overkill</p></li>
+</ul>
+</div>
+<div class="section" id="delivery-target">
+<h2>Delivery Target</h2>
+<p>Webware 0.7</p>
+</div>
+</div>
+<div class="section" id="notes">
+<h1>Notes</h1>
+<p><em>Contents</em></p>
+<ul class="simple">
+<li><p>Webware and all the core components</p></li>
+<li><p>Cheetah</p></li>
+<li><p>FunFormKit</p></li>
+<li><p>Database modules like psycopg</p></li>
+<li><p>a plotting module like Biggles (<a class="reference external" href="http://biggles.sf.net">http://biggles.sf.net</a>) for
+quickly adding charts to websites</p></li>
+<li><p>example sites</p></li>
+</ul>
+<p><em>Implementation</em></p>
+<ul class="simple">
+<li><p>use a master DistUtils setup.py script to control the whole
+installation process so that all the components can installed in one
+fell swoop.  &quot;python setup.py install&quot; will install Webware, while
+&quot;python setup.py install-batteries&quot; will install the third-party
+packages.</p></li>
+<li><p>the end-user will control what will and won't be installed out of
+all the included stuff using the setup.cfg</p></li>
+<li><p>make Webware's setup.py compile and install mod_webkit or the iis
+version (when complete).  This could be controlled via the setup.cfg
+file.</p></li>
+</ul>
+<div class="section" id="general-discussion">
+<h2>General Discussion</h2>
+<p>Add your thoughts and comments here, along with your sig --
+TavisRudd - 31 Oct 2001</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

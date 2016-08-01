@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>MySQL</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="mysql">
+<h1 class="title">MySQL</h1>
+
+<div class="section" id="general">
+<h1>General:</h1>
+<p>Pro:</p>
+<ul class="simple">
+<li><p>The most widely-used RDBMS in Python, so lots of developer support.</p></li>
+<li><p>One of the easiest SQL languages to understand.</p></li>
+<li><p>Can do date calculations and pattern searches at the C level (faster than doing it in Python).  This also applies to most other RDBMSs.</p></li>
+<li><p>Many books and MySQL third party tools are available. -- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p></li>
+<li><p>High availability among web host providers. -- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p></li>
+<li><p>It's OpenSource. -- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p></li>
+</ul>
+<p>Con:</p>
+<ul class="simple">
+<li><p>MySQL was designed for write occasionally, read quickly, rather than for intense write-frequently situations.</p></li>
+<li><p>Transactions were added recently and are available only with a non-default data storage type.</p></li>
+<li><p>MySQL is easier to crash under high load than PostgreSQL or Oracle.</p></li>
+</ul>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 31 Dec 2001</p>
+</div>
+<div class="section" id="configuration-tips">
+<h1>Configuration Tips:</h1>
+<div class="section" id="switching-to-utf-8">
+<h2>Switching to UTF-8</h2>
+<p>Nowadays it is best to use UTF-8 encoded strings throughout your application.
+Here is how you can configure MySQL to work with UTF-8, if you were using latin-1 before.</p>
+<p>Adapt your configuration in /etc/mysql/my.cnf:</p>
+<pre class="literal-block">[mysqld]
+character-set-server=utf8
+collation-server=utf8_general_ci
+default-character-set=utf8
+skip-character-set-client-handshake</pre>
+<p>Using mysql oder phpmyadmin:</p>
+<pre class="literal-block">SHOW VARIABLES LIKE 'char%'</pre>
+<p>This should look like:</p>
+<pre class="literal-block">character_set_client        utf8
+character_set_connection    utf8
+character_set_database      latin1
+character_set_filesystem    binary
+character_set_results       utf8
+character_set_server        utf8
+character_set_system        utf8
+character_sets_dir          /usr/share/mysql/charsets/</pre>
+<p>Restart the server:</p>
+<pre class="literal-block">/etc/init.d/mysql restart</pre>
+<p>If you already have data stored, change the encoding in the database dump
+from <span class="docutils literal">varchar(n)</span> to <span class="docutils literal">varchar(n) collate utf8_unicode_ci</span> and change
+the <span class="docutils literal">DEFAULT CHARSET=latin1</span> to <span class="docutils literal">DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci</span>.</p>
+<p>See also:
+<a class="reference external" href="http://dev.mysql.com/doc/refman/5.0/en/charset-connection.html">http://dev.mysql.com/doc/refman/5.0/en/charset-connection.html</a>
+(note the post by Yuri Tsarev) and
+<a class="reference external" href="http://tahpot.blogspot.com/2005/06/mysql-and-python-and-unicode.html">http://tahpot.blogspot.com/2005/06/mysql-and-python-and-unicode.html</a></p>
+<p>-- Tobias - 14 Apr 2010</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 15 Apr 2010</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware vs. CGI</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-vs-cgi">
+<h1 class="title">Webware vs. CGI</h1>
+
+<p><em>Advantages of Webware:</em></p>
+<ul class="simple">
+<li><p>Considerably faster than CGI, because:
+* The interpreter is not started for each request
+* Servlet instances are cached
+* In general, a persistant application leaves more room for caching any sort of result
+* Resource access can be pooled, for instance, database connections</p></li>
+<li><p>Easier programming model:
+* Threading provides a simpler way of handling concurrent modification of resources (often CGI scripts simply ignore potential race conditions, leading to errors under high load)
+* Considerable amount of basic code is readily available in Webware: session support, cookie handling, etc.</p></li>
+</ul>
+<p><em>Disadvantages:</em></p>
+<ul class="simple">
+<li><p>Not possible to run on many shared commercial hosts, or generally in an environment that doesn't allow long-running processes</p></li>
+<li><p>Setup can be more complicated</p></li>
+<li><p>Because processes are not recreated for each request, errors or memory leaks might effect other requests</p></li>
+</ul>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Form Validation</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="form-validation">
+<h1 class="title">Form Validation</h1>
+
+<p>Form validation serves to ensure the validity of the data submitted to
+the servlet.  Not checking your data is one of the primary security
+holes in web applications.  The most egregious holes are when you use
+code like this:</p>
+<pre class="literal-block">req = self.request()
+os.system(&quot;echo hello there | mail -s 'subscribe request' %s&quot; % req.field('email'))</pre>
+<p>You might have a select box with several email address, which will
+work just fine.  But if the user manipulates the page so as to submit
+something like: <span class="docutils literal">user&#64;public.com;rm <span class="pre">-rf</span> /</span>, you'll see the problem.</p>
+<p>Besides security, form validation can deal with the
+submit-signal-error-resubmit loop that complex form should allow.
+Simply signalling an error and asking the user to go back is a
+less-than-optimal situation.</p>
+<p>Some systems that deal with this for Webware are <a class="reference external" href="funformkit.html">FunFormKit</a>,
+<a class="reference external" href="http://formencode.org">FormEncode</a> and <a class="reference external" href="xmlforms.html">XMLForms</a>.  Zope has <a class="reference external" href="http://www.infrae.com/download/Formulator">Formulator</a>, and Python CGIs have
+pyweblib.</p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 02 Nov 2001</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 28 Sep 2005</p>
+
+</div>
+</body>
+</html>

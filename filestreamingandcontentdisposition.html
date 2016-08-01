@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>File streaming and Content-Disposition Header</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="file-streaming-and-content-disposition-header">
+<h1 class="title">File streaming and Content-Disposition Header</h1>
+
+<p>This is a followup from the Webware-discuss list (see <a class="reference external" href="http://www.geocrawler.com/lists/3/SourceForge/3854/0/7046376/">Has anyone
+tried to stream a reportlab</a>)</p>
+<p>The Content Disposition Header is defined in <a class="reference external" href="http://www.faqs.org/rfcs/rfc2183.html">RFC 2183</a>. Its purpose
+(among others) is to give a hint about the name of the following
+content. This is quite useful, when one tries to pipe a file to the
+browser. Without this header, the browser will show the scriptname,
+instead of the filename, when trying to use the Save as function.</p>
+<p>The following code should run right away as a servlet. It shows the
+content of some directory and lets you download its files. It is
+tested with Webware (10 day old CVS), OneShot.cgi Adapter and the
+following browsers. The following list gives you an idea, what
+browsers will show the right filename (or not):</p>
+<ul class="simple">
+<li><p>Opera on Linux (works)</p></li>
+<li><p>Konqueror (doesn't work)</p></li>
+<li><p>Mozilla 0.96 on Linux (doesn't work, though it should according to
+documentation) IE5 should work.</p></li>
+</ul>
+<p>---</p>
+<pre class="literal-block">from WebKit.Page import Page
+import os, mimetypes
+
+FILEDIR = &quot;/path/to/directory&quot;
+
+class Main(Page):
+   def title(self):
+        return 'Webware Download Test Page'
+   def writeBody(self):
+        response = self.response()
+        request = self.request()
+        adapterName = request.adapterName()
+        if request.hasField('file'):
+            filename = '%s/%s' % (FILEDIR,request.field('file'))
+            (mtype,enctype) = mimetypes.guess_type(filename)
+            fd = open(filename)
+
+            response.setHeader('Content-Type',mtype)
+            response.setHeader('Content-Disposition','attachment; filename=&quot;%s&quot;' % request.field('file'))
+            response.flush()
+
+            chunksize = response.streamOut().bufferSize()
+            outchunk = fd.read(chunksize)
+            while outchunk:
+                self.write(outchunk)
+                outchunk = fd.read(chunksize)
+
+        else:
+            files = os.listdir(FILEDIR)
+            self.writeln('&lt;h1&gt;Webware Download Test&lt;/h1&gt;')
+            self.writeln('&lt;ul&gt;')
+            for file in files:
+                self.writeln('&lt;li&gt;&lt;a href=&quot;%s/Test/Main.py?file=%s&quot;&gt;%s&lt;/a&gt;' % (adapterName,file,file))
+                self.writeln('&lt;/ul&gt;')</pre>
+<p>---</p>
+<p>I'm not entirely sure if this code is really streaming the file or if
+the Webware outStream is buffering. I think that &quot;response.flush()&quot;
+will disable buffering, but I'm not sure.</p>
+<p>Please comment and feel free to put more elegant versions in
+place. Maybe we should start a UsefullRfcs page.</p>
+<p>-- StephanDiehl - 14 Nov 2001</p>
+<p>As far as the buffering goes, by calling response.flush(), you tell
+webware to go ahead and send what you have written to the stream so
+far.  By default, the outStream waits until you are done writting to
+send anything, calling flush allows you to send data as it becomes
+available.</p>
+<p>-- JayLove - 27 Dec 2001</p>
+<p>It seems to me that the above code is not correct because the streamed
+content consists not only of the contents of the intended file but also
+the html headers, which are not desired. To solve this I override
+writeHTML like this:</p>
+<pre class="literal-block">def writeHTML(self):
+    if self.request().hasField('file'):
+        self.writeBody()
+    else:
+        Page.writeHTML(self)</pre>
+<p>-- RubenMendes - 4 Oct 2004</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 04 Oct 2004</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Webware And Cygwin</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="webware-and-cygwin">
+<h1 class="title">Webware And Cygwin</h1>
+
+<p>I had no problems to install and run Webware using Cygwin on Windows
+2000, but MakeAppWorkDir.py failed.</p>
+<p>A first thing to notice: you must use the Cygwin way to specify the
+directory even if invoking from the Windows command prompt.  Don't
+say:</p>
+<pre class="literal-block">python MakeAppWorkDir_.py t:\data\luc\webware\app2</pre>
+<p>because you will get an IOError. But say:</p>
+<pre class="literal-block">python MakeAppWorkDir_.py /cygdrive/t/data/luc/webware/app2</pre>
+<p>This is understandable. Don't forget that your Cygwin Python version
+has <span class="docutils literal">sys.platform == 'cygwin'</span>.</p>
+<p>The next problem is more difficult.  Here is how it looks: When I
+started the file <cite>appserver.bat</cite>, I got the following error:</p>
+<pre class="literal-block">ConfigurationError_: Invalid configuration file,
+/cygdrive/t/data/luc/webware/app2/Configs/Application.config
+
+Exiting AppServer</pre>
+<p>This came because of a newline representation conflict. Although the
+config files in my main WebWare directory contain UNIX-style newlines,
+the .config files created by MakeAppWorkDir.py have Windows-style
+newlines.</p>
+<p>The work-around is to convert them manually:</p>
+<pre class="literal-block">T:\data\luc\webware\app2\Configs&gt;bash
+(this is /cygdrive/t/DATA/LUC/HOME/.bashrc running)
+bash-2.05b$ dos2unix *.config
+AppServer_.config: done.
+Application.config: done.
+CGIAdapter.config: done.
+FCGIAdapter.config: done.
+ModPythonAdapter_.config: done.
+OneShotAdapter_.config: done.
+bash-2.05b$</pre>
+<p>I don't know who is to blame for this bug. It seems to me that Python
+on Cygwin is able to read text files with UNIX-style newlines, but
+creates them with UNIX-style newlines. Although shutil.copyfile()
+opens them in binary mode. Strange...</p>
+<p>-- LucSaffre - 11 Sep 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

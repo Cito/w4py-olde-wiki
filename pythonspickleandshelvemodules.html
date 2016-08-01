@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Python's pickle and shelve Modules</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="python-s-pickle-and-shelve-modules">
+<h1 class="title">Python's pickle and shelve Modules</h1>
+
+<p>Pro:</p>
+<ul class="simple">
+<li><p>Easy to use.  Just like dictionary accesses plus an open and close, and remembering not to change mutable values in place.</p></li>
+<li><p>Pickle and Shelve have been standard Python modules for years.</p></li>
+<li><p>Users needn't do anything to set them up: they're included with Python.</p></li>
+</ul>
+<p>Con:</p>
+<ul class="simple">
+<li><p>Shelve requires a dbm library (gdbm, ndbm, Berkely db, etc, or the slow-but-universal dumbdbm).</p></li>
+<li><p>Each dbm library has its own file format.  If you open a dbm file with the wrong library, it destroys the file.</p></li>
+<li><p>No support for concurrency unless you write a daemon or module to broker the connections.</p></li>
+<li><p>With large pickled lists or dictionaries, you can't just unpickle one element and modify it, you have to unpickle/repickle the entire list/dictionary.</p></li>
+</ul>
+<p>-- <a class="reference external" href="mikeorr.html">MikeOrr</a> - 31 Dec 2001</p>
+<hr class="docutils" />
+<p>I've been fiddling with this a little, and have come up with a simple
+mixin and object that seem to deal nicely with the concurency issues,
+and make Pickle a nice alternative to something as heavy as ZODB.</p>
+<p>The first part is a persistency mixin.  It pickles or marshals your
+object, with locking, to a file.  You are expected to use multiple
+files for multiple objects -- like shelve in the filesystem (and
+perhaps shelve would be faster...?)</p>
+<p>The second is a simple factory-generator.  The object constructor
+should take generally an ID, or list of IDs (no default arguments, no
+keyword arguments), and the factory will return an already-existing
+object or create a new one.  This way their won't be multiple objects
+that are pickling to or from the same file.</p>
+<p>Together, this makes it very easy to make a simple, persistent object.
+For instance:</p>
+<pre class="literal-block">class _UserPrefs(PersistMixin):
+    def __init__(self, userID):
+        self._userID = userID
+        self._prefs = self.load({}) # PersistMixin defines .load()
+    def setPref(self, pref, value):
+        self._prefs[pref] = value
+        self.changed() # This tells the Mixin that we need a commit
+    def pref(self, pref, default=None):
+        return self._prefs.get(pref, default)
+
+    ## these next two methods are required by PersistMixin
+    def data(self):
+        ## this is what will get pickled -- it goes with self.load() in __init__
+        return self._prefs
+    def filename(self):
+        ## this is where the data will be pickled to
+        return '/var/userdata/user%i.pickle' % self._userID
+
+UserPrefs = ParamFactory(_UserPrefs)
+## UserPrefs is then the way to get a _UserPref object</pre>
+<p>It ain't fancy, but it's very transparent.  You can look at
+<a class="reference external" href="http://www.colorstudy.net/software/python/Persist.py">Persist.py</a> and <a class="reference external" href="http://www.colorstudy.net/software/python/ParamFactory.py">ParamFactory.py</a></p>
+<p>-- <a class="reference external" href="ianbicking.html">IanBicking</a> - 03 Jan 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

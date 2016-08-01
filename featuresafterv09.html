@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Features after v. 0.9</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="features-after-v-0-9">
+<h1 class="title">Features after v. 0.9</h1>
+
+<dl>
+<dt>From a thread on the mailing lists:</dt>
+<dd><p>I'd like to do some cleaning up of Webware after our v0.9 build.  The automated tests are good preparation to that cleanup.  When there are a good set of test cases in place, I'd like to make Webware easier to install.  I'm also improving my Cheetah ServletFactory which I can add as a kit.  And I have a very simple script that functions like Ant or make--it's a place to put short scripts when developing such as &quot;generate MiddleKit sql&quot;, &quot;run sql on my database&quot;, &quot;clean up temporary files&quot;, &quot;run python interactively with the same python path as the appserver&quot;, &quot;upload my web application to the production server.&quot; &quot;run webware, but using the CVS version instead of v0.81&quot;</p>
+<p>What improvements would other people like?  I will compile a list and post it on the wiki.  I'll also sort it in priority order as judged by the enthusiastic responses on this list.</p>
+</dd>
+</dl>
+<div class="section" id="proposals">
+<h1>Proposals</h1>
+<blockquote>
+<ul class="simple">
+<li><p>29 Dec 04 - Ian Bicking - While we're talking about improvements, I might re-note the existance of WSGIKit.</p></li>
+<li><p>04 Jan 05 - Tom Schwaller - Are Aspects (simple solution in CherryPy) something people would like to see integrated in Webware? Or are continuations?  Maybe using generators and annotations could make Webware much more sophisticated?</p></li>
+<li><dl class="simple">
+<dt>19 Feb 05 - Lloyd</dt>
+<dd><ul>
+<li><p>recently i was looking over the (abandoned?) &quot;webware experimental refactoring&quot; project, and it had some interesting improvements that, to me, seemed like a natural progression for webware:</p></li>
+<li><p>contexts become &quot;applications&quot; - get their own sessions and state;</p></li>
+<li><p>multiple applications/contexts can run under a single server instance;</p></li>
+<li><p>formalized method for executing (context/)application-specific code once on startup, with access to various webware components.  (what's the recommended way to do this now?  stick it in a site page at module level?)</p></li>
+<li><p>out-of-the-box connection pooling</p></li>
+<li><p>get webware into debian's repository?  :-)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="issues">
+<h1>Issues</h1>
+<p>WSGIKit - Should it be developed in parallel, or should the old Webware be dropped?  There are several votes for keeping them in parallel.</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 18 Mar 2005</p>
+
+</div>
+</body>
+</html>

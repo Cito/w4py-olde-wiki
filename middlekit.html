@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>MiddleKit</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="middlekit">
+<h1 class="title">MiddleKit</h1>
+
+<p>MiddleKit (MK) is a component of Webware that provides for developing
+your application with an object model which is in turn used for other
+purposes.</p>
+<p>In short, an object model is simply a listing of your classes and
+their attributes including details such as type, name, min, max,
+is-required, samples, delete rules, etc. Some would refer to this as
+&quot;meta data&quot; or &quot;configuration&quot; or a &quot;class hierarchy description&quot;.</p>
+<p>This Wiki page helps document some items that haven't made it to the
+main docs yet, but are still important and often appear on the mailing
+list.</p>
+<div class="section" id="the-object-model-approach">
+<h1>The Object Model Approach</h1>
+<p>Originally, MK was developed purely as an &quot;object-relational mapper&quot;
+or ORM, eg, software that maps objects to SQL databases. However,
+experience shows that the object model can be used for many other
+purposes including user interface.</p>
+<p>This makes MK much more than just an ORM. Here is an excerpt from a
+reply I wrote:</p>
+<blockquote>
+<p>The more I use MiddleKit the more uses I have for the object model:</p>
+<ul class="simple">
+<li><p>generating forms</p></li>
+<li><p>generating object browsing pages</p></li>
+<li><p>generating detailed views</p></li>
+<li><p>generating sample data</p></li>
+<li><p>generating SQL table definitions</p></li>
+<li><p>generating runtime SQL</p></li>
+</ul>
+<p>Note that SQL now occupies less than half the list of uses for an
+object model.</p>
+<p>The pay off to using the object model is that it is very easy to
+edit and all of the above things automagically work right after
+the edit (with the occasional caveat).</p>
+</blockquote>
+<p>Another use for the object model is as a concise, precise document of
+what data is being tracked and what their relationships, delete rules,
+etc. are. The object model is much more clean to read and write than
+either Python or SQL. I even use them in meetings with non-technical
+clients.</p>
+<p>MK will have its documentation revamped to reflect the object-model
+focus and eventually receive additional code from a project of mine to
+aid in the above tasks.</p>
+<p>You can read the MK docs online at:</p>
+<blockquote>
+<p><a class="reference external" href="http://www.webwareforpython.org/Webware/MiddleKit/Docs/">http://www.webwareforpython.org/Webware/MiddleKit/Docs/</a></p>
+</blockquote>
+<p>If you wish to begin using your object models in a generic fashion,
+read <a class="reference external" href="http://www.webwareforpython.org/Webware/MiddleKit/Docs/UsersGuide.html#MT_IteratingAttrs">this section</a>.</p>
+</div>
+<div class="section" id="middlekit-does-not-force-you-to-use-a-funky-schema">
+<h1>MiddleKit does <em>not</em> force you to use a &quot;funky&quot; schema</h1>
+<p>Although it certainly encourages it. In order to simulate object
+references and lists, as Python programmers are used to the terms,
+MiddleKit has some interesting schema approaches. In particular, an
+object reference is implemented as a 64-bit id split into 2 parts: the
+class id and object id. This approach allows for the full power of
+pointing to arbitrary objects. As a Python user you will never notice
+this (MK hides it from you), but it doesn't jive well with other SQL
+tools such as a SQL-oriented report generator.</p>
+<p>If that is a problem for your projects, then do not use the &quot;obj ref&quot;
+type described in the docs. Instead use whatever type you are using
+for your SQL joins (such as &quot;int&quot; or &quot;string&quot;) and implement the
+method yourself to fetch the object. You will still get the other MK
+benefits such as an object model (which makes a nice form of concise
+documentation), uniquing, autogeneration of UPDATEs and INSERTs, the
+other object model uses described above, etc.</p>
+</div>
+<div class="section" id="updating-live-databases">
+<h1>Updating live databases</h1>
+<p>When you change your object model, your SQL schema changes as well. If
+your database is already live and you can't discard the data, you have
+to ALTER it into shape. I used to do this by hand, but <a class="reference external" href="geofftalvola.html">GeoffTalvola</a>
+pointed me to mysqldiff which saves enormous effort. Before you use
+it, read the important MiddleKit note on the <a class="reference external" href="mysqlthirdparty.html">MySQLThirdParty</a> page!</p>
+</div>
+<div class="section" id="making-an-application-wide-store-for-your-webkit-application">
+<h1>Making an application-wide store for your WebKit application</h1>
+<p>See <a class="reference external" href="middlekitandwebkit.html">MiddleKitAndWebKit</a>.</p>
+</div>
+<div class="section" id="middlekit-is-still-active">
+<h1>MiddleKit is still active</h1>
+<p>For unknown reasons, the question comes up periodically, &quot;Is MiddleKit
+still being actively developed?&quot; The answer is &quot;yes&quot;. I use MiddleKit
+in all my projects on a daily basis and still check in fixes and
+enhancements. MK will only get bigger and better.</p>
+<p>I think this might come up because MK is less active than WebKit for a
+couple reasons. One, is that WebKit is more popular and hence has more
+users peering at it, asking questions, submitting patches,
+etc. Another is that MK is exceptionally stable with an excellent test
+suite. While MK has a wish list like any other project, <em>stability</em>
+and <em>testing</em> are already there. Frequent patches aren't required.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 31 Dec 2001</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 18 Sep 2005</p>
+
+</div>
+</body>
+</html>

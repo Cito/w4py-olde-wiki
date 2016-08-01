@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Real-time Charts</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="real-time-charts">
+<h1 class="title">Real-time Charts</h1>
+
+<p>Many applications need to present data using charts and graphs. There
+seems to be a scarcity of good Open Source Python charting libraries.</p>
+<p>Please add any solution and experiences you have with it here.</p>
+<hr class="docutils" />
+<div class="section" id="jpgraph">
+<h1>JpGraph</h1>
+<p>Sean True of WebReply, Inc. ported JpGraph to Python. <a class="reference external" href="http://www.aditus.nu/jpgraph/">JpGraph</a> is a
+substantial presentation graphics module written in PHP by Johan
+Persson. Sean wrote:</p>
+<p>&quot;JpGraph is a fully OO graph library which makes it easy to both draw
+a &quot;quick and dirty&quot; graph with a minimum of code and quite complex
+graphs which requires a very fine grain of control. The library tries
+to assign sensible default values for most parameters hence making the
+learning curve quite flat since for most of the time very few commands
+is required to draw graphs with a pleasing aesthetic look.&quot; -- Johan
+Persson</p>
+<p>Our port of JpGraph depends on gdmodule, and of gd itself. Both are
+included in the tar file. The port also expects Freetype and
+appropriate TTF fonts, which are not included. Gantt charts and image
+maps still need work, but the package in general pretty well. Sample
+output is available from the download site.</p>
+<p>Download from <a class="reference external" href="http://metagram.webreply.com">http://metagram.webreply.com</a></p>
+<p>Note that the PHP version of JpGraph is licensed under the QPL 1.0 (Qt
+Free Licensee) for non-commercial, open-source and educational use and
+JpGraph Professional License for commercial or proprietary use. What
+this means for the Python port is an open question.</p>
+</div>
+<div class="section" id="chartdirector">
+<h1>ChartDirector</h1>
+<p>ChartDirector looks very similar to JpGraph, but is from
+<a class="reference external" href="http://www.advsofteng.com/">Advanced Software Engineering Ltd.</a></p>
+</div>
+<div class="section" id="comment">
+<h1>Comment</h1>
+<p>The package seems to be easy to use, and the licensing cost seems
+reasonable. However, the lack of source code is worrying given what
+can happen to companies.</p>
+</div>
+<div class="section" id="dislin">
+<h1>DISLIN</h1>
+<p>From the DISLIN homepage: <a class="reference external" href="http://www.linmpi.mpg.de/dislin/">http://www.linmpi.mpg.de/dislin/</a></p>
+<p>DISLIN is a high-level plotting library for displaying data as curves,
+polar plots, bar graphs, pie charts, 3D-color plots, surfaces,
+contours and maps.</p>
+<p>DISLIN is intended to be a powerful and easy to use software package
+for scientists and programmers. There are only a few graphics routines
+with a short parameter list needed to display the desired graphical
+output. A large variety of parameter setting routines can then be
+called to create individually customized graphics.</p>
+<p>DISLIN is free for the operating systems Linux and FreeBSD and for the
+MS-DOS and Windows compilers GCC, G77 and LCC. The DISLIN plotting
+extensions for Java, Python and Perl and the DISLIN interpreter DISGCL
+can be used freely on all operating systems. Other DISLIN versions are
+available at low prices and can be tested free of charge.</p>
+</div>
+<div class="section" id="id3">
+<h1>Comment</h1>
+<p>The charts that DISLIN generates favors correct, scientific
+presentation over incorrect business presentation (which often
+distorts the interpretation of the underlying data). This means it wil
+l do amazing graphs, but not flashy ones.</p>
+<p>The Python interface seems awkward to use.</p>
+</div>
+<div class="section" id="mayavi">
+<h1>MayaVi</h1>
+<p>Prabhu Ramachandran, author of <a class="reference external" href="http://mayavi.sourceforge.net/index.html">MayaVi</a> writes:</p>
+<p>MayaVi is a free, easy to use scientific data visualizer. It is
+written in Python and uses the amazing Visualization Toolkit (VTK) for
+the graphics. It provides a GUI written using Tkinter. MayaVi is free
+and distributed under the conditions of the BSD license. It is also
+cross platform and should run on any platform where both Python and
+VTK are available (which is almost any *nix, Mac OSX or Windows).</p>
+</div>
+<div class="section" id="id5">
+<h1>Comment</h1>
+<p>An intriguing data visualizer written in Python, so it should feel
+right to Pythonistas. This looks easier to use than DISLIN. The
+documentation looks excellent (so far), and the license looks right.</p>
+<p>-- <a class="reference external" href="edmundlian.html">EdmundLian</a> - 16 Nov 2002</p>
+</div>
+<div class="section" id="reportlab">
+<h1>ReportLab</h1>
+<p>ReportLab includes a charting package. It is easy to use and very complete.
+The charts are not as fancy as the commercial options outlined above,
+but I actually like them better at this point. Open source in Python too.</p>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 18 Sep 2005</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>OneShot</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="oneshot">
+<h1 class="title">OneShot</h1>
+
+<p>The OneShot adapter is a simple CGI that loads the entire AppServer, responds to the request, and then shuts down. Developers edit many of their Python modules and other file resources during development, so they find using OneShot convenient because it guarantees that everything is loaded fresh.</p>
+<p>Docs are provided in the WebKit Install Guide which you can read <a class="reference external" href="http://webware.sourceforge.net/Webware/WebKit/Docs/InstallGuide.html#AdaptersOneShot">on-line</a>.</p>
+<p>-- <a class="reference external" href="chuckesterbrook.html">ChuckEsterbrook</a> - 30 Oct 2001</p>
+<p>I find OneShot.cgi to be too slow for testing, perhaps because I have
+a relatively slow machine.  In any case, I modified WebKit.cgi (which
+is run on every request) to first look for changes in my source tree,
+and restart the appserver if there were any changes made.  That way I
+have a delay on the first request after making a change, but for
+subsequent pages it's almost as fast as WebKit.</p>
+<p>I had to allow the <span class="docutils literal"><span class="pre">www-data</span></span> user (under which cgi runs on my
+machine) write permissions to my app directory, so that it can create
+a timestamp and write to the log file.</p>
+<p>Here's the source, hope it's useful:</p>
+<pre class="literal-block">#!/usr/bin/env python
+
+# If the Webware installation is located somewhere else,
+# then set the WebwareDir variable to point to it.
+# For example, WebwareDir = '/Servers/Webware'
+WebwareDir = '/home/jdhildeb/projects/Webware'
+
+# If you used the MakeAppWorkDir.py script to make a separate
+# application working directory, specify it here.
+AppWorkDir = '/home/jdhildeb/projects/mobile/app'
+
+
+try:
+    import os, sys
+
+    # my mod starts here
+
+    file = os.popen(&quot;cd %s ; find . -name '*.py' -newer timestamp&quot; % ( AppWorkDir ) , &quot;r&quot; )
+    output = file.readlines()
+    file.close()
+    if len(output) &gt; 0:
+        os.system(&quot;cd %s; kill `cat appserverpid.txt` ; touch timestamp; sleep 1 ; ./AppServer &amp;&gt;appserver.log &amp;&quot; % AppWorkDir )
+
+    # my mod ends here
+
+    if WebwareDir:
+        sys.path.insert(1, WebwareDir)
+    else:
+        WebwareDir = os.path.dirname(os.getcwd())
+    webKitDir = os.path.join(WebwareDir, 'WebKit')
+    if AppWorkDir is None:
+        AppWorkDir = webKitDir
+    else:
+        sys.path.insert(1, AppWorkDir)
+
+    import WebKit.CGIAdapter
+    WebKit.CGIAdapter.main(AppWorkDir)
+except:
+    import string, sys, traceback
+    from time import asctime, localtime, time
+
+    sys.stderr.write('[%s] [error] WebKit: Error in adapter\n' % asctime(localtime(time())))
+    sys.stderr.write('Error while executing script\n')
+    traceback.print_exc(file=sys.stderr)
+
+    output = apply(traceback.format_exception, sys.exc_info())
+    output = string.join(output, '')
+    output = string.replace(output, '&amp;', '&amp;amp;')
+    output = string.replace(output, '&lt;', '&amp;lt;')
+    output = string.replace(output, '&gt;', '&amp;gt;')
+    output = string.replace(output, '&quot;', '&amp;quot;')
+    sys.stdout.write('''Content-type: text/html
+    &lt;html&gt;&lt;body&gt;
+    &lt;p&gt;ERROR
+    &lt;p&gt;&lt;pre&gt;%s&lt;/pre&gt;
+    &lt;/body&gt;&lt;/html&gt;\n''' % output)</pre>
+<p>-- JasonHildebrand - 17 Jan 2002</p>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 31 Oct 2001</p>
+
+</div>
+</body>
+</html>

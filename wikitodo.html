@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.13: http://docutils.sourceforge.net/" />
+<title>Wiki ToDo</title>
+<link rel="stylesheet" href="wiki.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="wiki-todo">
+<h1 class="title">Wiki ToDo</h1>
+
+<div class="section" id="ideas-for-future-improvement">
+<h1>Ideas for future Improvement</h1>
+<p>Some things I have in mind, though it's very unsure when and if ever:</p>
+<ul class="simple">
+<li><p>Templating (configurable on a per-domain basis). Probably with <a class="reference external" href="http://www.cheetahtemplate.org/">Cheetah</a>.
+Choosable in some fashion as well, particularly a &quot;printable&quot; template.</p></li>
+<li><p>More Indexing (backlinks are indexed)</p></li>
+<li><p>More configuration options to control output and suppress links.</p></li>
+<li><p>Mail notification on changes (though we have RSS now)</p></li>
+<li><p>Some sort of categorization (maybe with more metadata; keyword
+metadata, or a more controlled form of categorization)</p></li>
+<li><p>InterWiki-links</p></li>
+<li><p>Locking of pages for editing</p></li>
+<li><p><a class="reference external" href="relatedterms.html">Related terms</a> starts the idea, but it needs a lot more flushing
+out; more on that page.</p></li>
+<li><p>Look at <a class="reference external" href="http://www.mnot.net/python/RSS.py">http://www.mnot.net/python/RSS.py</a> , see if it should
+replace <span class="docutils literal">rsspersist.py</span></p></li>
+<li><p>Maybe something with Atom, like described in
+<a class="reference external" href="http://www.xml.com/pub/a/2004/04/14/atomwiki.html">http://www.xml.com/pub/a/2004/04/14/atomwiki.html</a></p></li>
+<li><p>Make implicit user logins -- with cookie or by IP address -- by user
+preference.</p></li>
+<li><p>Allow for deleting and moving pages.  I'm thinking this would be
+implemented with a new page type, application/x-redirect, and with
+deletes.  A rename or move would be a copy, delete, replace with
+redirect.</p></li>
+<li><p>Give untitled links titles by fetching the target and looking for a
+<span class="docutils literal">&lt;title&gt;</span>.  Maybe part of restructured text parsing, and an
+addition to the WYSIWYG editor, or maybe a post-processing filter.</p></li>
+<li><p>Referrer tracking. Accept trackbacks (as comments?).</p></li>
+<li><p>Many RSS (or whatever format) files.  One for each page (just append
+<span class="docutils literal">.rss</span>).  One for each user?  One for site as well.</p></li>
+<li><p>Note the many features on this page:
+<a class="reference external" href="http://wikifeatures.wiki.taoriver.net/moin.cgi/IdeasToPlace">http://wikifeatures.wiki.taoriver.net/moin.cgi/IdeasToPlace</a> and
+also:
+<a class="reference external" href="http://wikifeatures.wiki.taoriver.net/moin.cgi/FeatureSummaries">http://wikifeatures.wiki.taoriver.net/moin.cgi/FeatureSummaries</a>
+specifically...</p></li>
+<li><p><a class="reference external" href="http://wikifeatures.wiki.taoriver.net/moin.cgi/FadingLinks">Fading Links</a>: links change color depending on how often they are
+followed.  Rates not just popularity of a page, but popularity of a
+connection.</p></li>
+<li><p><a class="reference external" href="http://wikifeatures.wiki.taoriver.net/moin.cgi/AutomaticTranslation">Automatic Translation</a>. Nice because it's easy.</p></li>
+<li><p><a class="reference external" href="http://wikifeatures.wiki.taoriver.net/moin.cgi/EmailAddressProtection">Email Address Protection</a>. Or, more generally, pluggable output
+filters.  In this case, a little Javascript &quot;encryption&quot;.</p></li>
+<li><p><a class="reference external" href="http://wikifeatures.wiki.taoriver.net/moin.cgi/FineGrainedAddressing">Fine Grained Addressing</a>. This is like <a class="reference external" href="http://www.eekim.com/software/purple/purple.html">Purple Number</a>.
+This could be added fairly easily to <span class="docutils literal">text/html</span> content, but
+restructured text will be harder.</p></li>
+<li><p><a class="reference external" href="http://wikifeatures.wiki.taoriver.net/moin.cgi/EventCasting">Event Casting</a>, i.e., some sort of remote event notification.
+Perhaps also trackback pings to all newly created links.</p></li>
+<li><p>Obscure links behind redirects, like described <a class="reference external" href="http://simon.incutio.com/archive/2004/05/11/approved">here</a>.  But only
+&quot;unapproved&quot; links -- i.e., new links.  (Note, we are already
+telling search engines not to index the sandbox pages, which are
+most prone to these abuses.)  IP tracking and banning might also go
+with this.  Revert+ban (block IP, delete user account) would be
+convenient, but it isn't that bad yet.</p></li>
+<li><p>Boilerplate pages.  There's a number of pages (growing) related to
+instructions about the Wiki.  When the Wiki starts up, it should
+automatically install any new pages (pages that are listed in the
+boilerplate, but aren't on the site).</p></li>
+<li><p>Put templates, embedded content (e.g., navigation text), CSS into
+Wiki.</p></li>
+<li><p>Locking or edit conflict detection.</p></li>
+<li><p>Links to pages that don't exist would pass the content of the anchor,
+so that we have a decent idea of what the title should look like.</p></li>
+<li><p>Attachments. Archives would be spiffy too -- download the archive,
+or view the archive contents (maybe just a listing).  Serve as a
+simple code repository.  (Single Python scripts are already
+supported well enough.)</p></li>
+<li><p>Permissions.  Restrict editing, creation, commenting based on roles,
+assign roles.</p></li>
+<li><p>Display entire page in RSS when a page is created.  If no log
+message on an edit, include some sort of abbreviated diff.</p></li>
+<li><p><a class="reference external" href="http://wikifeatures.wiki.taoriver.net/moin.cgi/MachineReadablePages">Machine Readable Pages</a>.  I.e., an <a class="reference external" href="xmlrpc.html">XMLRPC</a> interface.  Should be
+easy, but I'm not sure how many interesting clients there are.</p></li>
+<li><p><a class="reference external" href="http://wikifeatures.wiki.taoriver.net/moin.cgi/NearLink">Near Links</a>.  This might mean tracking the available pages in
+several wikis, and noting similarities in page names (either
+matches, or near matches, like <a class="reference external" href="http://wiki.wordpress.org/?pagename=LikePages">Like Pages</a>).</p></li>
+</ul>
+<ul class="simple">
+<li><p>Some notes/links on wikis and blogs:
+<a class="reference external" href="http://www.ourpla.net/cgi-bin/pikie.cgi?WikiWeblogs">http://www.ourpla.net/cgi-bin/pikie.cgi?WikiWeblogs</a></p></li>
+</ul>
+<p>Anything related to the markup should be put into docutils -- I think
+wiki links are nearly all we need in the way of extensions; everything
+else can be done in docutils directly.  (Though perhaps there should
+be a general directive, which simply passes parameters to the Wiki to
+be rendered at display time)</p>
+</div>
+<div class="section" id="requested-features">
+<h1>Requested Features</h1>
+<p>Put whatever you want here.</p>
+<ul>
+<li><p>Possibility to generate static pages for fast and scalable read-only
+with any server. <em>request granted</em></p></li>
+<li><p>Breadcrumb links (showing your recent path through the wiki)</p>
+<p>IB: What's the value over the back button?</p>
+<p>CG: Well, if you click back then click a link, it erases the forward history,
+so it's handy for that. I don't think I described it right -- it's more of
+a static-length page history with most recently visited pages at the top
+(and when you visit a page in that history, it pushes it back up to the top).
+It lets you do non-linear history traversal. :) It's not really THAT useful,
+but MoinMoin has it, and I find that it comes in handy when you want to go
+back and forth between two wikipages that aren't linked directly to each other.
+Plus, it's prominently visible, so you can quickly jump back 5 pages with ease!</p>
+</li>
+<li><p>Petition the docutils guys to make their formatting warning messages include
+a piece (or the whole) line that generated the error. ;)</p></li>
+<li><p>Javascript function that clears the &quot;click here to search...&quot; field when you
+select it. (IB: it's supposed to do that now; works for me on Mozilla at least)</p></li>
+<li><p>ReST Quick-Reference link on editing page (popup window)</p></li>
+</ul>
+</div>
+<div class="section" id="more-ideas">
+<h1>More ideas</h1>
+<p>Things I don't really have in mind, but maybe would be a good idea:</p>
+<ul class="simple">
+<li><p>Macros, like in <a class="reference external" href="http://moinmoin.wikiwikiweb.de/HelpOnMacros">MoinMoin</a> -- would replace custom pages
+(like <a class="reference external" href="recentchanges">recent changes</a>)</p></li>
+<li><p>User preferences</p></li>
+<li><p>Transclusion (including the contents of one page in another;
+maybe it would be important with binary pages)</p></li>
+<li><p>Internationalization (I have so little in-code text now, it would be
+both easy and uninteresting)</p></li>
+<li><p>Blog-like top-comment mode</p></li>
+<li><p>Workflow.  Cool, but hard.  Note <a class="reference external" href="http://wikifeatures.wiki.taoriver.net/moin.cgi/StagedCommits">Staged Commits</a>.</p></li>
+</ul>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<p><a class="reference external" href="./index.html">Ye Olde Webware for Python Wiki</a>, 03 Jan 2009</p>
+
+</div>
+</body>
+</html>
